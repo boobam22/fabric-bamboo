@@ -1,0 +1,11 @@
+{
+    "required": true,
+    "package": "bamboo.start.mixin.client",
+    "compatibilityLevel": "JAVA_21",
+    "mixins": [
+        "WorldCreatorMixin"
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    }
+}

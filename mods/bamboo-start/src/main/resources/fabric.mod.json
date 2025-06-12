@@ -1,0 +1,20 @@
+{
+    "schemaVersion": 1,
+    "id": "bamboo-start",
+    "version": "${version}",
+    "name": "Bamboo Start",
+    "description": "",
+    "mixins": [
+        {
+            "config": "bamboo-start.mixins.json"
+        },
+        {
+            "config": "bamboo-start.client-mixins.json",
+            "environment": "client"
+        }
+    ],
+    "depends": {
+        "fabricloader": ">=${loader_version}",
+        "minecraft": "${minecraft_version}"
+    }
+}
