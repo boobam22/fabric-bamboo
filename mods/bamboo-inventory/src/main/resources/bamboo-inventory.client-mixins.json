@@ -1,0 +1,12 @@
+{
+    "required": true,
+    "package": "bamboo.inventory.mixin.client",
+    "compatibilityLevel": "JAVA_21",
+    "mixins": [
+        "ScreenMixin",
+        "HandledScreenMixin"
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    }
+}

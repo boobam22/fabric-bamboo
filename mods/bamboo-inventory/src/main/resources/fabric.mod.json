@@ -1,0 +1,17 @@
+{
+    "schemaVersion": 1,
+    "id": "bamboo-inventory",
+    "version": "${version}",
+    "name": "Bamboo Inventory",
+    "description": "",
+    "mixins": [
+        {
+            "config": "bamboo-inventory.client-mixins.json",
+            "environment": "client"
+        }
+    ],
+    "depends": {
+        "fabricloader": ">=${loader_version}",
+        "minecraft": "${minecraft_version}"
+    }
+}
