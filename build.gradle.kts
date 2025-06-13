@@ -35,7 +35,7 @@ allprojects {
         }
     }
 
-    tasks.named<net.fabricmc.loom.task.RemapJarTask>("remapJar") {
+    tasks.named<RemapJarTask>("remapJar") {
         archiveBaseName.set("${project.name}-$yarn_mappings")
     }
 }
