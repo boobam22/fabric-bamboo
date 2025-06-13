@@ -1,6 +1,7 @@
 package bamboo.resourcepacks.mixin;
 
-import java.util.*;
+import java.util.Set;
+import java.util.HashSet;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;

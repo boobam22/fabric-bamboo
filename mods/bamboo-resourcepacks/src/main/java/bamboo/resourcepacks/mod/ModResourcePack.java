@@ -1,6 +1,8 @@
 package bamboo.resourcepacks.mod;
 
-import java.util.*;
+import java.util.Set;
+import java.util.Map;
+import java.util.Optional;
 import java.lang.Integer;
 import java.io.IOException;
 import java.io.InputStream;
