@@ -13,7 +13,7 @@ import net.minecraft.util.Identifier;
 
 @Mixin(LootableContainerBlockEntity.class)
 public abstract class LootableContainerBlockEntityMixin {
-    @Inject(method = "getLootTable", at = @At("TAIL"), cancellable = true)
+    @Inject(method = "getLootTable", at = @At("RETURN"), cancellable = true)
     private void getLootTable(CallbackInfoReturnable<RegistryKey<LootTable>> cir) {
         String path = "chests/spawn_bonus_chest";
         Identifier id1 = Identifier.ofVanilla(path);

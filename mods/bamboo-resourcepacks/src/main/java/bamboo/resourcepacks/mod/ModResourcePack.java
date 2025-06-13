@@ -9,8 +9,6 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Files;
 
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.resource.AbstractFileResourcePack;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourcePackInfo;
@@ -31,7 +29,6 @@ public class ModResourcePack extends AbstractFileResourcePack {
         this.rootPaths = rootPaths;
     }
 
-    @Nullable
     @Override
     public InputSupplier<InputStream> openRoot(String... segments) {
         if (segments.length == 1 && segments[0].equals("pack.png")) {
@@ -40,12 +37,10 @@ public class ModResourcePack extends AbstractFileResourcePack {
         return null;
     }
 
-    @Nullable
     private Path toPath(ResourceType type, Identifier id) {
         return toPath(type, id.getNamespace(), id.getPath());
     }
 
-    @Nullable
     private Path toPath(ResourceType type, String namespace, String path) {
         if (this.namespaces.get(type).contains(namespace)) {
             Path target = this.rootPaths.get(namespace).resolve(type.getDirectory()).resolve(namespace).resolve(path);
@@ -54,7 +49,6 @@ public class ModResourcePack extends AbstractFileResourcePack {
         return null;
     }
 
-    @Nullable
     @Override
     public InputSupplier<InputStream> open(ResourceType type, Identifier id) {
         return Optional.ofNullable(toPath(type, id))

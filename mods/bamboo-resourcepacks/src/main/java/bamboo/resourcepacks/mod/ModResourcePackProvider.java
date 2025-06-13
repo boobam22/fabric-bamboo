@@ -1,6 +1,7 @@
 package bamboo.resourcepacks.mod;
 
 import java.util.Set;
+import java.util.Map;
 import java.util.List;
 import java.util.HashSet;
 import java.util.HashMap;
@@ -36,8 +37,8 @@ public class ModResourcePackProvider implements ResourcePackProvider {
         Text baseTitle = Text.literal("Bamboo Resourcepacks");
         Text baseDesc = Text.literal("This is description");
 
-        HashMap<String, Path> rootPaths = new HashMap<>();
-        HashMap<ResourceType, Set<String>> namespaces = new HashMap<>();
+        Map<String, Path> rootPaths = new HashMap<>();
+        Map<ResourceType, Set<String>> namespaces = new HashMap<>();
         namespaces.put(ResourceType.CLIENT_RESOURCES, new HashSet<>());
         namespaces.put(ResourceType.SERVER_DATA, new HashSet<>());
 

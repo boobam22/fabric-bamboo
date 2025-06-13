@@ -15,7 +15,7 @@ import net.minecraft.screen.slot.SlotActionType;
 @Mixin(HandledScreen.class)
 public abstract class HandledScreenMixin {
     @Shadow
-    protected ScreenHandler handler;
+    private ScreenHandler handler;
 
     @Shadow
     protected abstract Slot getSlotAt(double mouseX, double mouseY);

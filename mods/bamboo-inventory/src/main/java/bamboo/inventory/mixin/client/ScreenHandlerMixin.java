@@ -14,7 +14,7 @@ import net.minecraft.util.collection.DefaultedList;
 @Mixin(ScreenHandler.class)
 public abstract class ScreenHandlerMixin {
     @Shadow
-    protected DefaultedList<Slot> slots;
+    private DefaultedList<Slot> slots;
 
     @Shadow
     protected abstract boolean insertItem(ItemStack stack, int startIndex, int endIndex, boolean fromLast);
