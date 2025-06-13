@@ -5,7 +5,8 @@
     "mixins": [
         "ScreenMixin",
         "HandledScreenMixin",
-        "ScreenHandlerMixin"
+        "ScreenHandlerMixin",
+        "LivingEntityMixin"
     ],
     "injectors": {
         "defaultRequire": 1
