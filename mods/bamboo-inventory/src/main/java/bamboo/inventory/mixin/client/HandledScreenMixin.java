@@ -16,23 +16,18 @@ import net.minecraft.screen.slot.SlotActionType;
 public abstract class HandledScreenMixin {
     @Shadow
     private ScreenHandler handler;
-
     @Shadow
-    protected abstract Slot getSlotAt(double mouseX, double mouseY);
+    private Slot focusedSlot;
 
     @Shadow
     protected abstract void onMouseClick(Slot slot, int slotId, int button, SlotActionType actionType);
 
     @Inject(method = "mouseDragged", at = @At("HEAD"), cancellable = true)
-    private void mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY,
-            CallbackInfoReturnable<Boolean> cir) {
-        if (Screen.hasShiftDown() && this.handler.getCursorStack().isEmpty()) {
-            Slot slot = this.getSlotAt(mouseX, mouseY);
-
-            if (slot != null && slot.hasStack()) {
-                this.onMouseClick(slot, slot.id, button, SlotActionType.QUICK_MOVE);
-                cir.setReturnValue(true);
-            }
+    private void mouseDragged(CallbackInfoReturnable<Boolean> cir) {
+        if (this.focusedSlot != null && this.focusedSlot.hasStack() && Screen.hasShiftDown()
+                && this.handler.getCursorStack().isEmpty()) {
+            this.onMouseClick(this.focusedSlot, this.focusedSlot.id, 0, SlotActionType.QUICK_MOVE);
+            cir.setReturnValue(true);
         }
     }
 }
