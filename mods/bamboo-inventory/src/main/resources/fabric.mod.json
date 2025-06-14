@@ -6,6 +6,9 @@
     "description": "",
     "mixins": [
         {
+            "config": "bamboo-inventory.mixins.json"
+        },
+        {
             "config": "bamboo-inventory.client-mixins.json",
             "environment": "client"
         }
