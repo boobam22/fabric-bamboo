@@ -2,9 +2,8 @@
     "required": true,
     "package": "bamboo.inventory.mixin",
     "compatibilityLevel": "JAVA_21",
-    "mixins": [
-        "ScreenHandlerMixin",
-        "LivingEntityMixin"
+    "client": [
+        "HandledScreenMixin"
     ],
     "injectors": {
         "defaultRequire": 1

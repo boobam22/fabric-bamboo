@@ -5,13 +5,7 @@
     "name": "Bamboo Inventory",
     "description": "",
     "mixins": [
-        {
-            "config": "bamboo-inventory.mixins.json"
-        },
-        {
-            "config": "bamboo-inventory.client-mixins.json",
-            "environment": "client"
-        }
+        "bamboo-inventory.mixins.json"
     ],
     "depends": {
         "fabricloader": ">=${loader_version}",
