@@ -60,7 +60,8 @@ public abstract class HandledScreenMixin {
             if (stack.isEmpty()) {
                 this.onMouseClick(tmp, tmp.id, 0, SlotActionType.PICKUP);
                 break;
-            } else if (ItemStack.areItemsEqual(cursorStack, stack) && (stack.getMaxCount() > stack.getCount())) {
+            } else if (ItemStack.areItemsAndComponentsEqual(cursorStack, stack)
+                    && (stack.getMaxCount() > stack.getCount())) {
                 this.onMouseClick(tmp, tmp.id, 0, SlotActionType.PICKUP);
                 cursorStack = this.handler.getCursorStack();
                 if (cursorStack.isEmpty()) {
