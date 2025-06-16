@@ -5,13 +5,7 @@
     "name": "Bamboo Start",
     "description": "",
     "mixins": [
-        {
-            "config": "bamboo-start.mixins.json"
-        },
-        {
-            "config": "bamboo-start.client-mixins.json",
-            "environment": "client"
-        }
+        "bamboo-start.mixins.json"
     ],
     "depends": {
         "fabricloader": ">=${loader_version}",

@@ -5,6 +5,9 @@
     "mixins": [
         "LootableContainerBlockEntityMixin"
     ],
+    "client": [
+        "WorldCreatorMixin"
+    ],
     "injectors": {
         "defaultRequire": 1
     }

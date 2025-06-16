@@ -5,9 +5,7 @@
     "name": "Bamboo Resourcepacks",
     "description": "",
     "mixins": [
-        {
-            "config": "bamboo-resourcepacks.mixins.json"
-        }
+        "bamboo-resourcepacks.mixins.json"
     ],
     "depends": {
         "fabricloader": ">=${loader_version}",
