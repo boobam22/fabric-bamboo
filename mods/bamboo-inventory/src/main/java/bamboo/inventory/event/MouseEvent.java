@@ -34,6 +34,8 @@ public class MouseEvent implements ClickEventInterface, ScrollEventInterface {
             return onShiftRightClick();
         } else if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT && modifiers == GLFW.GLFW_MOD_ALT) {
             return onAltClick();
+        } else if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT && modifiers == GLFW.GLFW_MOD_CONTROL) {
+            return onCtrolClick();
         } else {
             return false;
         }
