@@ -8,9 +8,8 @@ import net.minecraft.entity.player.PlayerInventory;
 
 import bamboo.inventory.action.MoveActionInterface;
 import bamboo.inventory.action.FindSlotInterface;
-import bamboo.inventory.action.MergeActionInterface;
 
-public interface ClickEventInterface extends MoveActionInterface, FindSlotInterface, MergeActionInterface {
+public interface ClickEventInterface extends MoveActionInterface, FindSlotInterface {
     default boolean onShiftClick() {
         return onShiftClick(getFocusedSlot());
     }
@@ -55,11 +54,6 @@ public interface ClickEventInterface extends MoveActionInterface, FindSlotInterf
             }
         }
         onShiftClick(focusedSlot);
-        return true;
-    }
-
-    default boolean onCtrolClick() {
-        merge();
         return true;
     }
 }
