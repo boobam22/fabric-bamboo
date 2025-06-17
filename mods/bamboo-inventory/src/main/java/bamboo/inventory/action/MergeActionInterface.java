@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.TreeMap;
 
 import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.GenericContainerScreenHandler;
+import net.minecraft.screen.ShulkerBoxScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.entity.player.PlayerInventory;
@@ -26,6 +28,11 @@ public interface MergeActionInterface extends MoveActionInterface {
         }
 
         merge(start, start + 27);
+
+        ScreenHandler handler = getHandler();
+        if (handler instanceof GenericContainerScreenHandler || handler instanceof ShulkerBoxScreenHandler) {
+            merge(0, start);
+        }
     }
 
     private void merge(int start, int end) {
