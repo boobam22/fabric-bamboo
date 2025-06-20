@@ -9,8 +9,12 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.ShulkerBoxScreenHandler;
 import net.minecraft.screen.slot.Slot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.tag.TagKey;
+import net.minecraft.registry.Registries;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 
 public interface MergeActionInterface extends MoveActionInterface {
@@ -38,7 +42,8 @@ public interface MergeActionInterface extends MoveActionInterface {
     }
 
     private void merge(int start, int end) {
-        DefaultedList<Slot> slots = getHandler().slots;
+        ScreenHandler handler = getHandler();
+        DefaultedList<Slot> slots = handler.slots;
 
         ArrayList<ArrayList<Slot>> groupedSlot = new ArrayList<>();
         HashMap<Integer, ItemStack> input = new HashMap<>();
@@ -128,12 +133,22 @@ public interface MergeActionInterface extends MoveActionInterface {
             }
         }
 
-        if (!getHandler().getCursorStack().isEmpty() && path.size() > 0) {
+        if (!handler.getCursorStack().isEmpty() && path.size() > 0) {
             path.add(path.getFirst());
         }
 
         for (int id : path) {
-            leftClick(slots.get(id));
+            Slot slot = slots.get(id);
+            ItemStack stack = slot.getStack();
+            ItemStack cursorStack = handler.getCursorStack();
+
+            TagKey<Item> bundleKey = TagKey.of(Registries.ITEM.getKey(), Identifier.ofVanilla("bundles"));
+            if (stack.isIn(bundleKey) && !cursorStack.isEmpty()
+                    || cursorStack.isIn(bundleKey) && !stack.isEmpty()) {
+                rightClick(slot);
+            } else {
+                leftClick(slot);
+            }
         }
     }
 }
