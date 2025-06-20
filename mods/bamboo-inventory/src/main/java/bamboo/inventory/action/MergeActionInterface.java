@@ -44,6 +44,9 @@ public interface MergeActionInterface extends MoveActionInterface {
     private void merge(int start, int end) {
         ScreenHandler handler = getHandler();
         DefaultedList<Slot> slots = handler.slots;
+        if (!handler.getCursorStack().isEmpty()) {
+            return;
+        }
 
         ArrayList<ArrayList<Slot>> groupedSlot = new ArrayList<>();
         HashMap<Integer, ItemStack> input = new HashMap<>();
@@ -131,10 +134,6 @@ public interface MergeActionInterface extends MoveActionInterface {
                     break;
                 }
             }
-        }
-
-        if (!handler.getCursorStack().isEmpty() && path.size() > 0) {
-            path.add(path.getFirst());
         }
 
         for (int id : path) {
