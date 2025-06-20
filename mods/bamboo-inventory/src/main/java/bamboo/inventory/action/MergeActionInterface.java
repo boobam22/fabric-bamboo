@@ -128,6 +128,10 @@ public interface MergeActionInterface extends MoveActionInterface {
             }
         }
 
+        if (!getHandler().getCursorStack().isEmpty() && path.size() > 0) {
+            path.add(path.getFirst());
+        }
+
         for (int id : path) {
             leftClick(slots.get(id));
         }
