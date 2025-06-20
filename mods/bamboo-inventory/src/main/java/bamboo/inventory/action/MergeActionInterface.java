@@ -1,7 +1,9 @@
 package bamboo.inventory.action;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.TreeMap;
+import java.util.Comparator;
 
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.GenericContainerScreenHandler;
@@ -36,55 +38,98 @@ public interface MergeActionInterface extends MoveActionInterface {
     }
 
     private void merge(int start, int end) {
-        ScreenHandler handler = getHandler();
-        DefaultedList<Slot> slots = handler.slots;
+        DefaultedList<Slot> slots = getHandler().slots;
 
-        TreeMap<Slot, ArrayList<Slot>> sortMap = new TreeMap<>((a, b) -> {
-            if (ItemStack.areItemsAndComponentsEqual(a.getStack(), b.getStack())) {
-                return 0;
-            }
-            return a.id - b.id;
-        });
+        ArrayList<ArrayList<Slot>> groupedSlot = new ArrayList<>();
+        HashMap<Integer, ItemStack> input = new HashMap<>();
+        HashMap<Integer, ItemStack> output = new HashMap<>();
+        TreeMap<ItemStack, ArrayList<Slot>> stackMap = new TreeMap<>(Comparator
+                .comparing((ItemStack stack) -> stack.getItem().hashCode())
+                .thenComparing((ItemStack stack) -> stack.getComponents().hashCode()));
+
         for (int i = start; i < end; i++) {
             Slot slot = slots.get(i);
+            ItemStack stack = slot.getStack();
             if (slot.hasStack()) {
-                sortMap.putIfAbsent(slot, new ArrayList<>());
-                sortMap.get(slot).add(slot);
+                if (!stackMap.containsKey(stack)) {
+                    ArrayList<Slot> group = new ArrayList<>();
+                    groupedSlot.add(group);
+                    stackMap.put(stack, group);
+                }
+                stackMap.get(stack).add(slot);
+                input.put(i, stack.copy());
             }
         }
 
-        TreeMap<Slot, Integer> diffMap = new TreeMap<>((a, b) -> a.id - b.id);
         int offset = start;
-        for (Slot firstSlot : sortMap.keySet()) {
-            ArrayList<Slot> mergableSlots = sortMap.get(firstSlot);
+        for (ArrayList<Slot> group : groupedSlot) {
+            Slot firstSlot = group.getFirst();
             offset = Math.max(offset, firstSlot.id);
-            diffMap.put(firstSlot, offset);
+            ItemStack stack = firstSlot.getStack();
+            int maxCount = stack.getMaxCount();
+            int totalCount = group.stream().map(slot -> slot.getStack().getCount()).reduce(0, Integer::sum);
+            int nStack = totalCount / maxCount;
+            int remain = totalCount % maxCount;
 
-            int maxCount = firstSlot.getStack().getMaxCount();
-            int totalCount = mergableSlots.stream()
-                    .map(it -> it.getStack().getCount())
-                    .reduce(0, Integer::sum);
-            offset += Math.ceilDiv(totalCount, maxCount);
+            for (int i = 0; i < nStack; i++) {
+                output.put(offset++, stack.copyWithCount(maxCount));
+            }
+            if (remain > 0) {
+                output.put(offset++, stack.copyWithCount(remain));
+            }
         }
 
-        for (Slot firstSlot : sortMap.reversed().keySet()) {
-            ArrayList<Slot> mergableSlots = sortMap.get(firstSlot);
-            int baseOffset = diffMap.get(firstSlot);
-            offset = baseOffset;
+        ArrayList<Integer> points = new ArrayList<>(input.keySet());
+        TreeMap<ItemStack, TreeMap<Integer, Integer>> state = new TreeMap<>(stackMap.comparator());
+        for (int id : output.keySet()) {
+            ItemStack stack = output.get(id);
+            int count = stack.getCount();
+            if (points.contains(id)
+                    && ItemStack.areItemsAndComponentsEqual(input.get(id), stack)
+                    && input.get(id).getCount() <= count) {
+                points.remove(Integer.valueOf(id));
+                count -= input.get(id).getCount();
+            }
+            if (count > 0) {
+                state.putIfAbsent(stack, new TreeMap<>());
+                state.get(stack).put(id, count);
+            }
+        }
 
-            for (Slot from : mergableSlots) {
-                if (from.id >= baseOffset && from.id <= offset) {
-                    continue;
+        ArrayList<Integer> path = new ArrayList<>();
+        while (points.size() > 0) {
+            int id = points.removeFirst();
+            ItemStack cursorStack = input.get(id).copy();
+            path.add(id);
+
+            while (true) {
+                TreeMap<Integer, Integer> offsetMap = state.get(cursorStack);
+                id = offsetMap.firstKey();
+                path.add(id);
+
+                int cap = offsetMap.get(id);
+                int cursorCount = cursorStack.getCount();
+                if (cursorCount >= cap) {
+                    offsetMap.remove(id);
+                    cursorStack.decrement(cap);
+                } else {
+                    offsetMap.merge(id, -cursorCount, Integer::sum);
+                    cursorStack = ItemStack.EMPTY;
                 }
 
-                leftClick(from);
-                leftClick(slots.get(offset));
+                if (points.contains(id)) {
+                    points.remove(Integer.valueOf(id));
+                    cursorStack = input.get(id).copy();
+                }
 
-                while (!handler.getCursorStack().isEmpty()) {
-                    offset += 1;
-                    leftClick(slots.get(offset));
+                if (cursorStack.isEmpty()) {
+                    break;
                 }
             }
+        }
+
+        for (int id : path) {
+            leftClick(slots.get(id));
         }
     }
 }
