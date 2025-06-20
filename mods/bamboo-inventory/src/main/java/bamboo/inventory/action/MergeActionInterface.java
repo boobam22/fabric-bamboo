@@ -28,14 +28,17 @@ public interface MergeActionInterface extends MoveActionInterface {
     }
 
     default void merge() {
+        ScreenHandler handler = getHandler();
+
         int start = findPlayerInventoryIndex();
         if (start == -1) {
             return;
         }
 
-        merge(start, start + 27);
+        if (handler.slots.size() >= start + 27) {
+            merge(start, start + 27);
+        }
 
-        ScreenHandler handler = getHandler();
         if (handler instanceof GenericContainerScreenHandler || handler instanceof ShulkerBoxScreenHandler) {
             merge(0, start);
         }
