@@ -12,7 +12,7 @@ public class KeyboardEvent {
 
     public boolean handlePress(long window, int key, int scancode, int action, int modifiers) {
         if (key == GLFW.GLFW_KEY_V && action == GLFW.GLFW_PRESS && modifiers == 0) {
-            Camera.INSTANCE.toggle();
+            Camera.toggle();
             return true;
         }
         return false;

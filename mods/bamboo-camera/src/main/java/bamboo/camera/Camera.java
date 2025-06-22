@@ -4,15 +4,11 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 
 public class Camera {
-    public static final Camera INSTANCE = new Camera();
-    private boolean originChunkCullingEnabled;
-    private Entity originCameraEntity;
-    private CameraEntity cameraEntity;
+    private static boolean originChunkCullingEnabled;
+    private static Entity originCameraEntity;
+    private static CameraEntity cameraEntity;
 
-    private Camera() {
-    }
-
-    public void toggle() {
+    public static void toggle() {
         MinecraftClient client = MinecraftClient.getInstance();
         if (isActive()) {
             client.setCameraEntity(originCameraEntity);
@@ -31,7 +27,7 @@ public class Camera {
         }
     }
 
-    public boolean isActive() {
+    public static boolean isActive() {
         return cameraEntity == MinecraftClient.getInstance().getCameraEntity();
     }
 }
