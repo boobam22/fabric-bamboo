@@ -21,7 +21,6 @@ public class Camera {
             client.setCameraEntity(originCameraEntity);
             client.chunkCullingEnabled = originChunkCullingEnabled;
 
-            originCameraEntity = null;
             cameraEntity.remove(RemovalReason.KILLED);
         } else {
             originCameraEntity = client.getCameraEntity();
@@ -38,6 +37,6 @@ public class Camera {
     }
 
     public boolean isActive() {
-        return originCameraEntity != null;
+        return cameraEntity == MinecraftClient.getInstance().getCameraEntity();
     }
 }
