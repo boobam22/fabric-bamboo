@@ -2,15 +2,12 @@ package bamboo.camera;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.Entity.RemovalReason;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.MarkerEntity;
 
 public class Camera {
     public static final Camera INSTANCE = new Camera();
     private boolean originChunkCullingEnabled;
     private Entity originCameraEntity;
-    private MarkerEntity cameraEntity;
+    private CameraEntity cameraEntity;
 
     private Camera() {
     }
@@ -20,17 +17,15 @@ public class Camera {
         if (isActive()) {
             client.setCameraEntity(originCameraEntity);
             client.chunkCullingEnabled = originChunkCullingEnabled;
-
-            cameraEntity.remove(RemovalReason.KILLED);
         } else {
             originCameraEntity = client.getCameraEntity();
             originChunkCullingEnabled = client.chunkCullingEnabled;
 
-            cameraEntity = new MarkerEntity(EntityType.MARKER, client.player.clientWorld);
-            cameraEntity.setPosition(originCameraEntity.getEyePos());
-            cameraEntity.setAngles(originCameraEntity.getYaw(), originCameraEntity.getPitch());
-            client.player.clientWorld.addEntity(cameraEntity);
+            if (cameraEntity == null) {
+                cameraEntity = new CameraEntity(client.player.clientWorld);
+            }
 
+            cameraEntity.refreshPositionAndAngles(originCameraEntity);
             client.setCameraEntity(cameraEntity);
             client.chunkCullingEnabled = false;
         }
