@@ -34,4 +34,8 @@ public class Camera {
 
     public static void handleInput(PlayerInput input) {
     }
+
+    public static void handleMouse(double x, double y) {
+        cameraEntity.changeLookDirection(x, y);
+    }
 }
