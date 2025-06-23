@@ -2,6 +2,7 @@ package bamboo.camera;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.PlayerInput;
 
 public class Camera {
     private static boolean originChunkCullingEnabled;
@@ -29,5 +30,8 @@ public class Camera {
 
     public static boolean isActive() {
         return cameraEntity == MinecraftClient.getInstance().getCameraEntity();
+    }
+
+    public static void handleInput(PlayerInput input) {
     }
 }
