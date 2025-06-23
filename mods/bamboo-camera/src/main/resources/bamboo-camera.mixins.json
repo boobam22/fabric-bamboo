@@ -6,7 +6,8 @@
     "client": [
         "KeyboardMixin",
         "WorldRendererMixin",
-        "GameRendererMixin"
+        "GameRendererMixin",
+        "InGameHudMixin"
     ],
     "injectors": {
         "defaultRequire": 1
