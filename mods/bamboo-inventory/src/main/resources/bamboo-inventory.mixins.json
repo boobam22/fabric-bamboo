@@ -5,7 +5,8 @@
     "client": [
         "MouseMixin",
         "KeyboardMixin",
-        "HandledScreenAccessor"
+        "HandledScreenAccessor",
+        "SearchManagerMixin"
     ],
     "injectors": {
         "defaultRequire": 1
