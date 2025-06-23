@@ -1,0 +1,14 @@
+{
+    "schemaVersion": 1,
+    "id": "bamboo-camera",
+    "version": "${version}",
+    "name": "Bamboo Camera",
+    "description": "",
+    "mixins": [
+        "bamboo-camera.mixins.json"
+    ],
+    "depends": {
+        "fabricloader": ">=${loader_version}",
+        "minecraft": "${minecraft_version}"
+    }
+}

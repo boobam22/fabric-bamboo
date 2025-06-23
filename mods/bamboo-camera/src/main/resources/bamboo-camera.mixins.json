@@ -1,0 +1,18 @@
+{
+    "required": true,
+    "package": "bamboo.camera.mixin",
+    "compatibilityLevel": "JAVA_21",
+    "mixins": [],
+    "client": [
+        "KeyboardMixin",
+        "WorldRendererMixin",
+        "GameRendererMixin",
+        "InGameHudMixin",
+        "ClientPlayerEntityMixin",
+        "EntityMixin",
+        "MinecraftClientMixin"
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    }
+}
