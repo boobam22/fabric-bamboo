@@ -3,6 +3,7 @@ pluginManagement {
 
     plugins {
         id("fabric-loom") version loom_version
+        id("com.gradleup.shadow") version "8.3.6"
     }
 
     repositories {
