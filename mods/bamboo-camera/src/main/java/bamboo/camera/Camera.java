@@ -18,10 +18,7 @@ public class Camera {
             originCameraEntity = client.getCameraEntity();
             originChunkCullingEnabled = client.chunkCullingEnabled;
 
-            if (cameraEntity == null) {
-                cameraEntity = new CameraEntity(client.player.clientWorld);
-            }
-
+            cameraEntity = new CameraEntity(client.player.clientWorld);
             cameraEntity.refreshPositionAndAngles(originCameraEntity);
             client.setCameraEntity(cameraEntity);
             client.chunkCullingEnabled = false;
@@ -29,7 +26,7 @@ public class Camera {
     }
 
     public static boolean isActive() {
-        return cameraEntity == MinecraftClient.getInstance().getCameraEntity();
+        return cameraEntity != null && cameraEntity == MinecraftClient.getInstance().getCameraEntity();
     }
 
     public static void handleInput(PlayerInput input) {
