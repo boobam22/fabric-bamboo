@@ -1,0 +1,14 @@
+{
+    "schemaVersion": 1,
+    "id": "bamboo-lib",
+    "version": "${version}",
+    "name": "Bamboo Lib",
+    "description": "",
+    "mixins": [
+        "bamboo-lib.mixins.json"
+    ],
+    "depends": {
+        "fabricloader": ">=${loader_version}",
+        "minecraft": "${minecraft_version}"
+    }
+}

@@ -1,0 +1,11 @@
+{
+    "required": true,
+    "package": "bamboo.lib.mixin",
+    "compatibilityLevel": "JAVA_21",
+    "mixins": [
+        "resource.ResourcePackManagerkMixin"
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    }
+}
