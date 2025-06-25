@@ -58,7 +58,7 @@ public class KeyBinding {
     public static KeyBinding bind(String key) {
         List<Integer> keyCodes = Stream.of(key.split("\\+"))
                 .map(KeyMap::toCode)
-                .filter(code -> code != -1)
+                .filter(code -> code != KeyMap.UNKNOWN)
                 .toList();
 
         if (keyCodes.size() > 0) {
