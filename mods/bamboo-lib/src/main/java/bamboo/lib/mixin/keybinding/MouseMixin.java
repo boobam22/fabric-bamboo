@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.client.Mouse;
 import net.minecraft.client.MinecraftClient;
 
-import bamboo.lib.keybinding.event.MouseEvent;
+import bamboo.lib.keybinding.KeyEvent;
 
 @Mixin(Mouse.class)
 public abstract class MouseMixin {
@@ -18,24 +18,21 @@ public abstract class MouseMixin {
 
     @Inject(method = "onMouseButton", at = @At("HEAD"), cancellable = true)
     private void onMouseButton(long window, int button, int action, int modifiers, CallbackInfo ci) {
-        if (window == client.getWindow().getHandle()
-                && MouseEvent.handleClick(client, window, button, action)) {
+        if (window == client.getWindow().getHandle() && KeyEvent.handlePress(client, button, action)) {
             ci.cancel();
         }
     }
 
     @Inject(method = "onMouseScroll", at = @At("HEAD"), cancellable = true)
     private void onMouseScroll(long window, double horizontal, double vertical, CallbackInfo ci) {
-        if (window == client.getWindow().getHandle()
-                && MouseEvent.handleScroll(client, window, horizontal, vertical)) {
+        if (window == client.getWindow().getHandle() && KeyEvent.handleScroll(client)) {
             ci.cancel();
         }
     }
 
     @Inject(method = "onCursorPos", at = @At("TAIL"), cancellable = true)
     private void onCursorPos(long window, double x, double y, CallbackInfo ci) {
-        if (window == client.getWindow().getHandle()
-                && MouseEvent.handleMove(client, window, x, y)) {
+        if (window == client.getWindow().getHandle() && KeyEvent.handleMove(client)) {
             ci.cancel();
         }
     }
