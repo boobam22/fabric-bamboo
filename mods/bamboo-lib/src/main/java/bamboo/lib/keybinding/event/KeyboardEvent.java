@@ -18,6 +18,15 @@ public class KeyboardEvent {
     }
 
     public static boolean handlePress(MinecraftClient client, long window, int key, int action) {
+        if (!handlers.containsKey(key)) {
+            return false;
+        }
+
+        for (KeyBinding keyBinding : handlers.get(key).keySet()) {
+            if (keyBinding.action == action && EventUtil.matchModifier(window, keyBinding.modifier)) {
+                return handlers.get(key).get(keyBinding).apply(client);
+            }
+        }
         return false;
     }
 }

@@ -28,14 +28,33 @@ public class MouseEvent {
     }
 
     public static boolean handleClick(MinecraftClient client, long window, int button, int action) {
+        if (!clickHandlers.containsKey(button)) {
+            return false;
+        }
+
+        for (KeyBinding keyBinding : clickHandlers.get(button).keySet()) {
+            if (keyBinding.action == action && EventUtil.matchModifier(window, keyBinding.modifier)) {
+                return clickHandlers.get(button).get(keyBinding).apply(client);
+            }
+        }
         return false;
     }
 
     public static boolean handleScroll(MinecraftClient client, long window, double horizontal, double vertical) {
+        for (KeyBinding keyBinding : scrollHandlers.keySet()) {
+            if (EventUtil.matchModifier(window, keyBinding.modifier)) {
+                return scrollHandlers.get(keyBinding).apply(client);
+            }
+        }
         return false;
     }
 
     public static boolean handleMove(MinecraftClient client, long window, double x, double y) {
+        for (KeyBinding keyBinding : moveHandlers.keySet()) {
+            if (EventUtil.matchModifier(window, keyBinding.modifier)) {
+                return moveHandlers.get(keyBinding).apply(client);
+            }
+        }
         return false;
     }
 }
