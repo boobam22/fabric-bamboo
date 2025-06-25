@@ -42,7 +42,9 @@ public class Key {
             return true;
         }
         if (obj instanceof Key other) {
-            return key == other.key && modifier.equals(other.modifier) && action == other.action;
+            if (key == other.key && modifier.equals(other.modifier)) {
+                return key == KeyMap.SCROLL || key == KeyMap.MOVE ? true : action == other.action;
+            }
         }
         return false;
     }
