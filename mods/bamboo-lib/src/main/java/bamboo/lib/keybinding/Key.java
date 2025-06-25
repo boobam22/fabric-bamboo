@@ -34,6 +34,7 @@ public class Key {
     }
 
     public void execute(Handler callback) {
+        KeyEvent.register(this, callback);
     }
 
     @Override

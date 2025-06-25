@@ -12,6 +12,11 @@ public class KeyEvent {
     private static final HashMap<Key, ArrayList<Handler>> handlers = new HashMap<>();
     private static final Key currentKey = new Key(0, new HashSet<>());
 
+    public static void register(Key key, Handler handler) {
+        handlers.putIfAbsent(key, new ArrayList<>());
+        handlers.get(key).add(handler);
+    }
+
     public static boolean handlePress(MinecraftClient client, int key, int action) {
         if (action == GLFW.GLFW_REPEAT) {
             return false;
