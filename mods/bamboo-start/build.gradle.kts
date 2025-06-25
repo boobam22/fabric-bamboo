@@ -1,3 +1,3 @@
 dependencies {
-    implementation(project(path=":bamboo-resourcepacks", configuration="namedElements"))
+    implementation(project(path=":bamboo-lib", configuration="namedElements"))
 }
