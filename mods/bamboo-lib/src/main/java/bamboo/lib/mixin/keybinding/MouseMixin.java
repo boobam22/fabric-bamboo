@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.client.Mouse;
 import net.minecraft.client.MinecraftClient;
 
-import bamboo.lib.keybinding.MouseEvent;
+import bamboo.lib.keybinding.event.MouseEvent;
 
 @Mixin(Mouse.class)
 public abstract class MouseMixin {

@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.client.Keyboard;
 import net.minecraft.client.MinecraftClient;
 
-import bamboo.lib.keybinding.KeyboardEvent;;
+import bamboo.lib.keybinding.event.KeyboardEvent;
 
 @Mixin(Keyboard.class)
 public abstract class KeyboardMixin {

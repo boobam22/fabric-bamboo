@@ -4,16 +4,18 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 import java.util.stream.Collectors;
-import java.util.function.Consumer;
+import java.util.function.Function;
 
 import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.MinecraftClient;
 
+import bamboo.lib.keybinding.event.EventUtil;
+
 public class KeyBinding {
-    private int key;
-    private List<Integer> modifier;
-    private int action;
+    public int key;
+    public List<Integer> modifier;
+    public int action;
 
     public KeyBinding(int key, List<Integer> modifier, int action) {
         this.key = key;
@@ -33,6 +35,10 @@ public class KeyBinding {
     public KeyBinding triggerOnRelease() {
         this.action = GLFW.GLFW_RELEASE;
         return this;
+    }
+
+    public void execute(Function<MinecraftClient, Boolean> callback) {
+        EventUtil.register(this, callback);
     }
 
     @Override
@@ -65,8 +71,5 @@ public class KeyBinding {
             return new KeyBinding(keyCodes.getLast(), keyCodes.subList(0, keyCodes.size() - 1));
         }
         return null;
-    }
-
-    public static void execute(Consumer<MinecraftClient> callback) {
     }
 }
