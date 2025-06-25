@@ -4,11 +4,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 import java.util.stream.Collectors;
-import java.util.function.Function;
 
 import org.lwjgl.glfw.GLFW;
-
-import net.minecraft.client.MinecraftClient;
 
 import bamboo.lib.keybinding.event.EventUtil;
 
@@ -37,7 +34,7 @@ public class KeyBinding {
         return this;
     }
 
-    public void execute(Function<MinecraftClient, Boolean> callback) {
+    public void execute(Handler callback) {
         EventUtil.register(this, callback);
     }
 

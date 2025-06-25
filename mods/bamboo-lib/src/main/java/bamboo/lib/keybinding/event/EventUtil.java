@@ -1,21 +1,15 @@
 package bamboo.lib.keybinding.event;
 
-import java.util.function.Function;
-
-import net.minecraft.client.MinecraftClient;
-
 import bamboo.lib.keybinding.KeyBinding;
 import bamboo.lib.keybinding.KeyMap;
+import bamboo.lib.keybinding.Handler;
 
 public class EventUtil {
-    public static void register(KeyBinding keyBinding, Function<MinecraftClient, Boolean> callback) {
-        int key = keyBinding.key;
-        Handler handler = new Handler(keyBinding, callback);
-
-        if (KeyMap.isMouseKey(key)) {
-            MouseEvent.register(key, handler);
+    public static void register(KeyBinding keyBinding, Handler handler) {
+        if (KeyMap.isMouseKey(keyBinding.key)) {
+            MouseEvent.register(keyBinding, handler);
         } else {
-            KeyboardEvent.register(key, handler);
+            KeyboardEvent.register(keyBinding, handler);
         }
     }
 }

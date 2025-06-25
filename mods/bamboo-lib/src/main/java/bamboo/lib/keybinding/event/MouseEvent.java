@@ -1,25 +1,29 @@
 package bamboo.lib.keybinding.event;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import net.minecraft.client.MinecraftClient;
 
+import bamboo.lib.keybinding.KeyBinding;
+import bamboo.lib.keybinding.Handler;
 import bamboo.lib.keybinding.KeyMap;
 
 public class MouseEvent {
-    private static final HashMap<Integer, ArrayList<Handler>> clickHandlers = new HashMap<>();
-    private static final ArrayList<Handler> scrollHandlers = new ArrayList<>();
-    private static final ArrayList<Handler> moveHandlers = new ArrayList<>();
+    private static final HashMap<Integer, LinkedHashMap<KeyBinding, Handler>> clickHandlers = new HashMap<>();
+    private static final LinkedHashMap<KeyBinding, Handler> scrollHandlers = new LinkedHashMap<>();
+    private static final LinkedHashMap<KeyBinding, Handler> moveHandlers = new LinkedHashMap<>();
 
-    public static void register(int key, Handler handler) {
+    public static void register(KeyBinding keyBinding, Handler handler) {
+        int key = keyBinding.key;
+
         if (key == KeyMap.SCROLL) {
-            scrollHandlers.add(handler);
+            scrollHandlers.putIfAbsent(keyBinding, handler);
         } else if (key == KeyMap.MOVE) {
-            moveHandlers.add(handler);
+            moveHandlers.putIfAbsent(keyBinding, handler);
         } else {
-            clickHandlers.putIfAbsent(key, new ArrayList<>());
-            clickHandlers.get(key).add(handler);
+            clickHandlers.putIfAbsent(key, new LinkedHashMap<>());
+            clickHandlers.get(key).putIfAbsent(keyBinding, handler);
         }
     }
 
