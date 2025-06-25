@@ -1,46 +1,47 @@
 package bamboo.lib.keybinding;
 
-import java.util.List;
+import java.util.Set;
+import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.stream.Stream;
 import java.util.stream.Collectors;
 
 import org.lwjgl.glfw.GLFW;
 
-import bamboo.lib.keybinding.event.EventUtil;
-
-public class KeyBinding {
+public class Key {
     public int key;
-    public List<Integer> modifier;
+    public Set<Integer> modifier;
     public int action;
 
-    public KeyBinding(int key, List<Integer> modifier, int action) {
+    public Key(int key, Set<Integer> modifier, int action) {
         this.key = key;
         this.modifier = modifier;
         this.action = action;
     }
 
-    public KeyBinding(int key, List<Integer> modifier) {
+    public Key(int key, Set<Integer> modifier) {
         this(key, modifier, GLFW.GLFW_PRESS);
     }
 
-    public KeyBinding triggerOnPress() {
+    public Key triggerOnPress() {
         this.action = GLFW.GLFW_PRESS;
         return this;
     }
 
-    public KeyBinding triggerOnRelease() {
+    public Key triggerOnRelease() {
         this.action = GLFW.GLFW_RELEASE;
         return this;
     }
 
     public void execute(Handler callback) {
-        EventUtil.register(this, callback);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof KeyBinding other) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj instanceof Key other) {
             return key == other.key && modifier.equals(other.modifier) && action == other.action;
         }
         return false;
@@ -58,14 +59,14 @@ public class KeyBinding {
                 .collect(Collectors.joining("+"));
     }
 
-    public static KeyBinding bind(String key) {
-        List<Integer> keyCodes = Stream.of(key.split("\\+"))
+    public static Key parse(String key) {
+        LinkedHashSet<Integer> keyCodes = Stream.of(key.split("\\+"))
                 .map(KeyMap::toCode)
                 .filter(code -> code != KeyMap.UNKNOWN)
-                .toList();
+                .collect(Collectors.toCollection(LinkedHashSet::new));
 
         if (keyCodes.size() > 0) {
-            return new KeyBinding(keyCodes.getLast(), keyCodes.subList(0, keyCodes.size() - 1));
+            return new Key(keyCodes.removeLast(), keyCodes);
         }
         return null;
     }
