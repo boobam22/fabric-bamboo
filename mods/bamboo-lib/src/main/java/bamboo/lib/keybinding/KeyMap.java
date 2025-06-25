@@ -60,16 +60,16 @@ public class KeyMap {
         register("y", GLFW.GLFW_KEY_Y);
         register("z", GLFW.GLFW_KEY_Z);
 
-        register("control", GLFW.GLFW_KEY_LEFT_CONTROL);
+        register("ctrl", GLFW.GLFW_KEY_LEFT_CONTROL);
         register("shift", GLFW.GLFW_KEY_LEFT_SHIFT);
         register("alt", GLFW.GLFW_KEY_LEFT_ALT);
         register("super", GLFW.GLFW_KEY_LEFT_SUPER);
         register("space", GLFW.GLFW_KEY_SPACE);
 
-        register("up_arrow", GLFW.GLFW_KEY_UP);
-        register("down_arrow", GLFW.GLFW_KEY_DOWN);
-        register("left_arrow", GLFW.GLFW_KEY_LEFT);
-        register("right_arrow", GLFW.GLFW_KEY_RIGHT);
+        register("←", GLFW.GLFW_KEY_LEFT);
+        register("↑", GLFW.GLFW_KEY_UP);
+        register("↓", GLFW.GLFW_KEY_DOWN);
+        register("→", GLFW.GLFW_KEY_RIGHT);
 
         register("f1", GLFW.GLFW_KEY_F1);
         register("f2", GLFW.GLFW_KEY_F2);
@@ -84,8 +84,8 @@ public class KeyMap {
         register("f11", GLFW.GLFW_KEY_F11);
         register("f12", GLFW.GLFW_KEY_F12);
 
-        register("left_button", GLFW.GLFW_MOUSE_BUTTON_LEFT);
-        register("middle_button", GLFW.GLFW_MOUSE_BUTTON_MIDDLE);
-        register("right_button", GLFW.GLFW_MOUSE_BUTTON_RIGHT);
+        register("left", GLFW.GLFW_MOUSE_BUTTON_LEFT);
+        register("middle", GLFW.GLFW_MOUSE_BUTTON_MIDDLE);
+        register("right", GLFW.GLFW_MOUSE_BUTTON_RIGHT);
     }
 }
