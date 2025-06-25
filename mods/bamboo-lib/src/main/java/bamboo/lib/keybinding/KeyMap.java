@@ -1,6 +1,5 @@
 package bamboo.lib.keybinding;
 
-import java.util.HashSet;
 import java.util.HashMap;
 
 import org.lwjgl.glfw.GLFW;
@@ -8,7 +7,6 @@ import org.lwjgl.glfw.GLFW;
 public class KeyMap {
     private static final HashMap<String, Integer> name2code = new HashMap<>();
     private static final HashMap<Integer, String> code2name = new HashMap<>();
-    private static final HashSet<Integer> mouseKeys = new HashSet<>();
 
     public static final int UNKNOWN = -1;
     public static final int SCROLL = -2;
@@ -22,21 +20,9 @@ public class KeyMap {
         return code2name.getOrDefault(code, code2name.get(UNKNOWN));
     }
 
-    public static boolean isMouseKey(int code) {
-        return mouseKeys.contains(code);
-    }
-
-    private static void register(String name, int code, boolean isMouse) {
+    private static void register(String name, int code) {
         name2code.put(name.toLowerCase(), code);
         code2name.put(code, name.toLowerCase());
-
-        if (isMouse) {
-            mouseKeys.add(code);
-        }
-    }
-
-    private static void register(String name, int code) {
-        register(name, code, false);
     }
 
     static {
@@ -102,12 +88,12 @@ public class KeyMap {
         register("f11", GLFW.GLFW_KEY_F11);
         register("f12", GLFW.GLFW_KEY_F12);
 
-        register("left", GLFW.GLFW_MOUSE_BUTTON_LEFT, true);
-        register("middle", GLFW.GLFW_MOUSE_BUTTON_MIDDLE, true);
-        register("right", GLFW.GLFW_MOUSE_BUTTON_RIGHT, true);
+        register("left", GLFW.GLFW_MOUSE_BUTTON_LEFT);
+        register("middle", GLFW.GLFW_MOUSE_BUTTON_MIDDLE);
+        register("right", GLFW.GLFW_MOUSE_BUTTON_RIGHT);
 
         register("unknown", UNKNOWN);
-        register("scroll", SCROLL, true);
-        register("move", MOVE, true);
+        register("scroll", SCROLL);
+        register("move", MOVE);
     }
 }
