@@ -52,6 +52,9 @@ public class Key {
 
     @Override
     public int hashCode() {
+        if (key == KeyMap.SCROLL || key == KeyMap.MOVE) {
+            return Objects.hash(key, modifier);
+        }
         return Objects.hash(key, modifier, action);
     }
 
