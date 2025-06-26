@@ -5,7 +5,8 @@
     "mixins": [
         "resource.ResourcePackManagerkMixin",
         "keybinding.KeyboardMixin",
-        "keybinding.MouseMixin"
+        "keybinding.MouseMixin",
+        "lifecycle.MinecraftClientMixin"
     ],
     "injectors": {
         "defaultRequire": 1
