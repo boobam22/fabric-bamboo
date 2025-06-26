@@ -35,7 +35,7 @@ public class MoveAction {
     }
 
     public static void moveOneStackLeaveOne(ScreenHandler handler, List<Slot> slots, Slot focusedSlot) {
-        if (!Util.isChestScreen(handler) || focusedSlot == null || focusedSlot.getStack().getCount() <= 1) {
+        if (!isContainerScreen(handler) || focusedSlot == null || focusedSlot.getStack().getCount() <= 1) {
             return;
         }
 
@@ -50,7 +50,7 @@ public class MoveAction {
     }
 
     public static void moveStacks(ScreenHandler handler, List<Slot> slots, Slot focusedSlot) {
-        if (!Util.isChestScreen(handler) || focusedSlot == null || !focusedSlot.hasStack()) {
+        if (!isContainerScreen(handler) || focusedSlot == null || !focusedSlot.hasStack()) {
             return;
         }
 
@@ -63,7 +63,7 @@ public class MoveAction {
     }
 
     public static void moveStacksLeaveOne(ScreenHandler handler, List<Slot> slots, Slot focusedSlot) {
-        if (!Util.isChestScreen(handler) || focusedSlot == null || !focusedSlot.hasStack()) {
+        if (!isContainerScreen(handler) || focusedSlot == null || !focusedSlot.hasStack()) {
             return;
         }
 
@@ -76,7 +76,7 @@ public class MoveAction {
     }
 
     public static void moveAll(ScreenHandler handler, List<Slot> slots, Slot focusedSlot) {
-        if (!Util.isChestScreen(handler) || focusedSlot == null) {
+        if (!isContainerScreen(handler) || focusedSlot == null) {
             return;
         }
 
@@ -135,6 +135,12 @@ public class MoveAction {
         }
     }
 
+    private static boolean isContainerScreen(ScreenHandler handler) {
+        return Util.isChestScreen(handler)
+                || handler instanceof Generic3x3ContainerScreenHandler
+                || handler instanceof HopperScreenHandler;
+    }
+
     private static List<Slot> findInventory(ScreenHandler handler, List<Slot> slots, Slot focusedSlot, boolean self) {
         if (focusedSlot == null) {
         } else if (focusedSlot.inventory instanceof PlayerInventory ^ self) {
@@ -144,9 +150,7 @@ public class MoveAction {
                 } else {
                     return slots.subList(9, 36);
                 }
-            } else if (Util.isChestScreen(handler)
-                    || handler instanceof Generic3x3ContainerScreenHandler
-                    || handler instanceof HopperScreenHandler) {
+            } else if (isContainerScreen(handler)) {
                 return slots.subList(0, slots.size() - 36);
             } else if (handler instanceof CrafterScreenHandler) {
                 return slots.subList(0, 9);
