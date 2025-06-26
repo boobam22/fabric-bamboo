@@ -15,12 +15,16 @@ public class ConfigManager {
     private static final Properties properties = new Properties();
     private static final Set<ConfigEntry<?>> registry = new TreeSet<>();
 
+    private static <T> void setValue(ConfigEntry<T> entry) {
+        String key = entry.getKey();
+        if (properties.containsKey(key)) {
+            entry.set(entry.getConstructor().apply(properties.getProperty(key)));
+        }
+    }
+
     public static <T> ConfigEntry<T> addEntry(String key, T value, Function<String, T> constructor) {
         ConfigEntry<T> entry = new ConfigEntry<>(key, value, constructor);
-        if (properties.containsKey(key)) {
-            entry.set(constructor.apply(properties.getProperty(key)));
-        }
-
+        setValue(entry);
         registry.add(entry);
         return entry;
     }
@@ -47,6 +51,8 @@ public class ConfigManager {
             properties.load(Files.newInputStream(path));
         } catch (IOException e) {
         }
+
+        registry.forEach(entry -> setValue(entry));
     }
 
     public static void saveConfig() {
