@@ -5,6 +5,9 @@ import java.util.List;
 import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.GenericContainerScreenHandler;
+import net.minecraft.screen.ShulkerBoxScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.entity.player.PlayerInventory;
@@ -23,6 +26,10 @@ public class Util {
         }
 
         return List.of();
+    }
+
+    public static boolean isChestScreen(ScreenHandler handler) {
+        return handler instanceof GenericContainerScreenHandler || handler instanceof ShulkerBoxScreenHandler;
     }
 
     private static void clickSlot(Slot slot, int button, SlotActionType type) {

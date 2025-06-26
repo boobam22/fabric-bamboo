@@ -5,10 +5,8 @@ import java.util.ArrayList;
 
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.PlayerScreenHandler;
-import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.Generic3x3ContainerScreenHandler;
 import net.minecraft.screen.HopperScreenHandler;
-import net.minecraft.screen.ShulkerBoxScreenHandler;
 import net.minecraft.screen.CrafterScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.CraftingResultSlot;
@@ -37,7 +35,7 @@ public class MoveAction {
     }
 
     public static void moveOneStackLeaveOne(ScreenHandler handler, List<Slot> slots, Slot focusedSlot) {
-        if (!isChestScreen(handler) || focusedSlot == null || focusedSlot.getStack().getCount() <= 1) {
+        if (!Util.isChestScreen(handler) || focusedSlot == null || focusedSlot.getStack().getCount() <= 1) {
             return;
         }
 
@@ -52,7 +50,7 @@ public class MoveAction {
     }
 
     public static void moveStacks(ScreenHandler handler, List<Slot> slots, Slot focusedSlot) {
-        if (!isChestScreen(handler) || focusedSlot == null || !focusedSlot.hasStack()) {
+        if (!Util.isChestScreen(handler) || focusedSlot == null || !focusedSlot.hasStack()) {
             return;
         }
 
@@ -65,7 +63,7 @@ public class MoveAction {
     }
 
     public static void moveStacksLeaveOne(ScreenHandler handler, List<Slot> slots, Slot focusedSlot) {
-        if (!isChestScreen(handler) || focusedSlot == null || !focusedSlot.hasStack()) {
+        if (!Util.isChestScreen(handler) || focusedSlot == null || !focusedSlot.hasStack()) {
             return;
         }
 
@@ -78,7 +76,7 @@ public class MoveAction {
     }
 
     public static void moveAll(ScreenHandler handler, List<Slot> slots, Slot focusedSlot) {
-        if (!isChestScreen(handler) || focusedSlot == null) {
+        if (!Util.isChestScreen(handler) || focusedSlot == null) {
             return;
         }
 
@@ -137,10 +135,6 @@ public class MoveAction {
         }
     }
 
-    private static boolean isChestScreen(ScreenHandler handler) {
-        return handler instanceof GenericContainerScreenHandler || handler instanceof ShulkerBoxScreenHandler;
-    }
-
     private static List<Slot> findInventory(ScreenHandler handler, List<Slot> slots, Slot focusedSlot, boolean self) {
         if (focusedSlot == null) {
         } else if (focusedSlot.inventory instanceof PlayerInventory ^ self) {
@@ -150,7 +144,7 @@ public class MoveAction {
                 } else {
                     return slots.subList(9, 36);
                 }
-            } else if (isChestScreen(handler)
+            } else if (Util.isChestScreen(handler)
                     || handler instanceof Generic3x3ContainerScreenHandler
                     || handler instanceof HopperScreenHandler) {
                 return slots.subList(0, slots.size() - 36);
