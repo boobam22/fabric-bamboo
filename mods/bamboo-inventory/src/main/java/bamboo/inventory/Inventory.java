@@ -37,7 +37,7 @@ public class Inventory {
         Key.parse("r").execute((InventoryHandler) MergeAction::merge);
     }
 
-    private static void info(ScreenHandler handler, List<Slot> slots, Slot focusedSlot) {
+    public static void info(ScreenHandler handler, List<Slot> slots, Slot focusedSlot) {
         System.out.println(handler.getClass());
         if (focusedSlot != null) {
             System.out.println(focusedSlot.getClass() + "  " + focusedSlot.id);
