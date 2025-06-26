@@ -1,79 +1,50 @@
 package bamboo.inventory.action;
 
+import java.util.List;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.Comparator;
 
 import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.GenericContainerScreenHandler;
-import net.minecraft.screen.ShulkerBoxScreenHandler;
 import net.minecraft.screen.slot.Slot;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.registry.Registries;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.registry.tag.ItemTags;
 
-public interface MergeActionInterface extends MoveActionInterface {
-    private int findPlayerInventoryIndex() {
-        for (Slot slot : getHandler().slots) {
-            if (slot.inventory instanceof PlayerInventory && slot.getClass() == Slot.class) {
-                return slot.id;
-            }
-        }
-        return -1;
-    }
-
-    default void merge() {
-        ScreenHandler handler = getHandler();
-
-        int start = findPlayerInventoryIndex();
-        if (start == -1) {
-            return;
+public class MergeAction {
+    public static void merge(ScreenHandler handler, List<Slot> slots, Slot focusedSlot) {
+        List<Slot> inventory = Util.findPlayerInventory(slots);
+        if (inventory.size() > 0) {
+            mergeInventory(handler, slots, inventory);
         }
 
-        if (handler.slots.size() >= start + 27) {
-            merge(start, start + 27);
-        }
-
-        if (handler instanceof GenericContainerScreenHandler || handler instanceof ShulkerBoxScreenHandler) {
-            merge(0, start);
+        if (Util.isChestScreen(handler)) {
+            mergeInventory(handler, slots, slots.subList(0, slots.size() - 36));
         }
     }
 
-    private void merge(int start, int end) {
-        ScreenHandler handler = getHandler();
-        DefaultedList<Slot> slots = handler.slots;
-        if (!handler.getCursorStack().isEmpty()) {
-            return;
-        }
-
-        ArrayList<ArrayList<Slot>> groupedSlot = new ArrayList<>();
-        HashMap<Integer, ItemStack> input = new HashMap<>();
-        HashMap<Integer, ItemStack> output = new HashMap<>();
-        TreeMap<ItemStack, ArrayList<Slot>> stackMap = new TreeMap<>(Comparator
+    private static void mergeInventory(ScreenHandler handler, List<Slot> slots, List<Slot> inventory) {
+        List<List<Slot>> groupedSlot = new ArrayList<>();
+        TreeMap<Integer, ItemStack> input = new TreeMap<>();
+        TreeMap<Integer, ItemStack> output = new TreeMap<>();
+        TreeMap<ItemStack, List<Slot>> stackMap = new TreeMap<>(Comparator
                 .comparing((ItemStack stack) -> stack.getItem().hashCode())
                 .thenComparing((ItemStack stack) -> stack.getComponents().hashCode()));
 
-        for (int i = start; i < end; i++) {
-            Slot slot = slots.get(i);
+        for (Slot slot : inventory) {
             ItemStack stack = slot.getStack();
             if (slot.hasStack()) {
                 if (!stackMap.containsKey(stack)) {
-                    ArrayList<Slot> group = new ArrayList<>();
+                    List<Slot> group = new ArrayList<>();
                     groupedSlot.add(group);
                     stackMap.put(stack, group);
                 }
                 stackMap.get(stack).add(slot);
-                input.put(i, stack.copy());
+                input.put(slot.id, stack.copy());
             }
         }
 
-        int offset = start;
-        for (ArrayList<Slot> group : groupedSlot) {
+        int offset = -1;
+        for (List<Slot> group : groupedSlot) {
             Slot firstSlot = group.getFirst();
             offset = Math.max(offset, firstSlot.id);
             ItemStack stack = firstSlot.getStack();
@@ -90,7 +61,7 @@ public interface MergeActionInterface extends MoveActionInterface {
             }
         }
 
-        ArrayList<Integer> points = new ArrayList<>(input.keySet());
+        List<Integer> points = new ArrayList<>(input.keySet());
         TreeMap<ItemStack, TreeMap<Integer, Integer>> state = new TreeMap<>(stackMap.comparator());
         for (int id : output.keySet()) {
             ItemStack stack = output.get(id);
@@ -107,7 +78,7 @@ public interface MergeActionInterface extends MoveActionInterface {
             }
         }
 
-        ArrayList<Integer> path = new ArrayList<>();
+        List<Integer> path = new ArrayList<>();
         while (points.size() > 0) {
             int id = points.removeFirst();
             ItemStack cursorStack = input.get(id).copy();
@@ -139,17 +110,35 @@ public interface MergeActionInterface extends MoveActionInterface {
             }
         }
 
+        if (!handler.getCursorStack().isEmpty()) {
+            Slot cursor = null;
+            ItemStack stack = handler.getCursorStack();
+
+            for (Slot slot : slots) {
+                if (!slot.hasStack() && slot.canInsert(stack) && !path.contains(slot.id)) {
+                    cursor = slot;
+                    break;
+                }
+            }
+
+            if (cursor == null) {
+                return;
+            } else {
+                Util.leftClick(cursor);
+                path.add(cursor.id);
+            }
+        }
+
         for (int id : path) {
             Slot slot = slots.get(id);
             ItemStack stack = slot.getStack();
             ItemStack cursorStack = handler.getCursorStack();
 
-            TagKey<Item> bundleKey = TagKey.of(Registries.ITEM.getKey(), Identifier.ofVanilla("bundles"));
-            if (stack.isIn(bundleKey) && !cursorStack.isEmpty()
-                    || cursorStack.isIn(bundleKey) && !stack.isEmpty()) {
-                rightClick(slot);
+            if (stack.isIn(ItemTags.BUNDLES) && !cursorStack.isEmpty()
+                    || cursorStack.isIn(ItemTags.BUNDLES) && !stack.isEmpty()) {
+                Util.rightClick(slot);
             } else {
-                leftClick(slot);
+                Util.leftClick(slot);
             }
         }
     }

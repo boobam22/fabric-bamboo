@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.client.Keyboard;
 import net.minecraft.client.MinecraftClient;
 
-import bamboo.lib.keybinding.event.KeyboardEvent;
+import bamboo.lib.keybinding.KeyEvent;
 
 @Mixin(Keyboard.class)
 public abstract class KeyboardMixin {
@@ -18,8 +18,7 @@ public abstract class KeyboardMixin {
 
     @Inject(method = "onKey", at = @At("HEAD"), cancellable = true)
     private void onKey(long window, int key, int scancode, int action, int modifiers, CallbackInfo ci) {
-        if (window == client.getWindow().getHandle()
-                && KeyboardEvent.handlePress(client, window, key, action)) {
+        if (window == client.getWindow().getHandle() && KeyEvent.handlePress(client, key, action)) {
             ci.cancel();
         }
     }
