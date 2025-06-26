@@ -22,14 +22,16 @@ public class KeyEvent {
             return false;
         }
 
+        if (action == GLFW.GLFW_RELEASE) {
+            currentKey.modifier.remove(key);
+        }
+
         currentKey.key = key;
         currentKey.action = action;
         boolean cancel = handleCurentKey(client);
 
         if (action == GLFW.GLFW_PRESS) {
             currentKey.modifier.add(key);
-        } else {
-            currentKey.modifier.remove(key);
         }
         return cancel;
     }
