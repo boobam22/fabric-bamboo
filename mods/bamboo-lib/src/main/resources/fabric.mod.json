@@ -4,6 +4,11 @@
     "version": "${version}",
     "name": "Bamboo Lib",
     "description": "",
+    "entrypoints": {
+        "main": [
+            "bamboo.lib.Main"
+        ]
+    },
     "mixins": [
         "bamboo-lib.mixins.json"
     ],

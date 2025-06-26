@@ -3,7 +3,9 @@
     "package": "bamboo.lib.mixin",
     "compatibilityLevel": "JAVA_21",
     "mixins": [
-        "resource.ResourcePackManagerkMixin"
+        "resource.ResourcePackManagerkMixin",
+        "keybinding.KeyboardMixin",
+        "keybinding.MouseMixin"
     ],
     "injectors": {
         "defaultRequire": 1
