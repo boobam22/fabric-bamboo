@@ -1,7 +1,7 @@
 package bamboo.lib.config;
 
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.Properties;
 import java.util.function.Function;
 import java.nio.file.Path;
@@ -13,7 +13,7 @@ import net.fabricmc.loader.api.FabricLoader;
 public class ConfigManager {
     private static final String fileName = "bamboo.properties";
     private static final Properties properties = new Properties();
-    private static final Set<ConfigEntry<?>> registry = new TreeSet<>();
+    private static final Map<String, ConfigEntry<?>> registry = new TreeMap<>();
 
     private static <T> void setValue(ConfigEntry<T> entry) {
         String key = entry.getKey();
@@ -25,7 +25,7 @@ public class ConfigManager {
     public static <T> ConfigEntry<T> addEntry(String key, T value, Function<String, T> constructor) {
         ConfigEntry<T> entry = new ConfigEntry<>(key, value, constructor);
         setValue(entry);
-        registry.add(entry);
+        registry.putIfAbsent(key, entry);
         return entry;
     }
 
@@ -52,12 +52,12 @@ public class ConfigManager {
         } catch (IOException e) {
         }
 
-        registry.forEach(entry -> setValue(entry));
+        registry.values().forEach(entry -> setValue(entry));
     }
 
     public static void saveConfig() {
         Properties props = new Properties();
-        registry.forEach(entry -> {
+        registry.values().forEach(entry -> {
             props.setProperty(entry.getKey(), entry.getValue().toString());
         });
 
