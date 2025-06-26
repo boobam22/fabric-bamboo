@@ -8,6 +8,7 @@ import net.minecraft.screen.slot.Slot;
 import bamboo.lib.keybinding.Key;
 import bamboo.lib.keybinding.Handler;
 import bamboo.inventory.action.MoveAction;
+import bamboo.inventory.action.MergeAction;
 
 public class Inventory {
     public static void initKeyBinding() {
@@ -32,6 +33,8 @@ public class Inventory {
         Key.parse("alt+right").triggerOnRelease().execute(cancel);
 
         Key.parse("scroll").execute((InventoryHandler) MoveAction::craftOne);
+
+        Key.parse("r").execute((InventoryHandler) MergeAction::merge);
     }
 
     private static void info(ScreenHandler handler, List<Slot> slots, Slot focusedSlot) {
