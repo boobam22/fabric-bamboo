@@ -3,6 +3,7 @@ package bamboo.camera;
 import net.fabricmc.api.ClientModInitializer;
 
 import bamboo.lib.keybinding.Key;
+import bamboo.lib.lifecycle.MinecraftClientLifecycle;
 
 public class ClientMain implements ClientModInitializer {
     public void onInitializeClient() {
@@ -13,5 +14,8 @@ public class ClientMain implements ClientModInitializer {
             }
             return false;
         });
+
+        Camera.init();
+        MinecraftClientLifecycle.onJoinWorld(Camera::onJoinWorld);
     }
 }

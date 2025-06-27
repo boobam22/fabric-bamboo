@@ -17,13 +17,19 @@ public class Camera {
             client.chunkCullingEnabled = originChunkCullingEnabled;
         } else {
             originCameraEntity = client.getCameraEntity();
-            originChunkCullingEnabled = client.chunkCullingEnabled;
-
             cameraEntity = new CameraEntity(client.player.clientWorld);
             cameraEntity.refreshPositionAndAngles(originCameraEntity);
             client.setCameraEntity(cameraEntity);
             client.chunkCullingEnabled = false;
         }
+    }
+
+    public static void init() {
+        originChunkCullingEnabled = MinecraftClient.getInstance().chunkCullingEnabled;
+    }
+
+    public static void onJoinWorld() {
+        MinecraftClient.getInstance().chunkCullingEnabled = originChunkCullingEnabled;
     }
 
     public static boolean isActive() {
