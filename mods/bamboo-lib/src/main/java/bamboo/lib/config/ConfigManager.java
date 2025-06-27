@@ -63,7 +63,7 @@ public class ConfigManager {
 
         Path path = FabricLoader.getInstance().getConfigDir().resolve(fileName);
         try {
-            properties.store(Files.newOutputStream(path), fileName);
+            props.store(Files.newOutputStream(path), fileName);
         } catch (IOException e) {
         }
     }
