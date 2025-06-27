@@ -4,6 +4,11 @@
     "version": "${version}",
     "name": "Bamboo Inventory",
     "description": "",
+    "entrypoints": {
+        "client": [
+            "bamboo.inventory.ClientMain"
+        ]
+    },
     "mixins": [
         "bamboo-inventory.mixins.json"
     ],

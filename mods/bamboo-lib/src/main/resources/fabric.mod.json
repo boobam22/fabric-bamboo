@@ -1,16 +1,16 @@
 {
     "schemaVersion": 1,
-    "id": "bamboo-camera",
+    "id": "bamboo-lib",
     "version": "${version}",
-    "name": "Bamboo Camera",
+    "name": "Bamboo Lib",
     "description": "",
     "entrypoints": {
-        "client": [
-            "bamboo.camera.ClientMain"
+        "main": [
+            "bamboo.lib.Main"
         ]
     },
     "mixins": [
-        "bamboo-camera.mixins.json"
+        "bamboo-lib.mixins.json"
     ],
     "depends": {
         "fabricloader": ">=${loader_version}",

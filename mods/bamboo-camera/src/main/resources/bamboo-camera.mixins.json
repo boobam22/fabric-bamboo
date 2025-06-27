@@ -4,13 +4,11 @@
     "compatibilityLevel": "JAVA_21",
     "mixins": [],
     "client": [
-        "KeyboardMixin",
         "WorldRendererMixin",
         "GameRendererMixin",
         "InGameHudMixin",
         "ClientPlayerEntityMixin",
-        "EntityMixin",
-        "MinecraftClientMixin"
+        "EntityMixin"
     ],
     "injectors": {
         "defaultRequire": 1
