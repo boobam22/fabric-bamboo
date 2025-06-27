@@ -4,6 +4,11 @@
     "version": "${version}",
     "name": "Bamboo Camera",
     "description": "",
+    "entrypoints": {
+        "client": [
+            "bamboo.camera.ClientMain"
+        ]
+    },
     "mixins": [
         "bamboo-camera.mixins.json"
     ],
