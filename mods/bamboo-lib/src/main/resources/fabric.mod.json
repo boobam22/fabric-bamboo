@@ -6,7 +6,7 @@
     "description": "",
     "entrypoints": {
         "main": [
-            "bamboo.lib.Main"
+            "bamboo.lib.Lib"
         ]
     },
     "mixins": [

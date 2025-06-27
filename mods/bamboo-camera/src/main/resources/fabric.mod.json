@@ -6,7 +6,7 @@
     "description": "",
     "entrypoints": {
         "client": [
-            "bamboo.camera.ClientMain"
+            "bamboo.camera.Camera"
         ]
     },
     "mixins": [
