@@ -4,6 +4,11 @@
     "version": "${version}",
     "name": "Bamboo Pickaxe",
     "description": "",
+    "entrypoints": {
+        "client": [
+            "bamboo.pickaxe.Pickaxe"
+        ]
+    },
     "mixins": [
         "bamboo-pickaxe.mixins.json"
     ],

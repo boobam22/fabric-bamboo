@@ -11,8 +11,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.world.GameMode;
 
-import bamboo.pickaxe.Pickaxe;
-import bamboo.pickaxe.BreakCooldown;
+import bamboo.pickaxe.config.Config;
+import bamboo.pickaxe.config.BreakCooldown;
 
 @Mixin(ClientPlayerInteractionManager.class)
 public abstract class ClientPlayerInteractionManagerMixin {
@@ -23,7 +23,7 @@ public abstract class ClientPlayerInteractionManagerMixin {
 
     @Inject(method = "breakBlock", at = @At("RETURN"))
     private void breakBlock(CallbackInfoReturnable<Boolean> cir) {
-        if (this.gameMode == GameMode.SURVIVAL && Pickaxe.breakCooldown == BreakCooldown.ALWAYS
+        if (this.gameMode == GameMode.SURVIVAL && Config.breakCooldown.getValue() == BreakCooldown.ALWAYS
                 && cir.getReturnValue()) {
             this.blockBreakingCooldown = 5;
         }
@@ -31,7 +31,7 @@ public abstract class ClientPlayerInteractionManagerMixin {
 
     @ModifyConstant(method = "updateBlockBreakingProgress", constant = @Constant(intValue = 5))
     private int updateBlockBreakingProgress(int cooldown) {
-        if (this.gameMode == GameMode.SURVIVAL && Pickaxe.breakCooldown == BreakCooldown.NEVER) {
+        if (this.gameMode == GameMode.SURVIVAL && Config.breakCooldown.getValue() == BreakCooldown.NEVER) {
             return 0;
         }
         return cooldown;

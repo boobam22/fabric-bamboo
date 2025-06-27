@@ -1,4 +1,4 @@
-package bamboo.pickaxe;
+package bamboo.pickaxe.config;
 
 public enum BreakCooldown {
     DEFAULT,
