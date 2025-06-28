@@ -3,7 +3,8 @@
     "package": "bamboo.lib.mixin",
     "compatibilityLevel": "JAVA_21",
     "mixins": [
-        "resource.ResourcePackManagerkMixin"
+        "resource.ResourcePackManagerkMixin",
+        "command.CommandManagerMixin"
     ],
     "client": [
         "keybinding.KeyboardMixin",
