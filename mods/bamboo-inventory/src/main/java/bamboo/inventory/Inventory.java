@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.fabricmc.api.ClientModInitializer;
 
+import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 
@@ -15,7 +16,7 @@ import bamboo.inventory.action.MergeAction;
 public class Inventory implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
-        Handler cancel = client -> true;
+        Handler cancel = client -> client.currentScreen instanceof HandledScreen;
 
         Key.parse("shift+left").execute((InventoryHandler) MoveAction::moveOneStack);
         Key.parse("shift+left").triggerOnRelease().execute(cancel);
