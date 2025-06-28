@@ -1,14 +1,36 @@
 package bamboo.camera;
 
+import net.fabricmc.api.ClientModInitializer;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.PlayerInput;
 import net.minecraft.util.math.Vec3d;
 
-public class Camera {
+import bamboo.lib.keybinding.Key;
+import bamboo.lib.lifecycle.MinecraftClientLifecycle;
+
+public class Camera implements ClientModInitializer {
     private static boolean originChunkCullingEnabled;
     private static Entity originCameraEntity;
     private static CameraEntity cameraEntity;
+
+    @Override
+    public void onInitializeClient() {
+        Key.parse("v").execute(client -> {
+            if (client.currentScreen == null) {
+                Camera.toggle();
+                return true;
+            }
+            return false;
+        });
+
+        MinecraftClient client = MinecraftClient.getInstance();
+        originChunkCullingEnabled = client.chunkCullingEnabled;
+        MinecraftClientLifecycle.onExitWorld(() -> {
+            client.chunkCullingEnabled = originChunkCullingEnabled;
+        });
+    }
 
     public static void toggle() {
         MinecraftClient client = MinecraftClient.getInstance();
@@ -22,14 +44,6 @@ public class Camera {
             client.setCameraEntity(cameraEntity);
             client.chunkCullingEnabled = false;
         }
-    }
-
-    public static void init() {
-        originChunkCullingEnabled = MinecraftClient.getInstance().chunkCullingEnabled;
-    }
-
-    public static void onJoinWorld() {
-        MinecraftClient.getInstance().chunkCullingEnabled = originChunkCullingEnabled;
     }
 
     public static boolean isActive() {

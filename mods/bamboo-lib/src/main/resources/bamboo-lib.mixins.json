@@ -3,7 +3,9 @@
     "package": "bamboo.lib.mixin",
     "compatibilityLevel": "JAVA_21",
     "mixins": [
-        "resource.ResourcePackManagerkMixin",
+        "resource.ResourcePackManagerkMixin"
+    ],
+    "client": [
         "keybinding.KeyboardMixin",
         "keybinding.MouseMixin",
         "lifecycle.MinecraftClientMixin"

@@ -56,9 +56,8 @@ public class ConfigManager {
     }
 
     public static void saveConfig() {
-        Properties props = new Properties();
         registry.values().forEach(entry -> {
-            props.setProperty(entry.getKey(), entry.getValue().toString());
+            properties.setProperty(entry.getKey(), entry.getValue().toString());
         });
 
         Path path = FabricLoader.getInstance().getConfigDir().resolve(fileName);

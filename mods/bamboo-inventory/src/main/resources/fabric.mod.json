@@ -6,7 +6,7 @@
     "description": "",
     "entrypoints": {
         "client": [
-            "bamboo.inventory.ClientMain"
+            "bamboo.inventory.Inventory"
         ]
     },
     "mixins": [

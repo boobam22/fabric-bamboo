@@ -2,6 +2,8 @@ package bamboo.inventory;
 
 import java.util.List;
 
+import net.fabricmc.api.ClientModInitializer;
+
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 
@@ -10,8 +12,9 @@ import bamboo.lib.keybinding.Handler;
 import bamboo.inventory.action.MoveAction;
 import bamboo.inventory.action.MergeAction;
 
-public class Inventory {
-    public static void initKeyBinding() {
+public class Inventory implements ClientModInitializer {
+    @Override
+    public void onInitializeClient() {
         Handler cancel = client -> true;
 
         Key.parse("shift+left").execute((InventoryHandler) MoveAction::moveOneStack);

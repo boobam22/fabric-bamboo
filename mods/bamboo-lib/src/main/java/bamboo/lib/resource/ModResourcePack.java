@@ -2,8 +2,8 @@ package bamboo.lib.resource;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Set;
-import java.util.HashSet;
 import java.util.Optional;
 import java.nio.file.Path;
 import java.nio.file.Files;
@@ -20,32 +20,28 @@ import net.minecraft.util.Identifier;
 
 public class ModResourcePack extends AbstractFileResourcePack {
     private final Map<String, Path> rootPaths;
-    private final Map<ResourceType, Set<String>> namespaces;
+    private final Map<ResourceType, Map<String, Path>> namespaces;
 
     ModResourcePack(ResourcePackInfo info) {
         super(info);
-        rootPaths = new HashMap<>();
+        rootPaths = new LinkedHashMap<>();
         namespaces = new HashMap<>(Map.of(
-                ResourceType.CLIENT_RESOURCES, new HashSet<>(),
-                ResourceType.SERVER_DATA, new HashSet<>()));
+                ResourceType.CLIENT_RESOURCES, new HashMap<>(),
+                ResourceType.SERVER_DATA, new HashMap<>()));
 
         FabricLoader.getInstance().getAllMods().forEach(mod -> {
             String id = mod.getMetadata().getId();
 
             if (id.startsWith("bamboo-")) {
                 Path root = mod.getRootPaths().get(0);
+                rootPaths.put(id, root);
 
                 for (ResourceType type : ResourceType.values()) {
-                    Path path = root.resolve(type.getDirectory());
-
-                    if (Files.exists(path.resolve(id))) {
-                        rootPaths.put(id, root);
-                        namespaces.get(type).add(id);
-                    }
-
-                    if (id.equals(info.id()) && Files.exists(path.resolve("minecraft"))) {
-                        rootPaths.put("minecraft", root);
-                        namespaces.get(type).add("minecraft");
+                    for (String namespace : Set.of(id, "minecraft")) {
+                        Path path = root.resolve(type.getDirectory()).resolve(namespace);
+                        if (Files.exists(path)) {
+                            namespaces.get(type).put(namespace, path);
+                        }
                     }
                 }
             }
@@ -65,8 +61,15 @@ public class ModResourcePack extends AbstractFileResourcePack {
     }
 
     private Path toPath(ResourceType type, String namespace, String path) {
-        if (namespaces.get(type).contains(namespace)) {
-            Path target = rootPaths.get(namespace).resolve(type.getDirectory()).resolve(namespace).resolve(path);
+        if (namespace.equals("minecraft")) {
+            for (Path root : rootPaths.values()) {
+                Path target = root.resolve(type.getDirectory()).resolve("minecraft").resolve(path);
+                if (Files.exists(target)) {
+                    return target;
+                }
+            }
+        } else {
+            Path target = namespaces.get(type).get(namespace).resolve(path);
             return Files.exists(target) ? target : null;
         }
         return null;
@@ -94,7 +97,7 @@ public class ModResourcePack extends AbstractFileResourcePack {
 
     @Override
     public Set<String> getNamespaces(ResourceType type) {
-        return namespaces.get(type);
+        return namespaces.get(type).keySet();
     }
 
     @Override
