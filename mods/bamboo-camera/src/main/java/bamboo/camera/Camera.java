@@ -17,13 +17,7 @@ public class Camera implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        Key.parse("v").execute(client -> {
-            if (client.currentScreen == null) {
-                Camera.toggle();
-                return true;
-            }
-            return false;
-        });
+        Key.parse("v").execute(this::toggle);
 
         MinecraftClient client = MinecraftClient.getInstance();
         originChunkCullingEnabled = client.chunkCullingEnabled;
@@ -32,8 +26,11 @@ public class Camera implements ClientModInitializer {
         });
     }
 
-    public static void toggle() {
-        MinecraftClient client = MinecraftClient.getInstance();
+    public boolean toggle(MinecraftClient client) {
+        if (client.currentScreen != null) {
+            return false;
+        }
+
         if (isActive()) {
             client.setCameraEntity(originCameraEntity);
             client.chunkCullingEnabled = originChunkCullingEnabled;
@@ -44,6 +41,7 @@ public class Camera implements ClientModInitializer {
             client.setCameraEntity(cameraEntity);
             client.chunkCullingEnabled = false;
         }
+        return true;
     }
 
     public static boolean isActive() {
