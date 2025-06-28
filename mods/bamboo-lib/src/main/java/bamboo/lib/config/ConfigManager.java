@@ -45,6 +45,10 @@ public class ConfigManager {
         return addEntry(key, value, Double::parseDouble);
     }
 
+    public static <T extends Enum<T>> ConfigEntry<T> addEntry(String key, T value) {
+        return addEntry(key, value, str -> Enum.valueOf(value.getDeclaringClass(), str));
+    }
+
     public static void loadConfig() {
         Path path = FabricLoader.getInstance().getConfigDir().resolve(fileName);
         try {
