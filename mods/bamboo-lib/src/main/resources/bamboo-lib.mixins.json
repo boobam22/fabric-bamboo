@@ -4,7 +4,8 @@
     "compatibilityLevel": "JAVA_21",
     "mixins": [
         "resource.ResourcePackManagerkMixin",
-        "command.CommandManagerMixin"
+        "command.CommandManagerMixin",
+        "command.FunctionCommandMixin"
     ],
     "client": [
         "keybinding.KeyboardMixin",
