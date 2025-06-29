@@ -8,14 +8,14 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 
 import bamboo.lib.keybinding.Key;
-import bamboo.lib.keybinding.Handler;
 import bamboo.inventory.action.MoveAction;
 import bamboo.inventory.action.MergeAction;
 
 public class Inventory implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
-        Handler cancel = client -> true;
+        InventoryHandler cancel = (a, b, c) -> {
+        };
 
         Key.parse("shift+left").execute((InventoryHandler) MoveAction::moveOneStack);
         Key.parse("shift+left").triggerOnRelease().execute(cancel);
@@ -35,7 +35,7 @@ public class Inventory implements ClientModInitializer {
         Key.parse("alt+right").execute((InventoryHandler) MoveAction::dropStacks);
         Key.parse("alt+right").triggerOnRelease().execute(cancel);
 
-        Key.parse("scroll").execute((InventoryHandler) MoveAction::craftOne);
+        Key.parse("ctrl+scroll").execute((InventoryHandler) MoveAction::craftOne);
 
         Key.parse("r").execute((InventoryHandler) MergeAction::merge);
     }

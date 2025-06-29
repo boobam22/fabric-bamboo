@@ -14,8 +14,7 @@ import bamboo.camera.Camera;
 public abstract class EntityMixin {
     @Inject(method = "changeLookDirection", at = @At("HEAD"), cancellable = true)
     private void changeLookDirection(double x, double y, CallbackInfo ci) {
-        Entity self = (Entity) (Object) this;
-        if (Camera.isActive() && self instanceof ClientPlayerEntity) {
+        if (Camera.isActive() && (Object) this instanceof ClientPlayerEntity) {
             Camera.handleMouse(x, y);
             ci.cancel();
         }
