@@ -3,7 +3,8 @@
     "package": "bamboo.pickaxe.mixin",
     "compatibilityLevel": "JAVA_21",
     "mixins": [
-        "LivingEntityMixin"
+        "LivingEntityMixin",
+        "BlocksMixin"
     ],
     "client": [
         "ClientPlayerInteractionManagerMixin"
