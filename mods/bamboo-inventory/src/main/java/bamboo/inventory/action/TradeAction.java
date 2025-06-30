@@ -28,18 +28,17 @@ public class TradeAction {
         return false;
     }
 
-    public static void buyAll(MerchantScreenHandler handler, int idx) {
-        Slot input1 = handler.getSlot(0);
+    public static void buyAll(MerchantScreenHandler handler, Runnable select) {
         Slot output = handler.getSlot(2);
 
         while (true) {
-            int count = input1.getStack().getCount();
-            MoveAction.craftOne(handler, handler.slots, output);
-            if (input1.getStack().getCount() == count) {
-                handler.switchTo(idx);
-                if (input1.getStack().getCount() == count) {
-                    break;
-                }
+            select.run();
+            if (!output.hasStack()) {
+                break;
+            }
+
+            while (output.hasStack()) {
+                MoveAction.craftOne(handler, handler.slots, output);
             }
         }
     }
