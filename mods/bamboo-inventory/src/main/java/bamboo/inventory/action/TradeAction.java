@@ -38,7 +38,7 @@ public class TradeAction {
             }
 
             while (output.hasStack()) {
-                MoveAction.craftOne(handler, handler.slots, output);
+                MoveAction.craftOrBuyOne(handler, handler.slots, output);
             }
         }
     }

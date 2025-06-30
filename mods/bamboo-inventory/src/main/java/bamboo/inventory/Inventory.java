@@ -35,7 +35,7 @@ public class Inventory implements ClientModInitializer {
         Key.parse("alt+right").execute((InventoryHandler) MoveAction::dropStacks);
         Key.parse("alt+right").triggerOnRelease().execute(cancel);
 
-        Key.parse("ctrl+scroll").execute((InventoryHandler) MoveAction::craftOne);
+        Key.parse("ctrl+scroll").execute((InventoryHandler) MoveAction::craftOrBuyOne);
 
         Key.parse("r").execute((InventoryHandler) MergeAction::merge);
     }
