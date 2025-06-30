@@ -18,7 +18,8 @@ public class Util {
     public static List<Slot> findPlayerInventory(List<Slot> slots) {
         int start = slots.stream()
                 .filter(slot -> slot.inventory instanceof PlayerInventory && slot.getClass() == Slot.class)
-                .findFirst().get().id;
+                .map(slot -> slot.id)
+                .findFirst().orElse(slots.size());
         int end = start + 27;
 
         if (slots.size() >= end) {

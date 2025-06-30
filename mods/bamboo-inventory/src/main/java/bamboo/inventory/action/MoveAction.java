@@ -119,7 +119,7 @@ public class MoveAction {
         }
     }
 
-    public static void craftOne(ScreenHandler handler, List<Slot> slots, Slot focusedSlot) {
+    public static void craftOrBuyOne(ScreenHandler handler, List<Slot> slots, Slot focusedSlot) {
         if (!handler.getCursorStack().isEmpty()) {
             return;
         }

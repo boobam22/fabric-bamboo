@@ -3,10 +3,12 @@
     "package": "bamboo.inventory.mixin",
     "compatibilityLevel": "JAVA_21",
     "mixins": [
-        "ScreenHandlerMixin"
+        "ScreenHandlerMixin",
+        "MerchantScreenHandlerAccessor"
     ],
     "client": [
         "HandledScreenAccessor",
+        "MerchantScreenMixin",
         "SearchManagerMixin"
     ],
     "injectors": {
