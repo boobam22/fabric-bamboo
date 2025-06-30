@@ -12,6 +12,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ClickType;
 
 import bamboo.inventory.action.OpenAction;
+import bamboo.inventory.action.TradeAction;
 
 @Mixin(ScreenHandler.class)
 public abstract class ScreenHandlerMixin {
@@ -19,6 +20,9 @@ public abstract class ScreenHandlerMixin {
     private void handleSlotClick(PlayerEntity player, ClickType clickType, Slot slot, ItemStack stack,
             ItemStack cursorStack, CallbackInfoReturnable<Boolean> cir) {
         if (clickType == ClickType.RIGHT && OpenAction.open(player, stack, cursorStack)) {
+            cir.setReturnValue(true);
+        }
+        if (clickType == ClickType.RIGHT && TradeAction.refresh(player, slot)) {
             cir.setReturnValue(true);
         }
     }
