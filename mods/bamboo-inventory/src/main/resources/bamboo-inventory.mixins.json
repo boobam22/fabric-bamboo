@@ -8,6 +8,7 @@
     ],
     "client": [
         "HandledScreenAccessor",
+        "MerchantScreenMixin",
         "SearchManagerMixin"
     ],
     "injectors": {
