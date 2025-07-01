@@ -10,7 +10,7 @@ import java.io.IOException;
 
 import net.fabricmc.loader.api.FabricLoader;
 
-public class ConfigManager {
+public class ConfigRegistry {
     private static final String fileName = "bamboo.properties";
     private static final Properties properties = new Properties();
     private static final Map<String, ConfigEntry<?>> registry = new TreeMap<>();
