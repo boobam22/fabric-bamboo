@@ -11,6 +11,11 @@ import net.minecraft.command.CommandSource;
 public interface CommandSourceMixin {
     @Inject(method = "shouldSuggest", at = @At("HEAD"), cancellable = true)
     private static void shouldSuggest(String remaining, String candidate, CallbackInfoReturnable<Boolean> cir) {
+        if (candidate.contains(":internal/")) {
+            cir.setReturnValue(false);
+            return;
+        }
+
         int offset = 0;
         for (int i = 0; i < remaining.length(); i++) {
             offset = candidate.indexOf(remaining.charAt(i), offset) + 1;
