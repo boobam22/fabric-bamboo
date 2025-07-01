@@ -1,8 +1,22 @@
 package bamboo.lib.api;
 
 import bamboo.lib.ClientLib;
+import bamboo.lib.keybinding.Key;
+import bamboo.lib.keybinding.handler.BaseHandler;
 
 public class Client {
+    public static void registerKey(String keyString, BaseHandler handler, boolean triggerOnRelease) {
+        Key key = Key.parse(keyString);
+        if (triggerOnRelease) {
+            key.triggerOnRelease();
+        }
+        key.register(handler);
+    }
+
+    public static void registerKey(String key, BaseHandler handler) {
+        registerKey(key, handler, false);
+    }
+
     public static void onJoinWorld(Runnable callback) {
         ClientLib.joinWorldHandlers.register(callback);
     }

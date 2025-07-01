@@ -35,8 +35,8 @@ public class Key {
         return this;
     }
 
-    public void execute(BaseHandler callback) {
-        KeyEvent.register(this, callback);
+    public void register(BaseHandler handler) {
+        KeyEvent.register(this, handler);
     }
 
     @Override

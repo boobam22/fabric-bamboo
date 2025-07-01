@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.function.Consumer;;
 
 public class Registry<T> {
-    private List<T> items = new ArrayList<>();
+    private final List<T> items = new ArrayList<>();
 
     public void register(T item) {
         items.add(item);
