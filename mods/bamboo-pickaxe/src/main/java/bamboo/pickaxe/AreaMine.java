@@ -1,5 +1,6 @@
 package bamboo.pickaxe;
 
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -39,6 +40,6 @@ public class AreaMine {
         area = new Box(pos);
     }
 
-    public void mine(BlockPos pos) {
+    public void mine(ServerWorld world, BlockPos pos) {
     }
 }
