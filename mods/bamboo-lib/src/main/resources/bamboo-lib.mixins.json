@@ -5,6 +5,7 @@
     "mixins": [
         "resource.ResourcePackManagerkMixin",
         "command.CommandManagerMixin",
+        "command.CommandSourceMixin",
         "command.FunctionCommandMixin"
     ],
     "client": [
