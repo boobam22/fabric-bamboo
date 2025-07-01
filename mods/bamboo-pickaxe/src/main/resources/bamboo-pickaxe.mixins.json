@@ -4,10 +4,12 @@
     "compatibilityLevel": "JAVA_21",
     "mixins": [
         "LivingEntityMixin",
-        "BlocksMixin"
+        "BlocksMixin",
+        "BlockMixin"
     ],
     "client": [
-        "ClientPlayerInteractionManagerMixin"
+        "ClientPlayerInteractionManagerMixin",
+        "DebugRendererMixin"
     ],
     "injectors": {
         "defaultRequire": 1
