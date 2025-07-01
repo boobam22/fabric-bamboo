@@ -13,8 +13,8 @@ public class Client {
         key.register(handler);
     }
 
-    public static void registerKey(String key, BaseHandler handler) {
-        registerKey(key, handler, false);
+    public static void registerKey(String keyString, BaseHandler handler) {
+        registerKey(keyString, handler, false);
     }
 
     public static void onJoinWorld(Runnable callback) {
