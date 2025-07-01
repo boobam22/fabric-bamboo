@@ -11,62 +11,69 @@ import java.io.IOException;
 import net.fabricmc.loader.api.FabricLoader;
 
 public class ConfigRegistry {
-    private static final String fileName = "bamboo.properties";
-    private static final Properties properties = new Properties();
-    private static final Map<String, ConfigEntry<?>> registry = new TreeMap<>();
+    private static String fileName = "bamboo.properties";
+    private Properties properties = new Properties();
+    private Map<String, ConfigEntry<?>> registry = new TreeMap<>();
 
-    private static <T> void setValue(ConfigEntry<T> entry) {
+    public ConfigRegistry() {
+        loadConfig();
+    }
+
+    public <T> ConfigEntry<T> register(String key, T value, Function<String, T> constructor) {
+        ConfigEntry<T> entry = new ConfigEntry<>(key, value, constructor);
+        registry.putIfAbsent(key, entry);
+
+        loadEntry(entry);
+        return entry;
+    }
+
+    private <T> void loadEntry(ConfigEntry<T> entry) {
         String key = entry.getKey();
         if (properties.containsKey(key)) {
             entry.set(entry.getConstructor().apply(properties.getProperty(key)));
         }
     }
 
-    public static <T> ConfigEntry<T> addEntry(String key, T value, Function<String, T> constructor) {
-        ConfigEntry<T> entry = new ConfigEntry<>(key, value, constructor);
-        setValue(entry);
-        registry.putIfAbsent(key, entry);
-        return entry;
+    public ConfigEntry<String> register(String key, String value) {
+        return register(key, value, str -> str);
     }
 
-    public static ConfigEntry<String> addEntry(String key, String value) {
-        return addEntry(key, value, str -> str);
+    public ConfigEntry<Boolean> register(String key, boolean value) {
+        return register(key, value, Boolean::parseBoolean);
     }
 
-    public static ConfigEntry<Boolean> addEntry(String key, boolean value) {
-        return addEntry(key, value, Boolean::parseBoolean);
+    public ConfigEntry<Integer> register(String key, int value) {
+        return register(key, value, Integer::parseInt);
     }
 
-    public static ConfigEntry<Integer> addEntry(String key, Integer value) {
-        return addEntry(key, value, Integer::parseInt);
+    public ConfigEntry<Double> register(String key, double value) {
+        return register(key, value, Double::parseDouble);
     }
 
-    public static ConfigEntry<Double> addEntry(String key, Double value) {
-        return addEntry(key, value, Double::parseDouble);
+    public <T extends Enum<T>> ConfigEntry<T> register(String key, T value) {
+        return register(key, value, str -> Enum.valueOf(value.getDeclaringClass(), str));
     }
 
-    public static <T extends Enum<T>> ConfigEntry<T> addEntry(String key, T value) {
-        return addEntry(key, value, str -> Enum.valueOf(value.getDeclaringClass(), str));
+    private Path getFilePath() {
+        return FabricLoader.getInstance().getConfigDir().resolve(fileName);
     }
 
-    public static void loadConfig() {
-        Path path = FabricLoader.getInstance().getConfigDir().resolve(fileName);
+    public void loadConfig() {
         try {
-            properties.load(Files.newInputStream(path));
+            properties.load(Files.newInputStream(getFilePath()));
         } catch (IOException e) {
         }
 
-        registry.values().forEach(entry -> setValue(entry));
+        registry.values().forEach(entry -> loadEntry(entry));
     }
 
-    public static void saveConfig() {
+    public void saveConfig() {
         registry.values().forEach(entry -> {
             properties.setProperty(entry.getKey(), entry.getValue().toString());
         });
 
-        Path path = FabricLoader.getInstance().getConfigDir().resolve(fileName);
         try {
-            properties.store(Files.newOutputStream(path), fileName);
+            properties.store(Files.newOutputStream(getFilePath()), fileName);
         } catch (IOException e) {
         }
     }
