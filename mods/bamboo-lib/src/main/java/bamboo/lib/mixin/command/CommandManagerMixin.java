@@ -13,6 +13,8 @@ import net.minecraft.server.command.CommandManager.RegistrationEnvironment;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.command.CommandRegistryAccess;
 
+import bamboo.lib.Lib;
+
 @Mixin(CommandManager.class)
 public abstract class CommandManagerMixin {
     @Shadow
@@ -20,6 +22,6 @@ public abstract class CommandManagerMixin {
 
     @Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/mojang/brigadier/CommandDispatcher;setConsumer(Lcom/mojang/brigadier/ResultConsumer;)V", remap = false))
     private void init(RegistrationEnvironment env, CommandRegistryAccess access, CallbackInfo ci) {
-        bamboo.lib.command.CommandManager.register(dispatcher, env, access);
+        Lib.commandRegistry.forEach(cmd -> cmd.register(dispatcher, env, access));
     }
 }
