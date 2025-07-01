@@ -14,4 +14,12 @@ public class Registry<T> {
     public void forEach(Consumer<T> action) {
         items.forEach(action);
     }
+
+    public void runAll() {
+        forEach(item -> {
+            if (item instanceof Runnable runnable) {
+                runnable.run();
+            }
+        });
+    }
 }
