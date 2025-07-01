@@ -2,8 +2,9 @@ package bamboo.lib.api;
 
 import bamboo.lib.Lib;
 import bamboo.lib.config.ConfigEntry;
+import bamboo.lib.command.Command;
 
-public class Util {
+public class Server {
     public static ConfigEntry<String> registerConfig(String key, String value) {
         return Lib.configRegistry.register(key, value, str -> str);
     }
@@ -22,5 +23,9 @@ public class Util {
 
     public static <T extends Enum<T>> ConfigEntry<T> registerConfig(String key, T value) {
         return Lib.configRegistry.register(key, value, str -> Enum.valueOf(value.getDeclaringClass(), str));
+    }
+
+    public static void registerCommand(Command cmd) {
+        Lib.commandRegistry.register(cmd);
     }
 }
