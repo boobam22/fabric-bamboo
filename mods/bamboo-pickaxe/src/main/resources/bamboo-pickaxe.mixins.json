@@ -8,7 +8,7 @@
     ],
     "client": [
         "ClientPlayerInteractionManagerMixin",
-        "WorldRendererMixin"
+        "DebugRendererMixin"
     ],
     "injectors": {
         "defaultRequire": 1
