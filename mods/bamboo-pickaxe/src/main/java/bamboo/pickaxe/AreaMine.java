@@ -14,7 +14,7 @@ public class AreaMine {
 
     public void toggle() {
         enabled ^= true;
-        resetArea();
+        area = null;
     }
 
     public boolean toggle(MinecraftClient client) {
