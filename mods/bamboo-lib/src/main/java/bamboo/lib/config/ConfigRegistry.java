@@ -34,26 +34,6 @@ public class ConfigRegistry {
         }
     }
 
-    public ConfigEntry<String> register(String key, String value) {
-        return register(key, value, str -> str);
-    }
-
-    public ConfigEntry<Boolean> register(String key, boolean value) {
-        return register(key, value, Boolean::parseBoolean);
-    }
-
-    public ConfigEntry<Integer> register(String key, int value) {
-        return register(key, value, Integer::parseInt);
-    }
-
-    public ConfigEntry<Double> register(String key, double value) {
-        return register(key, value, Double::parseDouble);
-    }
-
-    public <T extends Enum<T>> ConfigEntry<T> register(String key, T value) {
-        return register(key, value, str -> Enum.valueOf(value.getDeclaringClass(), str));
-    }
-
     private Path getFilePath() {
         return FabricLoader.getInstance().getConfigDir().resolve(fileName);
     }
