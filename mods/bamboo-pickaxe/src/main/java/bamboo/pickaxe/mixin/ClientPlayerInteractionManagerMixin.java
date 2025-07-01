@@ -9,7 +9,12 @@ import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.client.network.ClientPlayerInteractionManager;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.world.GameMode;
+import net.minecraft.registry.tag.ItemTags;
+import net.minecraft.util.Hand;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.hit.BlockHitResult;
 
 import bamboo.pickaxe.Pickaxe;
 
@@ -33,5 +38,13 @@ public abstract class ClientPlayerInteractionManagerMixin {
             return 0;
         }
         return cooldown;
+    }
+
+    @Inject(method = "interactBlockInternal", at = @At("HEAD"))
+    private void interactBlockInternal(ClientPlayerEntity player, Hand hand, BlockHitResult hitResult,
+            CallbackInfoReturnable<ActionResult> cir) {
+        if (Pickaxe.areaMine.isEnabled() && player.getStackInHand(hand).isIn(ItemTags.PICKAXES)) {
+            Pickaxe.areaMine.resetArea(hitResult.getBlockPos());
+        }
     }
 }
