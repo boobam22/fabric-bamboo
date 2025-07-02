@@ -11,7 +11,7 @@ import bamboo.lib.api.Client;
 import bamboo.inventory.action.MoveAction;
 import bamboo.inventory.action.MergeAction;
 
-public class ClientInventory implements ClientModInitializer {
+public class ClientInventory extends Inventory implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         registerKey("shift+left", MoveAction::moveOneStack);
