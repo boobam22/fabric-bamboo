@@ -39,9 +39,9 @@ public class InventoryCommand implements bamboo.lib.command.Command {
                 .then(CommandManager.literal("open-ender-chest")
                         .executes(openEnderChest))
                 .then(CommandManager.literal("open-shulker-box")
-                        .then(CommandManager.literal("inventory")
+                        .then(CommandManager.literal(InventoryType.PLAYER_INVENTORY.toString())
                                 .then(slotArgument))
-                        .then(CommandManager.literal("ender-chest")
+                        .then(CommandManager.literal(InventoryType.ENDER_CHEST.toString())
                                 .then(slotArgument)))
                 .then(CommandManager.literal("refresh-trade")
                         .then(CommandManager.argument("villager", EntityArgumentType.entity())
@@ -78,21 +78,8 @@ public class InventoryCommand implements bamboo.lib.command.Command {
 
     private static SuggestionProvider<ServerCommandSource> findShulkerBox = (context, builder) -> {
         ServerPlayerEntity player = context.getSource().getPlayer();
-
-        Inventory inventory = null;
-        if (context.getNodes().get(2).getNode().getName() == "inventory") {
-            inventory = player.getInventory();
-        } else if (context.getNodes().get(2).getNode().getName() == "ender-chest") {
-            inventory = player.getEnderChestInventory();
-        }
-
-        List<String> slots = new ArrayList<>();
-        for (int i = 0; i < inventory.size(); i++) {
-            if (inventory.getStack(i).isIn(ItemTags.SHULKER_BOXES)) {
-                slots.add(String.valueOf(i));
-            }
-        }
-        return CommandSource.suggestMatching(slots, builder);
+        String string = context.getNodes().get(2).getNode().getName();
+        return CommandSource.suggestMatching(Util.findShulkerBox(player, string), builder);
     };
     private static SuggestionProvider<ServerCommandSource> findVillager = (context, builder) -> {
         Vec3d pos = context.getSource().getPlayer().getPos();

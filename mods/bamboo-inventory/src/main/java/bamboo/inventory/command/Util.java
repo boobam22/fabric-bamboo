@@ -1,5 +1,8 @@
 package bamboo.inventory.command;
 
+import java.util.List;
+import java.util.ArrayList;
+
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
 import net.minecraft.screen.GenericContainerScreenHandler;
@@ -13,6 +16,7 @@ import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.village.VillagerProfession;
 import net.minecraft.item.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.text.Text;
 
 public class Util {
@@ -49,5 +53,28 @@ public class Util {
         });
         ScreenHandlerFactory factory = (id, pi) -> new ShulkerBoxScreenHandler(id, pi, inventory);
         openHandledScreen(player, factory, Items.ENDER_CHEST.getName());
+    }
+
+    private static List<Integer> findShulkerBox(ServerPlayerEntity player, Inventory inventory) {
+        List<Integer> slots = new ArrayList<>();
+        for (int i = 0; i < inventory.size(); i++) {
+            if (inventory.getStack(i).isIn(ItemTags.SHULKER_BOXES)) {
+                slots.add(i);
+            }
+        }
+        return slots;
+    }
+
+    private static List<Integer> findShulkerBox(ServerPlayerEntity player, InventoryType type) {
+        if (type == InventoryType.PLAYER_INVENTORY) {
+            return findShulkerBox(player, player.getInventory());
+        } else if (type == InventoryType.PLAYER_INVENTORY) {
+            return findShulkerBox(player, player.getEnderChestInventory());
+        }
+        return List.of();
+    }
+
+    public static List<String> findShulkerBox(ServerPlayerEntity player, String string) {
+        return findShulkerBox(player, InventoryType.valueOf(string)).stream().map(String::valueOf).toList();
     }
 }
