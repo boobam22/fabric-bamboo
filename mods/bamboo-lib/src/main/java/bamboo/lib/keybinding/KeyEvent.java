@@ -1,6 +1,8 @@
 package bamboo.lib.keybinding;
 
+import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -8,11 +10,13 @@ import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.MinecraftClient;
 
-public class KeyEvent {
-    private static final HashMap<Key, ArrayList<Handler>> handlers = new HashMap<>();
-    private static final Key currentKey = new Key(0, new HashSet<>());
+import bamboo.lib.keybinding.handler.BaseHandler;
 
-    public static void register(Key key, Handler handler) {
+public class KeyEvent {
+    private static Map<Key, List<BaseHandler>> handlers = new HashMap<>();
+    private static Key currentKey = new Key(0, new HashSet<>());
+
+    public static void register(Key key, BaseHandler handler) {
         handlers.putIfAbsent(key, new ArrayList<>());
         handlers.get(key).add(handler);
     }
@@ -52,7 +56,7 @@ public class KeyEvent {
         }
 
         boolean cancel = false;
-        for (Handler handler : handlers.get(currentKey)) {
+        for (BaseHandler handler : handlers.get(currentKey)) {
             cancel |= handler.apply(client);
         }
         return cancel;

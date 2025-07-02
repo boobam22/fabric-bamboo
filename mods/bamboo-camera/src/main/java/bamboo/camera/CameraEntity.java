@@ -5,10 +5,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
-import net.minecraft.client.world.ClientWorld;
+import net.minecraft.world.World;
 
 public class CameraEntity extends MarkerEntity {
-    public CameraEntity(ClientWorld world) {
+    public CameraEntity(World world) {
         super(EntityType.MARKER, world);
         this.calculateDimensions();
     }

@@ -10,13 +10,13 @@ import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 
-import bamboo.camera.Camera;
+import bamboo.camera.ClientCamera;
 
 @Mixin(GameRenderer.class)
 public abstract class GameRendererMixin {
     @ModifyVariable(method = "updateCrosshairTarget", at = @At("STORE"), ordinal = 0)
     private Entity updateCrosshairTarget(Entity entity) {
-        if (Camera.isActive()) {
+        if (ClientCamera.cameraController.isActive()) {
             return MinecraftClient.getInstance().player;
         }
         return entity;
@@ -24,7 +24,7 @@ public abstract class GameRendererMixin {
 
     @Inject(method = "renderHand", at = @At("HEAD"), cancellable = true)
     private void renderHand(CallbackInfo ci) {
-        if (Camera.isActive()) {
+        if (ClientCamera.cameraController.isActive()) {
             ci.cancel();
         }
     }

@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 
 import org.lwjgl.glfw.GLFW;
 
+import bamboo.lib.keybinding.handler.BaseHandler;
+
 public class Key {
     public int key;
     public Set<Integer> modifier;
@@ -33,8 +35,8 @@ public class Key {
         return this;
     }
 
-    public void execute(Handler callback) {
-        KeyEvent.register(this, callback);
+    public void register(BaseHandler handler) {
+        KeyEvent.register(this, handler);
     }
 
     @Override

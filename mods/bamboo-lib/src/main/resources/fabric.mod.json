@@ -7,6 +7,9 @@
     "entrypoints": {
         "main": [
             "bamboo.lib.Lib"
+        ],
+        "client": [
+            "bamboo.lib.ClientLib"
         ]
     },
     "mixins": [

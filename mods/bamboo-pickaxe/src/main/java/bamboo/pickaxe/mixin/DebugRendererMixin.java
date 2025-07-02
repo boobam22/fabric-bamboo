@@ -17,14 +17,14 @@ import net.minecraft.client.render.VertexRendering;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Box;
 
-import bamboo.pickaxe.Pickaxe;
+import bamboo.pickaxe.ClientPickaxe;
 
 @Mixin(DebugRenderer.class)
 public abstract class DebugRendererMixin {
     @Inject(method = "render", at = @At("TAIL"))
     private void render(MatrixStack matrices, Frustum frustum, Immediate vertexConsumers,
             double x, double y, double z, CallbackInfo ci) {
-        Box box = Pickaxe.areaMine.getArea();
+        Box box = ClientPickaxe.areaMine.getArea();
         if (box != null) {
             matrices.translate(-x, -y, -z);
             VertexConsumer vertexConsumer = vertexConsumers.getBuffer(RenderLayer.getLines());
