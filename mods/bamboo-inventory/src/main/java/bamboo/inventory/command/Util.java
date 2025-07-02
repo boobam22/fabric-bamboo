@@ -53,7 +53,7 @@ public class Util {
             stack.set(DataComponentTypes.CONTAINER, container);
         });
         ScreenHandlerFactory factory = (id, pi) -> new ShulkerBoxScreenHandler(id, pi, inventory);
-        openHandledScreen(player, factory, Items.ENDER_CHEST.getName());
+        openHandledScreen(player, factory, stack.getName());
     }
 
     private static List<Slot> findShulkerBox(ServerPlayerEntity player, Inventory inventory) {
