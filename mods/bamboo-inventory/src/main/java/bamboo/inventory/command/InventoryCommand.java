@@ -16,8 +16,8 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.EntityArgumentType;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.VillagerEntity;
-import net.minecraft.village.VillagerProfession;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.util.math.Box;
@@ -58,10 +58,9 @@ public class InventoryCommand implements bamboo.lib.command.Command {
         return 0;
     };
     private static Command<ServerCommandSource> refreshTrade = context -> {
-        VillagerEntity villager = (VillagerEntity) EntityArgumentType.getEntity(context, "villager");
-        if (villager.getExperience() == 0
-                && !villager.getVillagerData().profession().matchesKey(VillagerProfession.NONE)) {
-            villager.setOffers(null);
+        Entity villager = EntityArgumentType.getEntity(context, "villager");
+        if (Util.canRefeshTrade(villager)) {
+            ((VillagerEntity) villager).setOffers(null);
         }
         return 0;
     };
@@ -88,10 +87,8 @@ public class InventoryCommand implements bamboo.lib.command.Command {
         Vec3d pos = context.getSource().getPlayer().getPos();
         Box range = new Box(pos, pos).expand(16);
         List<String> villagers = context.getSource().getWorld()
-                .getEntitiesByClass(VillagerEntity.class, range, villager -> {
-                    return !villager.getVillagerData().profession().matchesKey(VillagerProfession.NONE)
-                            && villager.getExperience() == 0;
-                }).stream().map(e -> e.getUuidAsString()).toList();
+                .getEntitiesByClass(VillagerEntity.class, range, Util::canRefeshTrade)
+                .stream().map(e -> e.getUuidAsString()).toList();
 
         return CommandSource.suggestMatching(villagers, builder);
     };
