@@ -5,8 +5,11 @@
     "name": "Bamboo Pickaxe",
     "description": "",
     "entrypoints": {
-        "client": [
+        "main": [
             "bamboo.pickaxe.Pickaxe"
+        ],
+        "client": [
+            "bamboo.pickaxe.ClientPickaxe"
         ]
     },
     "mixins": [
