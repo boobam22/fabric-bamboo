@@ -4,7 +4,7 @@ import bamboo.lib.ClientLib;
 import bamboo.lib.keybinding.Key;
 import bamboo.lib.keybinding.handler.BaseHandler;
 
-public class Client {
+public class Client extends Server {
     public static void registerKey(String keyString, BaseHandler handler, boolean triggerOnRelease) {
         Key key = Key.parse(keyString);
         if (triggerOnRelease) {
