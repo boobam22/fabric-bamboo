@@ -17,7 +17,7 @@ import bamboo.pickaxe.Pickaxe;
 public abstract class BlockMixin {
     @Inject(method = "onBroken", at = @At("HEAD"))
     private void onBroken(WorldAccess world, BlockPos pos, BlockState state, CallbackInfo ci) {
-        if (!world.isClient()) {
+        if (!world.isClient() && Pickaxe.areaMine.isEnabled()) {
             Pickaxe.areaMine.mine((ServerWorld) world, pos);
         }
     }

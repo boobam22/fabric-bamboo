@@ -29,6 +29,11 @@ public class AreaMine {
     }
 
     public void mine(ServerWorld world, BlockPos pos) {
+        if (area == null) {
+            resetArea(pos);
+            return;
+        }
+
         Box newArea = area.union(new Box(pos));
         if (area == newArea
                 || newArea.getLengthX() - area.getLengthX() > LIMIT
