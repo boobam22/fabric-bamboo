@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.screen.ScreenHandlerFactory;
-import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.ShulkerBoxScreenHandler;
 import net.minecraft.screen.slot.Slot;
@@ -31,8 +30,14 @@ public class Util {
     }
 
     private static void openHandledScreen(ServerPlayerEntity player, ScreenHandlerFactory factory, Text title) {
+        NamedScreenHandlerFactory namedScreenHandlerFactory = new NamedScreenHandlerFactory(factory, title);
+
+        ItemStack cursorStack = player.currentScreenHandler.getCursorStack();
+        player.currentScreenHandler.setCursorStack(ItemStack.EMPTY);
+        namedScreenHandlerFactory.setCursorStack(cursorStack);
+
         player.onHandledScreenClosed();
-        player.openHandledScreen(new SimpleNamedScreenHandlerFactory(factory, title));
+        player.openHandledScreen(namedScreenHandlerFactory);
     }
 
     public static void openCraftingTable(ServerPlayerEntity player) {
