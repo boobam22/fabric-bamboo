@@ -14,7 +14,7 @@ public class ClientPickaxe extends Pickaxe implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         Client.registerKey("b+left", (IngameHandler) ClientPickaxe::switchNextBreakCooldown);
-        Client.registerKey("b+right", areaMine::toggle);
+        Client.registerKey("b+right", (IngameHandler) ClientPickaxe::toggleAreaMine);
 
         Client.onExitWorld(() -> {
             if (areaMine.isEnabled()) {
@@ -26,5 +26,10 @@ public class ClientPickaxe extends Pickaxe implements ClientModInitializer {
     public static void switchNextBreakCooldown(MinecraftClient client) {
         breakCooldown.switchNext();
         Util.message("Break Cooldown", breakCooldown.toString());
+    }
+
+    public static void toggleAreaMine(MinecraftClient client) {
+        boolean enabled = areaMine.toggle();
+        Util.message("Area Mine", String.valueOf(enabled), enabled);
     }
 }

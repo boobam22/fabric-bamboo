@@ -1,23 +1,11 @@
 package bamboo.pickaxe;
 
-import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.api.ModInitializer;
 
-import bamboo.lib.keybinding.Key;
-import bamboo.lib.lifecycle.MinecraftClientLifecycle;
-
-public class Pickaxe implements ClientModInitializer {
-    public static BreakCooldown breakCooldown = new BreakCooldown();
+public class Pickaxe implements ModInitializer {
     public static AreaMine areaMine = new AreaMine();
 
     @Override
-    public void onInitializeClient() {
-        Key.parse("b+left").execute(breakCooldown::switchNext);
-        Key.parse("b+right").execute(areaMine::toggle);
-
-        MinecraftClientLifecycle.onExitWorld(() -> {
-            if (areaMine.isEnabled()) {
-                areaMine.toggle();
-            }
-        });
+    public void onInitialize() {
     }
 }
