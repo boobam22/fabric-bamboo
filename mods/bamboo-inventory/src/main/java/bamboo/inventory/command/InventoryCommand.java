@@ -50,9 +50,11 @@ public class InventoryCommand implements bamboo.lib.command.Command {
     }
 
     private static Command<ServerCommandSource> openCraftingTable = context -> {
+        Util.openCraftingTable(context.getSource().getPlayer());
         return 0;
     };
     private static Command<ServerCommandSource> openEnderChest = context -> {
+        Util.openEnderChest(context.getSource().getPlayer());
         return 0;
     };
     private static Command<ServerCommandSource> openShulkerBox = context -> {
