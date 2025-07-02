@@ -19,8 +19,7 @@ import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.VillagerEntity;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.registry.tag.ItemTags;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 
@@ -58,6 +57,13 @@ public class InventoryCommand implements bamboo.lib.command.Command {
         return 0;
     };
     private static Command<ServerCommandSource> openShulkerBox = context -> {
+        ServerPlayerEntity player = context.getSource().getPlayer();
+        String string = context.getNodes().get(2).getNode().getName();
+        int idx = IntegerArgumentType.getInteger(context, "slot");
+        ItemStack stack = Util.findShulkerBox(player, string, idx);
+        if (stack != null) {
+            Util.openShulkerBox(player, stack);
+        }
         return 0;
     };
     private static Command<ServerCommandSource> refreshTrade = context -> {

@@ -7,6 +7,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.ShulkerBoxScreenHandler;
+import net.minecraft.screen.slot.Slot;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.component.DataComponentTypes;
@@ -55,17 +56,17 @@ public class Util {
         openHandledScreen(player, factory, Items.ENDER_CHEST.getName());
     }
 
-    private static List<Integer> findShulkerBox(ServerPlayerEntity player, Inventory inventory) {
-        List<Integer> slots = new ArrayList<>();
+    private static List<Slot> findShulkerBox(ServerPlayerEntity player, Inventory inventory) {
+        List<Slot> slots = new ArrayList<>();
         for (int i = 0; i < inventory.size(); i++) {
             if (inventory.getStack(i).isIn(ItemTags.SHULKER_BOXES)) {
-                slots.add(i);
+                slots.add(new Slot(inventory, i, 0, 0));
             }
         }
         return slots;
     }
 
-    private static List<Integer> findShulkerBox(ServerPlayerEntity player, InventoryType type) {
+    private static List<Slot> findShulkerBox(ServerPlayerEntity player, InventoryType type) {
         if (type == InventoryType.PLAYER_INVENTORY) {
             return findShulkerBox(player, player.getInventory());
         } else if (type == InventoryType.PLAYER_INVENTORY) {
@@ -75,6 +76,15 @@ public class Util {
     }
 
     public static List<String> findShulkerBox(ServerPlayerEntity player, String string) {
-        return findShulkerBox(player, InventoryType.valueOf(string)).stream().map(String::valueOf).toList();
+        return findShulkerBox(player, InventoryType.valueOf(string)).stream()
+                .map(slot -> String.valueOf(slot.getIndex()))
+                .toList();
+    }
+
+    public static ItemStack findShulkerBox(ServerPlayerEntity player, String string, int idx) {
+        return findShulkerBox(player, InventoryType.valueOf(string)).stream()
+                .filter(slot -> slot.getIndex() == idx)
+                .map(slot -> slot.getStack())
+                .findFirst().orElse(null);
     }
 }
