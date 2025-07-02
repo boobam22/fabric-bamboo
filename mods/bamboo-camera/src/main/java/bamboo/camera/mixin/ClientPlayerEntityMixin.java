@@ -23,15 +23,15 @@ public abstract class ClientPlayerEntityMixin {
 
     @Inject(method = "isCamera", at = @At("HEAD"), cancellable = true)
     private void isCamera(CallbackInfoReturnable<Boolean> cir) {
-        if (ClientCamera.isActive()) {
+        if (ClientCamera.cameraController.isActive()) {
             cir.setReturnValue(true);
         }
     }
 
     @Inject(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/input/Input;tick()V", shift = At.Shift.AFTER))
     private void tickMovement(CallbackInfo ci) {
-        if (ClientCamera.isActive()) {
-            ClientCamera.handleInput(this.input.playerInput);
+        if (ClientCamera.cameraController.isActive()) {
+            ClientCamera.cameraController.handleInput(this.input.playerInput);
             this.input = new KeyboardInput(this.client.options);
         }
     }

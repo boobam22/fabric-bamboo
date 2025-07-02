@@ -14,7 +14,7 @@ import bamboo.camera.ClientCamera;
 public abstract class InGameHudMixin {
     @ModifyVariable(method = "renderHotbar", at = @At("STORE"), ordinal = 0)
     private PlayerEntity renderHotbar(PlayerEntity player) {
-        if (ClientCamera.isActive()) {
+        if (ClientCamera.cameraController.isActive()) {
             return MinecraftClient.getInstance().player;
         }
         return player;

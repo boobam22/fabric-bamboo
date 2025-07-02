@@ -20,7 +20,7 @@ public abstract class WorldRendererMixin {
     @Inject(method = "getEntitiesToRender", at = @At("TAIL"))
     private void getEntitiesToRender(Camera camera, Frustum frustum, List<Entity> output,
             CallbackInfoReturnable<Boolean> cir) {
-        if (ClientCamera.isActive()) {
+        if (ClientCamera.cameraController.isActive()) {
             output.add(MinecraftClient.getInstance().player);
         }
     }

@@ -16,7 +16,7 @@ import bamboo.camera.ClientCamera;
 public abstract class GameRendererMixin {
     @ModifyVariable(method = "updateCrosshairTarget", at = @At("STORE"), ordinal = 0)
     private Entity updateCrosshairTarget(Entity entity) {
-        if (ClientCamera.isActive()) {
+        if (ClientCamera.cameraController.isActive()) {
             return MinecraftClient.getInstance().player;
         }
         return entity;
@@ -24,7 +24,7 @@ public abstract class GameRendererMixin {
 
     @Inject(method = "renderHand", at = @At("HEAD"), cancellable = true)
     private void renderHand(CallbackInfo ci) {
-        if (ClientCamera.isActive()) {
+        if (ClientCamera.cameraController.isActive()) {
             ci.cancel();
         }
     }
