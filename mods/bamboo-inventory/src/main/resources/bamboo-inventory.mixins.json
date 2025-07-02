@@ -2,11 +2,10 @@
     "required": true,
     "package": "bamboo.inventory.mixin",
     "compatibilityLevel": "JAVA_21",
-    "mixins": [
-        "MerchantScreenHandlerAccessor"
-    ],
+    "mixins": [],
     "client": [
         "HandledScreenAccessor",
+        "HandledScreenMixin",
         "MerchantScreenMixin",
         "SearchManagerMixin"
     ],
