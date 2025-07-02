@@ -1,7 +1,6 @@
 package bamboo.inventory.command;
 
 import java.util.List;
-import java.util.ArrayList;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
