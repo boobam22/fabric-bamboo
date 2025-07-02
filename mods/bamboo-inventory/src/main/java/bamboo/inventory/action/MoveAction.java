@@ -8,6 +8,7 @@ import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.screen.Generic3x3ContainerScreenHandler;
 import net.minecraft.screen.HopperScreenHandler;
 import net.minecraft.screen.CrafterScreenHandler;
+import net.minecraft.screen.MerchantScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.CraftingResultSlot;
 import net.minecraft.screen.slot.TradeOutputSlot;
@@ -131,6 +132,21 @@ public class MoveAction {
                 availableSlots.forEach(slot -> {
                     Util.leftClick(slot);
                 });
+            }
+        }
+    }
+
+    public static void buyAll(MerchantScreenHandler handler, Runnable select) {
+        Slot output = handler.getSlot(2);
+
+        while (true) {
+            select.run();
+            if (!output.hasStack()) {
+                break;
+            }
+
+            while (output.hasStack()) {
+                MoveAction.craftOrBuyOne(handler, handler.slots, output);
             }
         }
     }

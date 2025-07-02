@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import net.minecraft.client.gui.screen.ingame.MerchantScreen;
 import net.minecraft.client.gui.widget.ButtonWidget.PressAction;
 
-import bamboo.inventory.action.TradeAction;
+import bamboo.inventory.action.MoveAction;
 
 @Mixin(MerchantScreen.class)
 public abstract class MerchantScreenMixin {
@@ -30,7 +30,7 @@ public abstract class MerchantScreenMixin {
         public boolean mouseClicked(double mouseX, double mouseY, int button) {
             if (button == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
                 Runnable select = () -> super.mouseClicked(mouseX, mouseY, GLFW.GLFW_MOUSE_BUTTON_LEFT);
-                TradeAction.buyAll(this.screen.getScreenHandler(), select);
+                MoveAction.buyAll(this.screen.getScreenHandler(), select);
                 return true;
             } else {
                 return super.mouseClicked(mouseX, mouseY, button);
