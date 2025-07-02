@@ -16,8 +16,4 @@ public class Lib implements ModInitializer {
     public ConfigRegistry getConfigRegistry() {
         return configRegistry;
     }
-
-    public Registry<Command> getCommandRegistry() {
-        return commandRegistry;
-    }
 }
