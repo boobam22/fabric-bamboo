@@ -69,7 +69,7 @@ public class Util {
     private static List<Slot> findShulkerBox(ServerPlayerEntity player, InventoryType type) {
         if (type == InventoryType.PLAYER_INVENTORY) {
             return findShulkerBox(player, player.getInventory());
-        } else if (type == InventoryType.PLAYER_INVENTORY) {
+        } else if (type == InventoryType.ENDER_CHEST) {
             return findShulkerBox(player, player.getEnderChestInventory());
         }
         return List.of();
