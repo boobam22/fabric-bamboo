@@ -41,7 +41,7 @@ public class Util {
     }
 
     public static void openCraftingTable(ServerPlayerEntity player) {
-        ScreenHandlerFactory factory = (id, pi, p) -> new InventoryCraftingScreenHandler(id, player);
+        ScreenHandlerFactory factory = (id, pi, p) -> new CraftingScreenHandler(id, pi, player);
         openHandledScreen(player, factory, Items.CRAFTING_TABLE.getName());
     }
 
