@@ -14,37 +14,33 @@ import bamboo.inventory.action.MergeAction;
 public class ClientInventory implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
-        InventoryHandler cancel = (a, b, c) -> {
-        };
+        registerKey("shift+left", MoveAction::moveOneStack);
+        registerKey("shift+left+move", MoveAction::moveOneStack);
+        registerKey("shift+right", MoveAction::moveOneStackLeaveOne);
+        registerKey("shift+right+move", MoveAction::moveOneStackLeaveOne);
 
-        Client.registerKey("shift+left", (InventoryHandler) MoveAction::moveOneStack);
-        Client.registerKey("shift+left", cancel, true);
-        Client.registerKey("shift+left+move", (InventoryHandler) MoveAction::moveOneStack);
-        Client.registerKey("shift+right", (InventoryHandler) MoveAction::moveOneStackLeaveOne);
-        Client.registerKey("shift+right", cancel, true);
-        Client.registerKey("shift+right+move", (InventoryHandler) MoveAction::moveOneStackLeaveOne);
+        registerKey("ctrl+left", MoveAction::moveStacks);
+        registerKey("ctrl+right", MoveAction::moveStacksLeaveOne);
 
-        Client.registerKey("ctrl+left", (InventoryHandler) MoveAction::moveStacks);
-        Client.registerKey("ctrl+left", cancel, true);
-        Client.registerKey("ctrl+right", (InventoryHandler) MoveAction::moveStacksLeaveOne);
-        Client.registerKey("ctrl+right", cancel, true);
+        registerKey("alt+left", MoveAction::moveAll);
+        registerKey("alt+right", MoveAction::dropStacks);
 
-        Client.registerKey("alt+left", (InventoryHandler) MoveAction::moveAll);
-        Client.registerKey("alt+left", cancel, true);
+        registerKey("ctrl+scroll", MoveAction::craftOrBuyOne, false);
 
-        Client.registerKey("alt+right", (InventoryHandler) MoveAction::dropStacks);
-        Client.registerKey("alt+right", cancel, true);
-
-        Client.registerKey("ctrl+scroll", (InventoryHandler) MoveAction::craftOrBuyOne);
-
-        Client.registerKey("r", (InventoryHandler) MergeAction::merge);
+        registerKey("r", MergeAction::merge, false);
     }
 
-    public static void info(ScreenHandler handler, List<Slot> slots, Slot focusedSlot) {
-        System.out.println(handler.getClass());
-        if (focusedSlot != null) {
-            System.out.println(focusedSlot.getClass() + "  " + focusedSlot.id);
-            System.out.println(focusedSlot.inventory.getClass() + "  " + slots.size());
+    private static void registerKey(String key, InventoryHandler handler, boolean cancelOnRelease) {
+        Client.registerKey(key, handler);
+        if (cancelOnRelease) {
+            Client.registerKey(key, (InventoryHandler) ClientInventory::cancel, true);
         }
+    }
+
+    private static void registerKey(String key, InventoryHandler handler) {
+        registerKey(key, handler, true);
+    }
+
+    private static void cancel(ScreenHandler handler, List<Slot> slots, Slot focusedSlot) {
     }
 }
