@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.screen.ScreenHandlerFactory;
 import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.ShulkerBoxScreenHandler;
@@ -35,13 +36,13 @@ public class Util {
     }
 
     public static void openCraftingTable(ServerPlayerEntity player) {
-        ScreenHandlerFactory factory = (id, pi) -> new InventoryCraftingScreenHandler(id, player);
+        ScreenHandlerFactory factory = (id, pi, p) -> new InventoryCraftingScreenHandler(id, player);
         openHandledScreen(player, factory, Items.CRAFTING_TABLE.getName());
     }
 
     public static void openEnderChest(ServerPlayerEntity player) {
         Inventory inventory = player.getEnderChestInventory();
-        ScreenHandlerFactory factory = (id, pi) -> GenericContainerScreenHandler.createGeneric9x3(id, pi, inventory);
+        ScreenHandlerFactory factory = (id, pi, p) -> GenericContainerScreenHandler.createGeneric9x3(id, pi, inventory);
         openHandledScreen(player, factory, Items.ENDER_CHEST.getName());
     }
 
@@ -52,7 +53,7 @@ public class Util {
             ContainerComponent container = ContainerComponent.fromStacks(((SimpleInventory) si).getHeldStacks());
             stack.set(DataComponentTypes.CONTAINER, container);
         });
-        ScreenHandlerFactory factory = (id, pi) -> new ShulkerBoxScreenHandler(id, pi, inventory);
+        ScreenHandlerFactory factory = (id, pi, p) -> new ShulkerBoxScreenHandler(id, pi, inventory);
         openHandledScreen(player, factory, stack.getName());
     }
 
