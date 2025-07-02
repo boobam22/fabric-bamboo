@@ -9,6 +9,6 @@ public class ClientLib extends Lib implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        exitWorldHandlers.register(() -> getConfigRegistry().saveConfig());
+        exitWorldHandlers.register(() -> configRegistry.saveConfig());
     }
 }

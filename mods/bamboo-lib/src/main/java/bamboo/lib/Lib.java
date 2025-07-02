@@ -12,8 +12,4 @@ public class Lib implements ModInitializer {
     @Override
     public void onInitialize() {
     }
-
-    public ConfigRegistry getConfigRegistry() {
-        return configRegistry;
-    }
 }
