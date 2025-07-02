@@ -1,6 +1,7 @@
 package bamboo.inventory.command;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
@@ -11,11 +12,14 @@ import com.mojang.brigadier.suggestion.SuggestionProvider;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.CommandManager.RegistrationEnvironment;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.village.VillagerProfession;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 
@@ -63,7 +67,22 @@ public class InventoryCommand implements bamboo.lib.command.Command {
     };
 
     private static SuggestionProvider<ServerCommandSource> findShulkerBox = (context, builder) -> {
-        return builder.buildFuture();
+        ServerPlayerEntity player = context.getSource().getPlayer();
+
+        Inventory inventory = null;
+        if (context.getNodes().get(2).getNode().getName() == "inventory") {
+            inventory = player.getInventory();
+        } else if (context.getNodes().get(2).getNode().getName() == "ender-chest") {
+            inventory = player.getEnderChestInventory();
+        }
+
+        List<String> slots = new ArrayList<>();
+        for (int i = 0; i < inventory.size(); i++) {
+            if (inventory.getStack(i).isIn(ItemTags.SHULKER_BOXES)) {
+                slots.add(String.valueOf(i));
+            }
+        }
+        return CommandSource.suggestMatching(slots, builder);
     };
     private static SuggestionProvider<ServerCommandSource> findVillager = (context, builder) -> {
         Vec3d pos = context.getSource().getPlayer().getPos();
