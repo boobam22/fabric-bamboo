@@ -13,6 +13,7 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.CommandManager.RegistrationEnvironment;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.screen.MerchantScreenHandler;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.EntityArgumentType;
@@ -58,9 +59,17 @@ public class InventoryCommand implements bamboo.lib.command.Command {
         return 0;
     };
     private static Command<ServerCommandSource> refreshTrade = context -> {
-        Entity villager = EntityArgumentType.getEntity(context, "villager");
-        if (Util.canRefeshTrade(villager)) {
-            ((VillagerEntity) villager).setOffers(null);
+        Entity entity = EntityArgumentType.getEntity(context, "villager");
+        if (Util.canRefeshTrade(entity)) {
+            VillagerEntity villager = (VillagerEntity) entity;
+            villager.setOffers(null);
+
+            ServerPlayerEntity player = context.getSource().getPlayer();
+            if (player.currentScreenHandler instanceof MerchantScreenHandler) {
+                player.sendTradeOffers(player.currentScreenHandler.syncId, villager.getOffers(),
+                        villager.getVillagerData().level(), villager.getExperience(),
+                        villager.isLeveledMerchant(), villager.canRefreshTrades());
+            }
         }
         return 0;
     };
