@@ -13,7 +13,6 @@ import net.minecraft.server.command.CommandManager.RegistrationEnvironment;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.command.argument.BlockPosArgumentType;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.village.VillagerProfession;
@@ -38,11 +37,7 @@ public class InventoryCommand implements bamboo.lib.command.Command {
                         .then(CommandManager.literal("inventory")
                                 .then(slotArgument))
                         .then(CommandManager.literal("ender-chest")
-                                .then(slotArgument))
-                        .then(CommandManager.literal("block")
-                                .then(CommandManager.argument("blockPos", BlockPosArgumentType.blockPos())
-                                        .suggests(findChestBlock)
-                                        .then(slotArgument))))
+                                .then(slotArgument)))
                 .then(CommandManager.literal("refresh-trade")
                         .then(CommandManager.argument("villager", EntityArgumentType.entity())
                                 .suggests(findVillager)
@@ -68,9 +63,6 @@ public class InventoryCommand implements bamboo.lib.command.Command {
     };
 
     private static SuggestionProvider<ServerCommandSource> findShulkerBox = (context, builder) -> {
-        return builder.buildFuture();
-    };
-    private static SuggestionProvider<ServerCommandSource> findChestBlock = (context, builder) -> {
         return builder.buildFuture();
     };
     private static SuggestionProvider<ServerCommandSource> findVillager = (context, builder) -> {
