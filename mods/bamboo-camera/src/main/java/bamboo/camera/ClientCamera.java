@@ -7,10 +7,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.PlayerInput;
 import net.minecraft.util.math.Vec3d;
 
-import bamboo.lib.keybinding.Key;
-import bamboo.lib.lifecycle.MinecraftClientLifecycle;
+import bamboo.lib.ClientLib;
 
-public class Camera implements ClientModInitializer {
+public class ClientCamera implements ClientModInitializer {
     private static boolean originChunkCullingEnabled;
     private static Entity originCameraEntity;
     private static CameraEntity cameraEntity;

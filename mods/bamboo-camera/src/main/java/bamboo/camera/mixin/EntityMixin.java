@@ -8,14 +8,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.entity.Entity;
 import net.minecraft.client.network.ClientPlayerEntity;
 
-import bamboo.camera.Camera;
+import bamboo.camera.ClientCamera;
 
 @Mixin(Entity.class)
 public abstract class EntityMixin {
     @Inject(method = "changeLookDirection", at = @At("HEAD"), cancellable = true)
     private void changeLookDirection(double x, double y, CallbackInfo ci) {
-        if (Camera.isActive() && (Object) this instanceof ClientPlayerEntity) {
-            Camera.handleMouse(x, y);
+        if (ClientCamera.isActive() && (Object) this instanceof ClientPlayerEntity) {
+            ClientCamera.handleMouse(x, y);
             ci.cancel();
         }
     }

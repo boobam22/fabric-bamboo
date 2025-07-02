@@ -12,7 +12,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.input.Input;
 import net.minecraft.client.input.KeyboardInput;
 
-import bamboo.camera.Camera;
+import bamboo.camera.ClientCamera;
 
 @Mixin(ClientPlayerEntity.class)
 public abstract class ClientPlayerEntityMixin {
@@ -23,15 +23,15 @@ public abstract class ClientPlayerEntityMixin {
 
     @Inject(method = "isCamera", at = @At("HEAD"), cancellable = true)
     private void isCamera(CallbackInfoReturnable<Boolean> cir) {
-        if (Camera.isActive()) {
+        if (ClientCamera.isActive()) {
             cir.setReturnValue(true);
         }
     }
 
     @Inject(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/input/Input;tick()V", shift = At.Shift.AFTER))
     private void tickMovement(CallbackInfo ci) {
-        if (Camera.isActive()) {
-            Camera.handleInput(this.input.playerInput);
+        if (ClientCamera.isActive()) {
+            ClientCamera.handleInput(this.input.playerInput);
             this.input = new KeyboardInput(this.client.options);
         }
     }
