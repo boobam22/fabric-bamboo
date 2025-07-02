@@ -7,7 +7,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.PlayerInput;
 import net.minecraft.util.math.Vec3d;
 
-import bamboo.lib.ClientLib;
+import bamboo.lib.api.Client;
+import bamboo.lib.keybinding.handler.IngameHandler;
 
 public class ClientCamera implements ClientModInitializer {
     private static boolean originChunkCullingEnabled;
@@ -16,20 +17,16 @@ public class ClientCamera implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        Key.parse("v").execute(this::toggle);
-
         MinecraftClient client = MinecraftClient.getInstance();
         originChunkCullingEnabled = client.chunkCullingEnabled;
-        MinecraftClientLifecycle.onExitWorld(() -> {
+
+        Client.registerKey("v", (IngameHandler) this::toggle);
+        Client.onExitWorld(() -> {
             client.chunkCullingEnabled = originChunkCullingEnabled;
         });
     }
 
-    public boolean toggle(MinecraftClient client) {
-        if (client.currentScreen != null) {
-            return false;
-        }
-
+    public void toggle(MinecraftClient client) {
         if (isActive()) {
             client.setCameraEntity(originCameraEntity);
             client.chunkCullingEnabled = originChunkCullingEnabled;
@@ -40,7 +37,6 @@ public class ClientCamera implements ClientModInitializer {
             client.setCameraEntity(cameraEntity);
             client.chunkCullingEnabled = false;
         }
-        return true;
     }
 
     public static boolean isActive() {
