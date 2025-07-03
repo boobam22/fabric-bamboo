@@ -16,7 +16,11 @@ import net.minecraft.server.world.ServerWorld;
 
 public class Decorator {
     @FunctionalInterface
-    public static interface Player extends Command<ServerCommandSource> {
+    public static interface Base extends Command<ServerCommandSource> {
+    }
+
+    @FunctionalInterface
+    public static interface Player extends Base {
         @Override
         default int run(CommandContext<ServerCommandSource> ctx) {
             return run(ctx.getSource().getPlayer());
@@ -26,7 +30,7 @@ public class Decorator {
     }
 
     @FunctionalInterface
-    public static interface WithPlayer extends Command<ServerCommandSource> {
+    public static interface WithPlayer extends Base {
         @Override
         default int run(CommandContext<ServerCommandSource> ctx) {
             return run(ctx, ctx.getSource().getPlayer());
@@ -36,7 +40,7 @@ public class Decorator {
     }
 
     @FunctionalInterface
-    public static interface World extends Command<ServerCommandSource> {
+    public static interface World extends Base {
         @Override
         default int run(CommandContext<ServerCommandSource> ctx) {
             return run(ctx.getSource().getWorld());
@@ -46,7 +50,7 @@ public class Decorator {
     }
 
     @FunctionalInterface
-    public static interface WithWorld extends Command<ServerCommandSource> {
+    public static interface WithWorld extends Base {
         @Override
         default int run(CommandContext<ServerCommandSource> ctx) {
             return run(ctx, ctx.getSource().getWorld());
@@ -56,7 +60,11 @@ public class Decorator {
     }
 
     @FunctionalInterface
-    public interface SuggestionPlayer extends SuggestionProvider<ServerCommandSource> {
+    public interface BaseSuggestion extends SuggestionProvider<ServerCommandSource> {
+    }
+
+    @FunctionalInterface
+    public interface SuggestionPlayer extends BaseSuggestion {
         @Override
         default CompletableFuture<Suggestions> getSuggestions(
                 CommandContext<ServerCommandSource> ctx, SuggestionsBuilder builder) {
@@ -67,7 +75,7 @@ public class Decorator {
     }
 
     @FunctionalInterface
-    public interface SuggestionWithPlayer extends SuggestionProvider<ServerCommandSource> {
+    public interface SuggestionWithPlayer extends BaseSuggestion {
         @Override
         default CompletableFuture<Suggestions> getSuggestions(
                 CommandContext<ServerCommandSource> ctx, SuggestionsBuilder builder) {
@@ -78,7 +86,7 @@ public class Decorator {
     }
 
     @FunctionalInterface
-    public interface SuggestionWorld extends SuggestionProvider<ServerCommandSource> {
+    public interface SuggestionWorld extends BaseSuggestion {
         @Override
         default CompletableFuture<Suggestions> getSuggestions(
                 CommandContext<ServerCommandSource> ctx, SuggestionsBuilder builder) {
@@ -89,7 +97,7 @@ public class Decorator {
     }
 
     @FunctionalInterface
-    public interface SuggestionWithWorld extends SuggestionProvider<ServerCommandSource> {
+    public interface SuggestionWithWorld extends BaseSuggestion {
         @Override
         default CompletableFuture<Suggestions> getSuggestions(
                 CommandContext<ServerCommandSource> ctx, SuggestionsBuilder builder) {
