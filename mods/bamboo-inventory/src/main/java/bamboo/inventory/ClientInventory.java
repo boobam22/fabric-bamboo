@@ -1,17 +1,12 @@
 package bamboo.inventory;
 
-import java.util.List;
-
 import net.fabricmc.api.ClientModInitializer;
-
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.slot.Slot;
 
 import bamboo.lib.api.Client;
 import bamboo.inventory.action.MoveAction;
 import bamboo.inventory.action.MergeAction;
 
-public class ClientInventory implements ClientModInitializer {
+public class ClientInventory extends Inventory implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         registerKey("shift+left", MoveAction::moveOneStack);
@@ -30,17 +25,17 @@ public class ClientInventory implements ClientModInitializer {
         registerKey("r", MergeAction::merge, false);
     }
 
+    private static InventoryHandler cancel = (handler, slots, focusedSlot) -> {
+    };
+
     private static void registerKey(String key, InventoryHandler handler, boolean cancelOnRelease) {
         Client.registerKey(key, handler);
         if (cancelOnRelease) {
-            Client.registerKey(key, (InventoryHandler) ClientInventory::cancel, true);
+            Client.registerKey(key, cancel, true);
         }
     }
 
     private static void registerKey(String key, InventoryHandler handler) {
         registerKey(key, handler, true);
-    }
-
-    private static void cancel(ScreenHandler handler, List<Slot> slots, Slot focusedSlot) {
     }
 }

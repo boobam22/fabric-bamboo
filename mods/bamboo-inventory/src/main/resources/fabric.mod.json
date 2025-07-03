@@ -5,6 +5,9 @@
     "name": "Bamboo Inventory",
     "description": "",
     "entrypoints": {
+        "main": [
+            "bamboo.inventory.Inventory"
+        ],
         "client": [
             "bamboo.inventory.ClientInventory"
         ]
