@@ -14,28 +14,12 @@ import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.village.VillagerProfession;
 import net.minecraft.item.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.text.Text;
 
 public class Util {
-    public static boolean canRefeshTrade(Entity entity) {
-        if (entity instanceof VillagerEntity villager) {
-            return villager.getExperience() == 0
-                    && !villager.getVillagerData().profession().matchesKey(VillagerProfession.NONE);
-        }
-        return false;
-    }
-
-    public static void refreshTrade(ServerPlayerEntity player, Entity entity) {
-        if (canRefeshTrade(entity)) {
-            VillagerEntity villager = (VillagerEntity) entity;
-            villager.setOffers(null);
-
-            if (player.currentScreenHandler instanceof MerchantScreenHandler) {
-                player.sendTradeOffers(player.currentScreenHandler.syncId, villager.getOffers(),
-                        villager.getVillagerData().level(), villager.getExperience(),
-                        villager.isLeveledMerchant(), villager.canRefreshTrades());
-            }
-        }
+    public static boolean isShulkerBox(ItemStack stack) {
+        return stack != null && stack.isIn(ItemTags.SHULKER_BOXES);
     }
 
     private static void openHandledScreen(ServerPlayerEntity player, ScreenHandlerFactory factory, Text title) {
@@ -61,6 +45,10 @@ public class Util {
     }
 
     public static void openShulkerBox(ServerPlayerEntity player, ItemStack stack) {
+        if (!isShulkerBox(stack)) {
+            return;
+        }
+
         SimpleInventory inventory = new SimpleInventory(27);
         stack.get(DataComponentTypes.CONTAINER).copyTo(inventory.getHeldStacks());
         inventory.addListener(si -> {
@@ -69,5 +57,26 @@ public class Util {
         });
         ScreenHandlerFactory factory = (id, pi, p) -> new ShulkerBoxScreenHandler(id, pi, inventory);
         openHandledScreen(player, factory, stack.getName());
+    }
+
+    public static boolean canRefeshTrade(Entity entity) {
+        if (entity instanceof VillagerEntity villager) {
+            return villager.getExperience() == 0
+                    && !villager.getVillagerData().profession().matchesKey(VillagerProfession.NONE);
+        }
+        return false;
+    }
+
+    public static void refreshTrade(ServerPlayerEntity player, Entity entity) {
+        if (canRefeshTrade(entity)) {
+            VillagerEntity villager = (VillagerEntity) entity;
+            villager.setOffers(null);
+
+            if (player.currentScreenHandler instanceof MerchantScreenHandler) {
+                player.sendTradeOffers(player.currentScreenHandler.syncId, villager.getOffers(),
+                        villager.getVillagerData().level(), villager.getExperience(),
+                        villager.isLeveledMerchant(), villager.canRefreshTrades());
+            }
+        }
     }
 }

@@ -1,98 +1,155 @@
 package bamboo.inventory.command;
 
+import java.util.List;
+import java.util.ArrayList;
 import java.util.UUID;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.CommandManager.RegistrationEnvironment;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.command.CommandRegistryAccess;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.entity.Entity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.text.Text;
 import net.minecraft.util.math.Box;
 
-import bamboo.lib.command.Command;
+import bamboo.lib.command.SimpleCommand;
+import bamboo.lib.command.Decorator;
 import bamboo.inventory.mixin.MerchantScreenHandlerAccessor;
 
-public class InventoryCommand implements Command {
+public class InventoryCommand implements SimpleCommand {
+    private static final SimpleCommandExceptionType SHULKER_BOX_NOT_FOUND;
+    private static final SimpleCommandExceptionType VILLAGER_NOT_FOUND;
+
     @Override
-    public void register(CommandDispatcher<ServerCommandSource> dispatcher,
-            RegistrationEnvironment env, CommandRegistryAccess access) {
+    public void register(CommandDispatcher<ServerCommandSource> dispatcher) {
+        RequiredArgumentBuilder<ServerCommandSource, Integer> idx = argument("idx", IntegerArgumentType.integer(0, 99));
 
-        RequiredArgumentBuilder<ServerCommandSource, Integer> idx = CommandManager
-                .argument("idx", IntegerArgumentType.integer(0, 99));
-
-        dispatcher.register(CommandManager.literal("bb-inventory")
-                .then(CommandManager.literal("open-crafting-table")
-                        .executes(openCraftingTable))
-                .then(CommandManager.literal("open-ender-chest")
-                        .executes(openEnderChest))
-                .then(CommandManager.literal("open-shulker-box")
+        dispatcher.register(literal("bb-inventory")
+                .then(literal("open-crafting-table").executes(openCraftingTable))
+                .then(literal("open-ender-chest").executes(openEnderChest))
+                .then(literal("open-shulker-box")
                         .then(idx.suggests(findShulkerBoxFromCurrentScreen)
                                 .executes(openShulkerBoxFromCurrentScreen))
-                        .then(CommandManager.literal("inventory")
+                        .then(literal("inventory")
                                 .then(idx.suggests(findShulkerBoxFromInventory)
                                         .executes(openShulkerBoxFromInventory)))
-                        .then(CommandManager.literal("ender-chest")
+                        .then(literal("ender-chest")
                                 .then(idx.suggests(findShulkerBoxFromEnderChest)
                                         .executes(openShulkerBoxFromEnderChest))))
-                .then(CommandManager.literal("refresh-trade")
-                        .executes(refreshTradeFromCurrentScreen)
-                        .then(CommandManager.argument("uuid", StringArgumentType.string())
-                                .suggests(findVillager)
-                                .executes(refreshTrade))));
+                .then(literal("refresh-trade").executes(refreshTradeFromCurrentScreen)
+                        .then(argument("uuid", StringArgumentType.string())
+                                .suggests(findVillager).executes(refreshTrade))));
     }
 
-    private static Decorator.WithPlayer openCraftingTable = (ctx, player) -> {
+    private static Decorator.Player openCraftingTable = player -> {
         Util.openCraftingTable(player);
+        return 0;
     };
 
-    private static Decorator.WithPlayer openEnderChest = (ctx, player) -> {
+    private static Decorator.Player openEnderChest = player -> {
         Util.openEnderChest(player);
+        return 0;
     };
 
-    private static Decorator.OpenShulkerBox openShulkerBoxFromCurrentScreen = (ctx, player, idx) -> {
+    private static OpenShulkerBox openShulkerBoxFromCurrentScreen = (player, idx) -> {
         return player.currentScreenHandler.getSlot(idx).getStack();
     };
 
-    private static Decorator.OpenShulkerBox openShulkerBoxFromInventory = (ctx, player, idx) -> {
+    private static OpenShulkerBox openShulkerBoxFromInventory = (player, idx) -> {
         return player.getInventory().getStack(idx);
     };
 
-    private static Decorator.OpenShulkerBox openShulkerBoxFromEnderChest = (ctx, player, idx) -> {
+    private static OpenShulkerBox openShulkerBoxFromEnderChest = (player, idx) -> {
         return player.getEnderChestInventory().getStack(idx);
     };
 
-    private static Decorator.WithPlayer refreshTradeFromCurrentScreen = (ctx, player) -> {
-        Entity entity = (Entity) ((MerchantScreenHandlerAccessor) player.currentScreenHandler).bamboo_getMerchant();
-        Util.refreshTrade(player, entity);
+    private static RefreshTrade refreshTradeFromCurrentScreen = (ctx, player) -> {
+        return (Entity) ((MerchantScreenHandlerAccessor) player.currentScreenHandler).bamboo_getMerchant();
     };
 
-    private static Decorator.WithPlayer refreshTrade = (ctx, player) -> {
+    private static RefreshTrade refreshTrade = (ctx, player) -> {
         UUID uuid = UUID.fromString(StringArgumentType.getString(ctx, "uuid"));
-        Entity entity = player.getWorld().getEntity(uuid);
-        Util.refreshTrade(player, entity);
+        return player.getWorld().getEntity(uuid);
     };
 
-    private static Decorator.ShulkerBoxSuggestions findShulkerBoxFromCurrentScreen = (ctx, player) -> {
+    private static ShulkerBoxSuggestion findShulkerBoxFromCurrentScreen = player -> {
         return player.currentScreenHandler.getStacks();
     };
 
-    private static Decorator.ShulkerBoxSuggestions findShulkerBoxFromInventory = (ctx, player) -> {
+    private static ShulkerBoxSuggestion findShulkerBoxFromInventory = player -> {
         return player.getInventory().getMainStacks();
     };
 
-    private static Decorator.ShulkerBoxSuggestions findShulkerBoxFromEnderChest = (ctx, player) -> {
+    private static ShulkerBoxSuggestion findShulkerBoxFromEnderChest = player -> {
         return player.getEnderChestInventory().getHeldStacks();
     };
 
-    private static Decorator.BaseSuggestions findVillager = (ctx, player) -> {
+    private static Decorator.PlayerSuggestion findVillager = player -> {
         Box range = new Box(player.getPos(), player.getPos()).expand(16);
         return player.getWorld()
                 .getEntitiesByClass(Entity.class, range, Util::canRefeshTrade).stream()
                 .map(e -> e.getUuidAsString()).toList();
     };
+
+    private static interface OpenShulkerBox extends Decorator.WithPlayer {
+        @Override
+        default int run(CommandContext<ServerCommandSource> ctx, ServerPlayerEntity player)
+                throws CommandSyntaxException {
+            int idx = IntegerArgumentType.getInteger(ctx, "idx");
+            ItemStack stack = findStack(player, idx);
+            if (Util.isShulkerBox(stack)) {
+                Util.openShulkerBox(player, stack);
+            } else {
+                throw SHULKER_BOX_NOT_FOUND.create();
+            }
+            return 0;
+        }
+
+        ItemStack findStack(ServerPlayerEntity player, int idx);
+    }
+
+    private static interface RefreshTrade extends Decorator.WithPlayer {
+        @Override
+        default int run(CommandContext<ServerCommandSource> ctx, ServerPlayerEntity player)
+                throws CommandSyntaxException {
+            Entity entity = getVillager(ctx, player);
+            if (Util.canRefeshTrade(entity)) {
+                Util.refreshTrade(player, entity);
+            } else {
+                throw VILLAGER_NOT_FOUND.create();
+            }
+            return 0;
+        }
+
+        Entity getVillager(CommandContext<ServerCommandSource> ctx, ServerPlayerEntity player);
+    }
+
+    private static interface ShulkerBoxSuggestion extends Decorator.PlayerSuggestion {
+        @Override
+        default List<String> getSuggestions(ServerPlayerEntity player) {
+            List<String> candidates = new ArrayList<>();
+            List<ItemStack> stacks = findStacks(player);
+
+            for (int i = 0; i < stacks.size(); i++) {
+                if (Util.isShulkerBox(stacks.get(i))) {
+                    candidates.add(String.valueOf(i));
+                }
+            }
+            return candidates;
+        }
+
+        List<ItemStack> findStacks(ServerPlayerEntity player);
+    }
+
+    static {
+        SHULKER_BOX_NOT_FOUND = new SimpleCommandExceptionType(Text.of("SHULKER_BOX_NOT_FOUND"));
+        VILLAGER_NOT_FOUND = new SimpleCommandExceptionType(Text.of("VILLAGER_NOT_FOUND"));
+    }
 }
