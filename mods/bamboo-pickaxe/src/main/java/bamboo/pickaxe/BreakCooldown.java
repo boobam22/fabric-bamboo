@@ -24,7 +24,7 @@ public class BreakCooldown {
 
     @Override
     public String toString() {
-        return entry.getValue().toString();
+        return entry.toString();
     }
 
     private static enum State {
