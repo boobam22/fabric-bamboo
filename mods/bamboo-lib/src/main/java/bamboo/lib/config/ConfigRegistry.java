@@ -26,7 +26,7 @@ public class ConfigRegistry {
     private <T> void loadEntry(ConfigEntry<T> entry) {
         String key = entry.getKey();
         if (properties.containsKey(key)) {
-            entry.set(entry.getConstructor().apply(properties.getProperty(key)));
+            entry.from(properties.getProperty(key));
         }
     }
 
@@ -45,7 +45,7 @@ public class ConfigRegistry {
 
     public void saveConfig() {
         registry.values().forEach(entry -> {
-            properties.setProperty(entry.getKey(), entry.getValue().toString());
+            properties.setProperty(entry.getKey(), entry.toString());
         });
 
         try {

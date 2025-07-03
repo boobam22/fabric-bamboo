@@ -23,10 +23,6 @@ public class ConfigEntry<T> {
         return defaultValue;
     }
 
-    public Function<String, T> getConstructor() {
-        return constructor;
-    }
-
     public T getValue() {
         return value;
     }
@@ -37,5 +33,14 @@ public class ConfigEntry<T> {
 
     public void reset() {
         this.set(defaultValue);
+    }
+
+    public void from(String string) {
+        this.set(constructor.apply(string));
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(getValue());
     }
 }
