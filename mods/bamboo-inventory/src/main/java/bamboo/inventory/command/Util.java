@@ -1,13 +1,10 @@
 package bamboo.inventory.command;
 
-import java.util.List;
-import java.util.ArrayList;
-
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.screen.ScreenHandlerFactory;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.ShulkerBoxScreenHandler;
-import net.minecraft.screen.slot.Slot;
+import net.minecraft.screen.MerchantScreenHandler;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.component.DataComponentTypes;
@@ -17,7 +14,6 @@ import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.village.VillagerProfession;
 import net.minecraft.item.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.text.Text;
 
 public class Util {
@@ -27,6 +23,19 @@ public class Util {
                     && !villager.getVillagerData().profession().matchesKey(VillagerProfession.NONE);
         }
         return false;
+    }
+
+    public static void refreshTrade(ServerPlayerEntity player, Entity entity) {
+        if (canRefeshTrade(entity)) {
+            VillagerEntity villager = (VillagerEntity) entity;
+            villager.setOffers(null);
+
+            if (player.currentScreenHandler instanceof MerchantScreenHandler) {
+                player.sendTradeOffers(player.currentScreenHandler.syncId, villager.getOffers(),
+                        villager.getVillagerData().level(), villager.getExperience(),
+                        villager.isLeveledMerchant(), villager.canRefreshTrades());
+            }
+        }
     }
 
     private static void openHandledScreen(ServerPlayerEntity player, ScreenHandlerFactory factory, Text title) {
@@ -60,37 +69,5 @@ public class Util {
         });
         ScreenHandlerFactory factory = (id, pi, p) -> new ShulkerBoxScreenHandler(id, pi, inventory);
         openHandledScreen(player, factory, stack.getName());
-    }
-
-    private static List<Slot> findShulkerBox(ServerPlayerEntity player, Inventory inventory) {
-        List<Slot> slots = new ArrayList<>();
-        for (int i = 0; i < inventory.size(); i++) {
-            if (inventory.getStack(i).isIn(ItemTags.SHULKER_BOXES)) {
-                slots.add(new Slot(inventory, i, 0, 0));
-            }
-        }
-        return slots;
-    }
-
-    private static List<Slot> findShulkerBox(ServerPlayerEntity player, InventoryType type) {
-        if (type == InventoryType.PLAYER_INVENTORY) {
-            return findShulkerBox(player, player.getInventory());
-        } else if (type == InventoryType.ENDER_CHEST) {
-            return findShulkerBox(player, player.getEnderChestInventory());
-        }
-        return List.of();
-    }
-
-    public static List<String> findShulkerBox(ServerPlayerEntity player, String string) {
-        return findShulkerBox(player, InventoryType.valueOf(string)).stream()
-                .map(slot -> String.valueOf(slot.getIndex()))
-                .toList();
-    }
-
-    public static ItemStack findShulkerBox(ServerPlayerEntity player, String string, int idx) {
-        return findShulkerBox(player, InventoryType.valueOf(string)).stream()
-                .filter(slot -> slot.getIndex() == idx)
-                .map(slot -> slot.getStack())
-                .findFirst().orElse(null);
     }
 }
