@@ -25,11 +25,11 @@ public class ClientPickaxe extends Pickaxe implements ClientModInitializer {
 
     public static void switchNextBreakCooldown(MinecraftClient client) {
         breakCooldown.switchNext();
-        Util.message("Break Cooldown", breakCooldown.toString());
+        Util.message("Break Cooldown [§a%s§f]", breakCooldown);
     }
 
     public static void toggleAreaMine(MinecraftClient client) {
         boolean enabled = areaMine.toggle();
-        Util.message("Area Mine", String.valueOf(enabled), enabled);
+        Util.message("Area Mine [%s%s§f]", enabled ? "§a" : "§c", enabled);
     }
 }
