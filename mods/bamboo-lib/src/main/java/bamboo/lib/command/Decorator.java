@@ -5,6 +5,7 @@ import java.util.concurrent.CompletableFuture;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.brigadier.suggestion.Suggestions;
@@ -22,41 +23,41 @@ public class Decorator {
     @FunctionalInterface
     public static interface Player extends Base {
         @Override
-        default int run(CommandContext<ServerCommandSource> ctx) {
+        default int run(CommandContext<ServerCommandSource> ctx) throws CommandSyntaxException {
             return run(ctx.getSource().getPlayer());
         }
 
-        int run(ServerPlayerEntity player);
+        int run(ServerPlayerEntity player) throws CommandSyntaxException;
     }
 
     @FunctionalInterface
     public static interface WithPlayer extends Base {
         @Override
-        default int run(CommandContext<ServerCommandSource> ctx) {
+        default int run(CommandContext<ServerCommandSource> ctx) throws CommandSyntaxException {
             return run(ctx, ctx.getSource().getPlayer());
         }
 
-        int run(CommandContext<ServerCommandSource> ctx, ServerPlayerEntity player);
+        int run(CommandContext<ServerCommandSource> ctx, ServerPlayerEntity player) throws CommandSyntaxException;
     }
 
     @FunctionalInterface
     public static interface World extends Base {
         @Override
-        default int run(CommandContext<ServerCommandSource> ctx) {
+        default int run(CommandContext<ServerCommandSource> ctx) throws CommandSyntaxException {
             return run(ctx.getSource().getWorld());
         }
 
-        int run(ServerWorld world);
+        int run(ServerWorld world) throws CommandSyntaxException;
     }
 
     @FunctionalInterface
     public static interface WithWorld extends Base {
         @Override
-        default int run(CommandContext<ServerCommandSource> ctx) {
+        default int run(CommandContext<ServerCommandSource> ctx) throws CommandSyntaxException {
             return run(ctx, ctx.getSource().getWorld());
         }
 
-        int run(CommandContext<ServerCommandSource> ctx, ServerWorld world);
+        int run(CommandContext<ServerCommandSource> ctx, ServerWorld world) throws CommandSyntaxException;
     }
 
     @FunctionalInterface
