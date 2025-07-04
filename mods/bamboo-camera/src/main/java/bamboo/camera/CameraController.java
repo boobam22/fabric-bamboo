@@ -6,7 +6,7 @@ import net.minecraft.util.PlayerInput;
 import net.minecraft.util.math.Vec3d;
 
 public class CameraController {
-    private static boolean originChunkCullingEnabled = MinecraftClient.getInstance().chunkCullingEnabled;;
+    private static boolean originChunkCullingEnabled = MinecraftClient.getInstance().chunkCullingEnabled;
     private Entity originCameraEntity;
     private CameraEntity cameraEntity;
 
