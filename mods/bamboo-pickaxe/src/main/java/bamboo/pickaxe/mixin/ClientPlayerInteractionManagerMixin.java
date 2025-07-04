@@ -40,11 +40,12 @@ public abstract class ClientPlayerInteractionManagerMixin {
         return cooldown;
     }
 
-    @Inject(method = "interactBlockInternal", at = @At("HEAD"))
-    private void interactBlockInternal(ClientPlayerEntity player, Hand hand, BlockHitResult hitResult,
+    @Inject(method = "interactBlock", at = @At("HEAD"), cancellable = true)
+    private void interactBlock(ClientPlayerEntity player, Hand hand, BlockHitResult hitResult,
             CallbackInfoReturnable<ActionResult> cir) {
         if (ClientPickaxe.areaMine.isEnabled() && player.getStackInHand(hand).isIn(ItemTags.PICKAXES)) {
             ClientPickaxe.areaMine.resetArea(hitResult.getBlockPos());
+            cir.setReturnValue(ActionResult.SUCCESS);
         }
     }
 }

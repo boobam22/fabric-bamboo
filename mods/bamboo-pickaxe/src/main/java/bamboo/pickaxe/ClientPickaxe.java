@@ -8,6 +8,7 @@ import bamboo.lib.keybinding.handler.IngameHandler;
 
 public class ClientPickaxe extends Pickaxe implements ClientModInitializer {
     public static BreakCooldown breakCooldown = new BreakCooldown();
+    public static AreaMine areaMine = new AreaMine();
 
     @Override
     public void onInitializeClient() {
