@@ -1,0 +1,14 @@
+{
+    "schemaVersion": 1,
+    "id": "bamboo-world",
+    "version": "${version}",
+    "name": "Bamboo World",
+    "description": "",
+    "mixins": [
+        "bamboo-world.mixins.json"
+    ],
+    "depends": {
+        "fabricloader": ">=${loader_version}",
+        "minecraft": "${minecraft_version}"
+    }
+}
