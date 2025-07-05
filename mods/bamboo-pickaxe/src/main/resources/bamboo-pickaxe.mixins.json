@@ -4,8 +4,7 @@
     "compatibilityLevel": "JAVA_21",
     "mixins": [
         "LivingEntityMixin",
-        "BlocksMixin",
-        "BlockMixin"
+        "BlocksMixin"
     ],
     "client": [
         "ClientPlayerInteractionManagerMixin",

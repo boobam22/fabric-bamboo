@@ -16,7 +16,7 @@ import net.minecraft.registry.tag.ItemTags;
 public abstract class LivingEntityMixin {
     @Inject(method = "dropLoot", at = @At("HEAD"), cancellable = true)
     private void dropLoot(ServerWorld world, DamageSource damageSource, boolean causedByPlayer, CallbackInfo ci) {
-        if (causedByPlayer && ((PlayerEntity) damageSource.getSource()).getMainHandStack().isIn(ItemTags.PICKAXES)) {
+        if (causedByPlayer && ((PlayerEntity) damageSource.getAttacker()).getMainHandStack().isIn(ItemTags.PICKAXES)) {
             LivingEntity self = (LivingEntity) (Object) this;
             if (!(self instanceof EnderDragonEntity)) {
                 self.dropStack(world, self.getPickBlockStack());

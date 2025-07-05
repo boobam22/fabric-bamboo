@@ -2,10 +2,12 @@ package bamboo.pickaxe;
 
 import net.fabricmc.api.ModInitializer;
 
-public class Pickaxe implements ModInitializer {
-    public static AreaMine areaMine = new AreaMine();
+import bamboo.lib.api.Server;
+import bamboo.pickaxe.command.PickaxeCommand;
 
+public class Pickaxe implements ModInitializer {
     @Override
     public void onInitialize() {
+        Server.registerCommand(new PickaxeCommand());
     }
 }

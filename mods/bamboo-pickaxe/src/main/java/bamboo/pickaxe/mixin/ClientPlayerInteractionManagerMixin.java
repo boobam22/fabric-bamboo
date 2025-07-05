@@ -10,11 +10,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.world.GameMode;
 import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 
 import bamboo.pickaxe.ClientPickaxe;
 
@@ -40,11 +44,28 @@ public abstract class ClientPlayerInteractionManagerMixin {
         return cooldown;
     }
 
-    @Inject(method = "interactBlockInternal", at = @At("HEAD"))
-    private void interactBlockInternal(ClientPlayerEntity player, Hand hand, BlockHitResult hitResult,
+    @Inject(method = "interactBlock", at = @At("HEAD"), cancellable = true)
+    private void interactBlock(ClientPlayerEntity player, Hand hand, BlockHitResult hitResult,
             CallbackInfoReturnable<ActionResult> cir) {
         if (ClientPickaxe.areaMine.isEnabled() && player.getStackInHand(hand).isIn(ItemTags.PICKAXES)) {
             ClientPickaxe.areaMine.resetArea(hitResult.getBlockPos());
+            cir.setReturnValue(ActionResult.SUCCESS);
+        }
+    }
+
+    @Inject(method = "attackBlock", at = @At("HEAD"), cancellable = true)
+    private void attackBlock(BlockPos pos, Direction direction, CallbackInfoReturnable<Boolean> cir) {
+        ClientPlayerEntity player = MinecraftClient.getInstance().player;
+        if (ClientPickaxe.areaMine.isEnabled() && player.getMainHandStack().isIn(ItemTags.PICKAXES)) {
+            ClientPickaxe.areaMine.expandArea(pos);
+
+            Box box = ClientPickaxe.areaMine.getArea().contract(0.5);
+            BlockPos min = BlockPos.ofFloored(box.getMinPos());
+            BlockPos max = BlockPos.ofFloored(box.getMaxPos());
+
+            player.networkHandler.sendChatCommand(String.format("bb-pickaxe clean %d %d %d %d %d %d",
+                    min.getX(), min.getY(), min.getZ(), max.getX(), max.getY(), max.getZ()));
+            cir.setReturnValue(((ClientPlayerInteractionManager) (Object) this).breakBlock(pos));
         }
     }
 }
