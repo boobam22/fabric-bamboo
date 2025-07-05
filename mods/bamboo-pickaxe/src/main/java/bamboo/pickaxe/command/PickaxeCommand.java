@@ -62,6 +62,10 @@ public class PickaxeCommand implements SimpleCommand {
             }
         }
 
+        if (count == limit) {
+            Scheduler.create(player, ctx.getInput());
+        }
+
         ctx.getSource().sendMessage(Text.of(String.format("§a%d§f blocks changed", count)));
         return count;
     };
