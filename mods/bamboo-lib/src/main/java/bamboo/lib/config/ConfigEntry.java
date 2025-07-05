@@ -35,7 +35,7 @@ public class ConfigEntry<T> {
         this.set(defaultValue);
     }
 
-    public void from(String string) {
+    public void parse(String string) {
         this.set(constructor.apply(string));
     }
 

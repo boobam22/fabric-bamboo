@@ -26,7 +26,7 @@ public class ConfigRegistry {
     private <T> void loadEntry(ConfigEntry<T> entry) {
         String key = entry.getKey();
         if (properties.containsKey(key)) {
-            entry.from(properties.getProperty(key));
+            entry.parse(properties.getProperty(key));
         }
     }
 
