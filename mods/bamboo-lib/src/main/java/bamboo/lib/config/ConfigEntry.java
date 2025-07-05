@@ -36,7 +36,10 @@ public class ConfigEntry<T> {
     }
 
     public void parse(String string) {
-        this.set(constructor.apply(string));
+        try {
+            this.set(constructor.apply(string));
+        } catch (Exception e) {
+        }
     }
 
     @Override
