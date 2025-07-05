@@ -53,7 +53,9 @@ public class PickaxeCommand implements SimpleCommand {
                 if (blockState.isIn(ORE_TAG)) {
                     Block.getDroppedStacks(blockState, world, pos, null, null, player.getMainHandStack())
                             .forEach(stack -> {
-                                Block.dropStack(world, player.getBlockPos(), stack);
+                                if (!player.getInventory().insertStack(stack)) {
+                                    Block.dropStack(world, player.getBlockPos(), stack);
+                                }
                             });
                 }
             }
