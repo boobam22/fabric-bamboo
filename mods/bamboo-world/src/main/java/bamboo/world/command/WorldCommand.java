@@ -9,7 +9,7 @@ import bamboo.lib.command.SimpleCommand;
 public class WorldCommand implements SimpleCommand {
     @Override
     public void register(CommandDispatcher<ServerCommandSource> dispatcher) {
-        new ChunkCommand().register(dispatcher);
+        new RegionCommand().register(dispatcher);
         new PointCommand().register(dispatcher);
         new TpCommand().register(dispatcher);
         new BackupCommand().register(dispatcher);

@@ -62,49 +62,54 @@ public class Decorator {
 
     @FunctionalInterface
     public interface BaseSuggestion extends SuggestionProvider<ServerCommandSource> {
+        @Override
+        default CompletableFuture<Suggestions> getSuggestions(
+                CommandContext<ServerCommandSource> ctx, SuggestionsBuilder builder) throws CommandSyntaxException {
+            return CommandSource.suggestMatching(getSuggestions(ctx), builder);
+        }
+
+        List<String> getSuggestions(CommandContext<ServerCommandSource> ctx) throws CommandSyntaxException;
     }
 
     @FunctionalInterface
     public interface PlayerSuggestion extends BaseSuggestion {
         @Override
-        default CompletableFuture<Suggestions> getSuggestions(
-                CommandContext<ServerCommandSource> ctx, SuggestionsBuilder builder) {
-            return CommandSource.suggestMatching(getSuggestions(ctx.getSource().getPlayer()), builder);
+        default List<String> getSuggestions(CommandContext<ServerCommandSource> ctx) throws CommandSyntaxException {
+            return getSuggestions(ctx.getSource().getPlayer());
         }
 
-        List<String> getSuggestions(ServerPlayerEntity player);
+        List<String> getSuggestions(ServerPlayerEntity player) throws CommandSyntaxException;
     }
 
     @FunctionalInterface
     public interface WithPlayerSuggestion extends BaseSuggestion {
         @Override
-        default CompletableFuture<Suggestions> getSuggestions(
-                CommandContext<ServerCommandSource> ctx, SuggestionsBuilder builder) {
-            return CommandSource.suggestMatching(getSuggestions(ctx, ctx.getSource().getPlayer()), builder);
+        default List<String> getSuggestions(CommandContext<ServerCommandSource> ctx) throws CommandSyntaxException {
+            return getSuggestions(ctx, ctx.getSource().getPlayer());
         }
 
-        List<String> getSuggestions(CommandContext<ServerCommandSource> ctx, ServerPlayerEntity player);
+        List<String> getSuggestions(CommandContext<ServerCommandSource> ctx, ServerPlayerEntity player)
+                throws CommandSyntaxException;
     }
 
     @FunctionalInterface
     public interface WorldSuggestion extends BaseSuggestion {
         @Override
-        default CompletableFuture<Suggestions> getSuggestions(
-                CommandContext<ServerCommandSource> ctx, SuggestionsBuilder builder) {
-            return CommandSource.suggestMatching(getSuggestions(ctx.getSource().getWorld()), builder);
+        default List<String> getSuggestions(CommandContext<ServerCommandSource> ctx) throws CommandSyntaxException {
+            return getSuggestions(ctx.getSource().getWorld());
         }
 
-        List<String> getSuggestions(ServerWorld world);
+        List<String> getSuggestions(ServerWorld world) throws CommandSyntaxException;
     }
 
     @FunctionalInterface
     public interface WithWorldSuggestion extends BaseSuggestion {
         @Override
-        default CompletableFuture<Suggestions> getSuggestions(
-                CommandContext<ServerCommandSource> ctx, SuggestionsBuilder builder) {
-            return CommandSource.suggestMatching(getSuggestions(ctx, ctx.getSource().getWorld()), builder);
+        default List<String> getSuggestions(CommandContext<ServerCommandSource> ctx) throws CommandSyntaxException {
+            return getSuggestions(ctx, ctx.getSource().getWorld());
         }
 
-        List<String> getSuggestions(CommandContext<ServerCommandSource> ctx, ServerWorld world);
+        List<String> getSuggestions(CommandContext<ServerCommandSource> ctx, ServerWorld world)
+                throws CommandSyntaxException;
     }
 }
