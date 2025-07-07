@@ -12,6 +12,7 @@ import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.world.GameMode;
+import net.minecraft.block.Blocks;
 import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ActionResult;
@@ -55,8 +56,10 @@ public abstract class ClientPlayerInteractionManagerMixin {
 
     @Inject(method = "attackBlock", at = @At("HEAD"), cancellable = true)
     private void attackBlock(BlockPos pos, Direction direction, CallbackInfoReturnable<Boolean> cir) {
-        ClientPlayerEntity player = MinecraftClient.getInstance().player;
-        if (ClientPickaxe.areaMine.isEnabled() && player.getMainHandStack().isIn(ItemTags.PICKAXES)) {
+        MinecraftClient client = MinecraftClient.getInstance();
+        ClientPlayerEntity player = client.player;
+        if (ClientPickaxe.areaMine.isEnabled() && player.getMainHandStack().isIn(ItemTags.PICKAXES)
+                && (this.gameMode != GameMode.SURVIVAL || !client.world.getBlockState(pos).isOf(Blocks.BEDROCK))) {
             ClientPickaxe.areaMine.expandArea(pos);
 
             Box box = ClientPickaxe.areaMine.getArea().contract(0.5);
