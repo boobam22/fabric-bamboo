@@ -6,6 +6,8 @@ import java.util.Properties;
 import java.util.function.Function;
 import java.nio.file.Path;
 import java.nio.file.Files;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.IOException;
 
 import net.fabricmc.loader.api.FabricLoader;
@@ -36,8 +38,8 @@ public class ConfigRegistry {
 
     public static Properties loadConfig() {
         Properties props = new Properties();
-        try {
-            props.load(Files.newInputStream(getFilePath()));
+        try (InputStream in = Files.newInputStream(getFilePath())) {
+            props.load(in);
         } catch (IOException e) {
         }
         return props;
@@ -48,8 +50,8 @@ public class ConfigRegistry {
             properties.setProperty(entry.getKey(), entry.toString());
         });
 
-        try {
-            properties.store(Files.newOutputStream(getFilePath()), fileName);
+        try (OutputStream out = Files.newOutputStream(getFilePath())) {
+            properties.store(out, fileName);
         } catch (IOException e) {
         }
     }
