@@ -7,6 +7,11 @@
     "mixins": [
         "bamboo-world.mixins.json"
     ],
+    "entrypoints": {
+        "main": [
+            "bamboo.world.World"
+        ]
+    },
     "depends": {
         "fabricloader": ">=${loader_version}",
         "minecraft": "${minecraft_version}"
