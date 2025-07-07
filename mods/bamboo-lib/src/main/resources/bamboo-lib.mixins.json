@@ -6,7 +6,8 @@
         "resource.ResourcePackManagerkMixin",
         "command.CommandManagerMixin",
         "command.CommandSourceMixin",
-        "command.FunctionCommandMixin"
+        "command.FunctionCommandMixin",
+        "lifecycle.MinecraftServerMixin"
     ],
     "client": [
         "keybinding.KeyboardMixin",

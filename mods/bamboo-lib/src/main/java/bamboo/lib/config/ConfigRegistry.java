@@ -14,7 +14,7 @@ import net.fabricmc.loader.api.FabricLoader;
 
 public class ConfigRegistry {
     private static final String fileName = "bamboo.properties";
-    private static final Properties properties = loadConfig();
+    private final Properties properties = new Properties();
     private final Map<String, ConfigEntry<?>> registry = new TreeMap<>();
 
     public <T> ConfigEntry<T> register(String key, T value, Function<String, T> constructor) {
@@ -36,13 +36,16 @@ public class ConfigRegistry {
         return FabricLoader.getInstance().getConfigDir().resolve(fileName);
     }
 
-    public static Properties loadConfig() {
-        Properties props = new Properties();
+    public void loadConfig() {
+        properties.clear();
         try (InputStream in = Files.newInputStream(getFilePath())) {
-            props.load(in);
+            properties.load(in);
         } catch (IOException e) {
         }
-        return props;
+
+        registry.values().forEach(entry -> {
+            loadEntry(entry);
+        });
     }
 
     public void saveConfig() {
