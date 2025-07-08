@@ -41,6 +41,10 @@ public class RegionManager extends PersistentState {
         return regions.remove(new RegionPos(x, z));
     }
 
+    public boolean contains(int x, int z) {
+        return regions.contains(new RegionPos(x, z));
+    }
+
     public static RegionManager get(ServerWorld world) {
         return world.getPersistentStateManager().getOrCreate(TYPE);
     }
