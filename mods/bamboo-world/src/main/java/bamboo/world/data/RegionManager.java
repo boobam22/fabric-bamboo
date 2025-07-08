@@ -16,15 +16,14 @@ public class RegionManager extends PersistentState {
     public static final PersistentStateType<RegionManager> TYPE;
     private final TreeSet<RegionPos> regions = new TreeSet<>();
 
-    public RegionManager() {
-        regions.add(new RegionPos(0, 0));
-        regions.add(new RegionPos(0, -1));
-        regions.add(new RegionPos(-1, 0));
-        regions.add(new RegionPos(-1, -1));
-        this.markDirty();
+    private RegionManager() {
+        add(0, 0);
+        add(0, -1);
+        add(-1, 0);
+        add(-1, -1);
     }
 
-    public RegionManager(List<RegionPos> regions) {
+    private RegionManager(List<RegionPos> regions) {
         this.regions.addAll(regions);
     }
 
@@ -32,14 +31,14 @@ public class RegionManager extends PersistentState {
         return List.copyOf(regions);
     }
 
-    public boolean add(RegionPos regionPos) {
+    public boolean add(int x, int z) {
         this.markDirty();
-        return regions.add(regionPos);
+        return regions.add(new RegionPos(x, z));
     }
 
-    public boolean remove(RegionPos regionPos) {
+    public boolean remove(int x, int z) {
         this.markDirty();
-        return regions.remove(regionPos);
+        return regions.remove(new RegionPos(x, z));
     }
 
     public static RegionManager get(ServerWorld world) {

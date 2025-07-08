@@ -56,12 +56,12 @@ public class RegionCommand implements SimpleCommand {
 
     private static Decorator.WithWorld addRegion = (ctx, world) -> {
         ColumnPos pos = ColumnPosArgumentType.getColumnPos(ctx, "columnPos");
-        return RegionManager.get(world).add(new RegionPos(pos.x(), pos.z())) ? 1 : 0;
+        return RegionManager.get(world).add(pos.x(), pos.z()) ? 1 : 0;
     };
 
     private static Decorator.WithWorld rmRegion = (ctx, world) -> {
         ColumnPos pos = ColumnPosArgumentType.getColumnPos(ctx, "columnPos");
-        return RegionManager.get(world).remove(new RegionPos(pos.x(), pos.z())) ? 1 : 0;
+        return RegionManager.get(world).remove(pos.x(), pos.z()) ? 1 : 0;
     };
 
     private static Decorator.BaseSuggestion currentRegion = ctx -> {
