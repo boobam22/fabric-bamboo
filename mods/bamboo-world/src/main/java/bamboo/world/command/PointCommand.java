@@ -36,10 +36,13 @@ public class PointCommand implements SimpleCommand {
     private static Decorator.Base listPoint = ctx -> {
         ctx.getSource().sendMessage(Text.of(String.format("§a%d§f point", World.points.size())));
         World.points.keySet().forEach(name -> {
-            String tpCommand = String.format("/bb-world tp point %s", name);
-            String rmCommand = String.format("/bb-world point rm %s", name);
+            Point point = World.points.get(name);
 
-            Text tp = Text.literal(String.format("§a%s§f", name)).styled(style -> style
+            String tpCommand = String.format("/execute in %s run bb-world tp %d %d",
+                    point.worldKey().getValue().toString(), point.x(), point.z());
+            String rmCommand = String.format("/bb-world point rm %s", point.name());
+
+            Text tp = Text.literal(String.format("§a%s§f", point.name())).styled(style -> style
                     .withHoverEvent(new HoverEvent.ShowText(Text.of(tpCommand)))
                     .withClickEvent(new ClickEvent.RunCommand(tpCommand)));
             Text rm = Text.literal(" §c✖§f ").styled(style -> style
