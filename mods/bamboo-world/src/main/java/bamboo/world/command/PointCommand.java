@@ -14,8 +14,8 @@ import net.minecraft.util.math.ColumnPos;
 
 import bamboo.lib.command.SimpleCommand;
 import bamboo.lib.command.Decorator;
-import bamboo.world.World;
-import bamboo.world.util.Point;
+import bamboo.world.data.PointManager;
+import bamboo.world.data.Point;
 
 public class PointCommand implements SimpleCommand {
     @Override
@@ -33,13 +33,15 @@ public class PointCommand implements SimpleCommand {
                                         .executes(rmPoint)))));
     }
 
-    private static Decorator.Base listPoint = ctx -> {
-        ctx.getSource().sendMessage(Text.of(String.format("§a%d§f point", World.points.size())));
-        World.points.keySet().forEach(name -> {
-            String tpCommand = String.format("/bb-world tp point %s", name);
-            String rmCommand = String.format("/bb-world point rm %s", name);
+    private static Decorator.WithWorld listPoint = (ctx, world) -> {
+        List<Point> points = PointManager.get(world).getAll();
 
-            Text tp = Text.literal(String.format("§a%s§f", name)).styled(style -> style
+        ctx.getSource().sendMessage(Text.of(String.format("§a%d§f point", points.size())));
+        points.forEach(point -> {
+            String tpCommand = String.format("/bb-world tp point %s", point.name());
+            String rmCommand = String.format("/bb-world point rm %s", point.name());
+
+            Text tp = Text.literal(String.format("§a%s§f", point.name())).styled(style -> style
                     .withHoverEvent(new HoverEvent.ShowText(Text.of(tpCommand)))
                     .withClickEvent(new ClickEvent.RunCommand(tpCommand)));
             Text rm = Text.literal(" §c✖§f ").styled(style -> style
@@ -48,22 +50,21 @@ public class PointCommand implements SimpleCommand {
 
             ctx.getSource().sendMessage(rm.copy().append(tp));
         });
-        return World.points.size();
+        return points.size();
     };
 
     private static Decorator.WithWorld addPoint = (ctx, world) -> {
         String name = StringArgumentType.getString(ctx, "name");
         ColumnPos pos = ColumnPosArgumentType.getColumnPos(ctx, "columnPos");
-        Point point = new Point(name, pos, world.getRegistryKey());
-        return World.points.put(name, point) == null ? 1 : 0;
+        return PointManager.get(world).add(name, pos.x(), pos.z(), world.getRegistryKey()) ? 1 : 0;
     };
 
-    private static Decorator.Base rmPoint = ctx -> {
+    private static Decorator.WithWorld rmPoint = (ctx, world) -> {
         String name = StringArgumentType.getString(ctx, "name");
-        return World.points.remove(name) != null ? 1 : 0;
+        return PointManager.get(world).remove(name) ? 1 : 0;
     };
 
-    private static Decorator.BaseSuggestion addedPoint = ctx -> {
-        return List.copyOf(World.points.keySet());
+    private static Decorator.WorldSuggestion addedPoint = world -> {
+        return PointManager.get(world).getAll().stream().map(point -> point.name()).toList();
     };
 }

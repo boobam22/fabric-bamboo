@@ -1,6 +1,5 @@
 package bamboo.world.command;
 
-import java.util.List;
 import java.util.Set;
 
 import com.mojang.brigadier.CommandDispatcher;
@@ -17,8 +16,8 @@ import net.minecraft.util.math.ColumnPos;
 
 import bamboo.lib.command.SimpleCommand;
 import bamboo.lib.command.Decorator;
-import bamboo.world.World;
-import bamboo.world.util.Point;
+import bamboo.world.data.PointManager;
+import bamboo.world.data.Point;
 
 public class TpCommand implements SimpleCommand {
     @Override
@@ -27,39 +26,39 @@ public class TpCommand implements SimpleCommand {
                 .then(literal("tp")
                         .then(literal("random")
                                 .executes(toRandom))
-                        .then(argument("columnPos", ColumnPosArgumentType.columnPos())
-                                .executes(toPosition))
                         .then(literal("point")
                                 .then(argument("name", StringArgumentType.string())
                                         .suggests(addedPoint)
-                                        .executes(toPoint)))));
+                                        .executes(toPoint)))
+                        .then(argument("columnPos", ColumnPosArgumentType.columnPos())
+                                .executes(toPosition))));
     }
 
-    private static Tp toRandom = ctx -> {
+    private static Tp toRandom = (ctx, world) -> {
         int x = (int) (Math.random() * ServerWorld.HORIZONTAL_LIMIT * 2) - ServerWorld.HORIZONTAL_LIMIT;
         int z = (int) (Math.random() * ServerWorld.HORIZONTAL_LIMIT * 2) - ServerWorld.HORIZONTAL_LIMIT;
-        return new Point("tmp", x, z, ctx.getSource().getWorld().getRegistryKey());
+        return new Point("tmp", x, z, world.getRegistryKey());
     };
 
-    private static Tp toPosition = ctx -> {
-        ColumnPos columnPos = ColumnPosArgumentType.getColumnPos(ctx, "columnPos");
-        return new Point("tmp", columnPos, ctx.getSource().getWorld().getRegistryKey());
+    private static Tp toPosition = (ctx, world) -> {
+        ColumnPos pos = ColumnPosArgumentType.getColumnPos(ctx, "columnPos");
+        return new Point("tmp", pos.x(), pos.z(), world.getRegistryKey());
     };
 
-    private static Tp toPoint = ctx -> {
+    private static Tp toPoint = (ctx, world) -> {
         String name = StringArgumentType.getString(ctx, "name");
-        return World.points.getOrDefault(name, null);
+        return PointManager.get(world).get(name);
     };
 
-    private static interface Tp extends Decorator.Base {
+    private static interface Tp extends Decorator.WithWorld {
         @Override
-        default int run(CommandContext<ServerCommandSource> ctx) {
-            Point point = getColumnPos(ctx);
+        default int run(CommandContext<ServerCommandSource> ctx, ServerWorld world) {
+            Point point = getColumnPos(ctx, world);
             if (point == null) {
                 return 0;
             }
 
-            ServerWorld world = ctx.getSource().getServer().getWorld(point.worldKey());
+            world = ctx.getSource().getServer().getWorld(point.worldKey());
             int x = point.x();
             int z = point.z();
             int y = world.getChunk(ChunkSectionPos.getSectionCoord(x), ChunkSectionPos.getSectionCoord(z))
@@ -70,10 +69,10 @@ public class TpCommand implements SimpleCommand {
             return 1;
         }
 
-        Point getColumnPos(CommandContext<ServerCommandSource> ctx);
+        Point getColumnPos(CommandContext<ServerCommandSource> ctx, ServerWorld world);
     }
 
-    private static Decorator.BaseSuggestion addedPoint = ctx -> {
-        return List.copyOf(World.points.keySet());
+    private static Decorator.WorldSuggestion addedPoint = world -> {
+        return PointManager.get(world).getAll().stream().map(point -> point.name()).toList();
     };
 }
