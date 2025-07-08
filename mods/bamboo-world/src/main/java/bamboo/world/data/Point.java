@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.world.World;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryKey;
 
 public record Point(String name, int x, int z, RegistryKey<World> worldKey) {
@@ -11,7 +12,7 @@ public record Point(String name, int x, int z, RegistryKey<World> worldKey) {
             Codec.STRING.fieldOf("name").forGetter(Point::name),
             Codec.INT.fieldOf("x").forGetter(Point::x),
             Codec.INT.fieldOf("z").forGetter(Point::z),
-            RegistryKey.createCodec(World.OVERWORLD.getRegistryRef()).fieldOf("world").forGetter(Point::worldKey))
+            RegistryKey.createCodec(RegistryKeys.WORLD).fieldOf("world").forGetter(Point::worldKey))
             .apply(instance, Point::new));
 
     @Override
