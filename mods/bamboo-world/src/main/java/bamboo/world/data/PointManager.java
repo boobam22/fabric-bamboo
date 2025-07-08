@@ -32,6 +32,10 @@ public class PointManager extends PersistentState {
         return List.copyOf(points.values());
     }
 
+    public Point get(String name) {
+        return points.getOrDefault(name, null);
+    }
+
     public boolean add(String name, int x, int z, RegistryKey<World> worldKey) {
         this.markDirty();
         return points.put(name, new Point(name, x, z, worldKey)) == null;
