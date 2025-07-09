@@ -49,7 +49,7 @@ public class PickaxeCommand implements SimpleCommand {
 
             if (player.getGameMode() == GameMode.SURVIVAL) {
                 BlockState blockState = world.getBlockState(pos);
-                if (blockState.isIn(ORE_TAG)) {
+                if (blockState.isIn(ORE_TAG) && player.canHarvest(blockState)) {
                     Block.getDroppedStacks(blockState, world, pos, null, null, player.getMainHandStack())
                             .forEach(stack -> {
                                 if (!player.getInventory().insertStack(stack)) {
