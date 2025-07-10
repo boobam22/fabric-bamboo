@@ -2,6 +2,9 @@
     "required": true,
     "package": "bamboo.place.mixin",
     "compatibilityLevel": "JAVA_21",
+    "mixins": [
+        "BlockItemMixin"
+    ],
     "client": [],
     "injectors": {
         "defaultRequire": 1
