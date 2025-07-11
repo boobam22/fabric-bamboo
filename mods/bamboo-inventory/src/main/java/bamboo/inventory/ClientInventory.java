@@ -14,13 +14,13 @@ public class ClientInventory extends Inventory implements ClientModInitializer {
         registerKey("shift+right", MoveAction::moveOneStackLeaveOne);
         registerKey("shift+right+move", MoveAction::moveOneStackLeaveOne);
 
-        registerKey("ctrl+left", MoveAction::moveStacks);
-        registerKey("ctrl+right", MoveAction::moveStacksLeaveOne);
+        registerKey("alt+left", MoveAction::moveStacks);
+        registerKey("alt+right", MoveAction::moveStacksLeaveOne);
 
-        registerKey("alt+left", MoveAction::moveAll);
-        registerKey("alt+right", MoveAction::dropStacks);
+        registerKey("ctrl+left", MoveAction::moveAll);
+        registerKey("ctrl+right", MoveAction::dropStacks);
 
-        registerKey("ctrl+scroll", MoveAction::craftOrBuyOne, false);
+        registerKey("alt+scroll", MoveAction::craftOrBuyOne, false);
 
         registerKey("r", MergeAction::merge, false);
     }
