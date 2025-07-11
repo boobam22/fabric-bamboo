@@ -13,6 +13,7 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.CraftingResultSlot;
 import net.minecraft.screen.slot.TradeOutputSlot;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 
 public class MoveAction {
@@ -121,13 +122,9 @@ public class MoveAction {
     }
 
     public static void craftOrBuyOne(ScreenHandler handler, List<Slot> slots, Slot focusedSlot) {
-        if (!handler.getCursorStack().isEmpty()) {
-            return;
-        }
-
         if (focusedSlot instanceof CraftingResultSlot || focusedSlot instanceof TradeOutputSlot) {
             List<Slot> availableSlots = findAvailableSlots(handler, slots, focusedSlot, 0);
-            if (availableSlots.size() > 0 && availableSlots.getLast() != focusedSlot) {
+            if (handleCursorStack(handler, slots, availableSlots)) {
                 Util.leftClick(focusedSlot);
                 availableSlots.forEach(slot -> {
                     Util.leftClick(slot);
@@ -250,7 +247,7 @@ public class MoveAction {
     }
 
     private static boolean handleCursorStack(ScreenHandler handler, List<Slot> inventory, List<Slot> slots) {
-        if (slots.size() == 0) {
+        if (slots.size() == 0 || slots.getLast() instanceof CraftingResultSlot) {
             return false;
         }
 
@@ -260,11 +257,13 @@ public class MoveAction {
         }
 
         for (Slot slot : inventory) {
-            if (!slot.hasStack() && slot.canInsert(stack) && !slots.contains(slot)) {
-                Util.leftClick(slot);
-                slots.add(slot);
-                return true;
+            if (slot.hasStack() || !slot.canInsert(stack)
+                    || slot.inventory instanceof CraftingInventory || slots.contains(slot)) {
+                continue;
             }
+            Util.leftClick(slot);
+            slots.add(slot);
+            return true;
         }
         return false;
     }
