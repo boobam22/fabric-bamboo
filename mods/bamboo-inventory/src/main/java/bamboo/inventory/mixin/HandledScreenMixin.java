@@ -20,7 +20,7 @@ import net.minecraft.registry.tag.ItemTags;
 public abstract class HandledScreenMixin {
     @Inject(method = "onMouseClick(Lnet/minecraft/screen/slot/Slot;IILnet/minecraft/screen/slot/SlotActionType;)V", at = @At("HEAD"), cancellable = true)
     private void onMouseClick(Slot slot, int slotId, int button, SlotActionType actionType, CallbackInfo ci) {
-        if (button != GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
+        if (button != GLFW.GLFW_MOUSE_BUTTON_RIGHT || slot == null) {
             return;
         }
 
