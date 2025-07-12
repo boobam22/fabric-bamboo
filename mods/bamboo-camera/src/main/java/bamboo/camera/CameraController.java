@@ -14,7 +14,7 @@ public class CameraController {
         return cameraEntity != null && cameraEntity == MinecraftClient.getInstance().getCameraEntity();
     }
 
-    public void toggle(MinecraftClient client) {
+    public boolean toggle(MinecraftClient client) {
         if (isActive()) {
             client.setCameraEntity(originCameraEntity);
             client.chunkCullingEnabled = originChunkCullingEnabled;
@@ -25,6 +25,7 @@ public class CameraController {
             client.setCameraEntity(cameraEntity);
             client.chunkCullingEnabled = false;
         }
+        return true;
     }
 
     public void toggle() {

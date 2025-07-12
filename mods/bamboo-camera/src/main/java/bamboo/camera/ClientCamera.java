@@ -3,7 +3,7 @@ package bamboo.camera;
 import net.fabricmc.api.ClientModInitializer;
 
 import bamboo.lib.api.Client;
-import bamboo.lib.keybinding.handler.IngameHandler;
+import bamboo.lib.keybinding.IngameHandler;
 
 public class ClientCamera implements ClientModInitializer {
     public static CameraController cameraController = new CameraController();

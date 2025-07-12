@@ -2,10 +2,10 @@ package bamboo.lib.api;
 
 import bamboo.lib.ClientLib;
 import bamboo.lib.keybinding.Key;
-import bamboo.lib.keybinding.handler.BaseHandler;
+import bamboo.lib.keybinding.Handler;
 
 public class Client {
-    public static void registerKey(String keyString, BaseHandler handler, boolean triggerOnRelease) {
+    public static void registerKey(String keyString, Handler handler, boolean triggerOnRelease) {
         Key key = Key.parse(keyString);
         if (triggerOnRelease) {
             key.triggerOnRelease();
@@ -13,7 +13,7 @@ public class Client {
         key.register(handler);
     }
 
-    public static void registerKey(String keyString, BaseHandler handler) {
+    public static void registerKey(String keyString, Handler handler) {
         registerKey(keyString, handler, false);
     }
 

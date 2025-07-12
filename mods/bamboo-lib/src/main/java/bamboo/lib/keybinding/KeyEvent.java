@@ -10,13 +10,11 @@ import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.MinecraftClient;
 
-import bamboo.lib.keybinding.handler.BaseHandler;
-
 public class KeyEvent {
-    private static Map<Key, List<BaseHandler>> handlers = new HashMap<>();
+    private static Map<Key, List<Handler>> handlers = new HashMap<>();
     private static Key currentKey = new Key(0, new HashSet<>());
 
-    public static void register(Key key, BaseHandler handler) {
+    public static void register(Key key, Handler handler) {
         handlers.putIfAbsent(key, new ArrayList<>());
         handlers.get(key).add(handler);
     }
@@ -56,7 +54,7 @@ public class KeyEvent {
         }
 
         boolean cancel = false;
-        for (BaseHandler handler : handlers.get(currentKey)) {
+        for (Handler handler : handlers.get(currentKey)) {
             cancel |= handler.apply(client);
         }
         return cancel;

@@ -4,7 +4,7 @@ import net.fabricmc.api.ClientModInitializer;
 
 import bamboo.lib.api.Client;
 import bamboo.lib.api.Util;
-import bamboo.lib.keybinding.handler.IngameHandler;
+import bamboo.lib.keybinding.IngameHandler;
 
 public class ClientPickaxe extends Pickaxe implements ClientModInitializer {
     public static BreakCooldown breakCooldown = new BreakCooldown();
@@ -25,10 +25,12 @@ public class ClientPickaxe extends Pickaxe implements ClientModInitializer {
     private static IngameHandler switchNextBreakCooldown = client -> {
         breakCooldown.switchNext();
         Util.message("Break Cooldown [§a%s§f]", breakCooldown);
+        return true;
     };
 
     private static IngameHandler toggleAreaMine = client -> {
         boolean enabled = areaMine.toggle();
         Util.message("Area Mine [%s%s§f]", enabled ? "§a" : "§c", enabled);
+        return true;
     };
 }

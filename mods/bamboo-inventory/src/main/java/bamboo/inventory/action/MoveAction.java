@@ -18,10 +18,6 @@ import net.minecraft.item.ItemStack;
 
 public class MoveAction {
     public static void moveOneStack(ScreenHandler handler, List<Slot> slots, Slot focusedSlot) {
-        if (focusedSlot == null || !focusedSlot.hasStack()) {
-            return;
-        }
-
         if (focusedSlot.inventory instanceof PlayerInventory || focusedSlot instanceof CraftingResultSlot) {
             Util.quickMove(focusedSlot);
             return;
@@ -37,7 +33,7 @@ public class MoveAction {
     }
 
     public static void moveOneStackLeaveOne(ScreenHandler handler, List<Slot> slots, Slot focusedSlot) {
-        if (!isContainerScreen(handler) || focusedSlot == null || focusedSlot.getStack().getCount() <= 1) {
+        if (!isContainerScreen(handler)) {
             return;
         }
 
@@ -52,7 +48,7 @@ public class MoveAction {
     }
 
     public static void moveStacks(ScreenHandler handler, List<Slot> slots, Slot focusedSlot) {
-        if (!isContainerScreen(handler) || focusedSlot == null || !focusedSlot.hasStack()) {
+        if (!isContainerScreen(handler)) {
             return;
         }
 
@@ -65,7 +61,7 @@ public class MoveAction {
     }
 
     public static void moveStacksLeaveOne(ScreenHandler handler, List<Slot> slots, Slot focusedSlot) {
-        if (!isContainerScreen(handler) || focusedSlot == null || !focusedSlot.hasStack()) {
+        if (!isContainerScreen(handler)) {
             return;
         }
 
@@ -78,7 +74,7 @@ public class MoveAction {
     }
 
     public static void moveAll(ScreenHandler handler, List<Slot> slots, Slot focusedSlot) {
-        if (!isContainerScreen(handler) || focusedSlot == null) {
+        if (!isContainerScreen(handler)) {
             return;
         }
 
@@ -90,10 +86,6 @@ public class MoveAction {
     }
 
     public static void dropStacks(ScreenHandler handler, List<Slot> slots, Slot focusedSlot) {
-        if (focusedSlot == null || !focusedSlot.hasStack()) {
-            return;
-        }
-
         Slot cursor = null;
         ItemStack stack = handler.getCursorStack();
         if (!stack.isEmpty()) {
@@ -155,8 +147,7 @@ public class MoveAction {
     }
 
     private static List<Slot> findInventory(ScreenHandler handler, List<Slot> slots, Slot focusedSlot, boolean self) {
-        if (focusedSlot == null) {
-        } else if (focusedSlot.inventory instanceof PlayerInventory ^ self) {
+        if (focusedSlot.inventory instanceof PlayerInventory ^ self) {
             if (handler instanceof PlayerScreenHandler) {
                 if (focusedSlot.id >= 9 && focusedSlot.id < 36) {
                     return slots.subList(36, 45);
@@ -185,10 +176,6 @@ public class MoveAction {
 
     private static List<Slot> findAvailableSlots(List<Slot> inventory, Slot focusedSlot, int n) {
         List<Slot> availableSlots = new ArrayList<>();
-
-        if (focusedSlot == null || !focusedSlot.hasStack()) {
-            return availableSlots;
-        }
 
         if (n <= 0) {
             n += focusedSlot.getStack().getCount();

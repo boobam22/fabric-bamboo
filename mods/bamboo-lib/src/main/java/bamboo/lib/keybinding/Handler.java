@@ -1,8 +1,8 @@
-package bamboo.lib.keybinding.handler;
+package bamboo.lib.keybinding;
 
 import net.minecraft.client.MinecraftClient;
 
 @FunctionalInterface
-public interface BaseHandler {
+public interface Handler {
     boolean apply(MinecraftClient client);
 }
