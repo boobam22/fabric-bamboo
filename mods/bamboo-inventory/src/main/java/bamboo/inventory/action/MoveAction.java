@@ -22,7 +22,7 @@ public class MoveAction {
             return;
         }
 
-        if (focusedSlot.inventory instanceof PlayerInventory) {
+        if (focusedSlot.inventory instanceof PlayerInventory || focusedSlot instanceof CraftingResultSlot) {
             Util.quickMove(focusedSlot);
             return;
         }
