@@ -15,6 +15,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.entity.Entity;
+import net.minecraft.screen.slot.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.Box;
@@ -59,15 +60,15 @@ public class InventoryCommand implements SimpleCommand {
     };
 
     private static OpenShulkerBox openShulkerBoxFromCurrentScreen = (player, idx) -> {
-        return player.currentScreenHandler.getSlot(idx).getStack();
+        return player.currentScreenHandler.getSlot(idx);
     };
 
     private static OpenShulkerBox openShulkerBoxFromInventory = (player, idx) -> {
-        return player.getInventory().getStack(idx);
+        return new Slot(player.getInventory(), idx, 0, 0);
     };
 
     private static OpenShulkerBox openShulkerBoxFromEnderChest = (player, idx) -> {
-        return player.getEnderChestInventory().getStack(idx);
+        return new Slot(player.getEnderChestInventory(), idx, 0, 0);
     };
 
     private static RefreshTrade refreshTradeFromCurrentScreen = (ctx, player) -> {
@@ -103,16 +104,16 @@ public class InventoryCommand implements SimpleCommand {
         default int run(CommandContext<ServerCommandSource> ctx, ServerPlayerEntity player)
                 throws CommandSyntaxException {
             int idx = IntegerArgumentType.getInteger(ctx, "idx");
-            ItemStack stack = findStack(player, idx);
-            if (Util.isShulkerBox(stack)) {
-                Util.openShulkerBox(player, stack);
+            Slot slot = findSlot(player, idx);
+            if (Util.isShulkerBox(slot.getStack())) {
+                Util.openShulkerBox(player, slot);
             } else {
                 throw SHULKER_BOX_NOT_FOUND.create();
             }
             return 0;
         }
 
-        ItemStack findStack(ServerPlayerEntity player, int idx);
+        Slot findSlot(ServerPlayerEntity player, int idx);
     }
 
     private static interface RefreshTrade extends Decorator.WithPlayer {

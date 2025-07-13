@@ -3,8 +3,8 @@ package bamboo.inventory.command;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.screen.ScreenHandlerFactory;
 import net.minecraft.screen.GenericContainerScreenHandler;
-import net.minecraft.screen.ShulkerBoxScreenHandler;
 import net.minecraft.screen.MerchantScreenHandler;
+import net.minecraft.screen.slot.Slot;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.component.DataComponentTypes;
@@ -44,7 +44,8 @@ public class Util {
         openHandledScreen(player, factory, Items.ENDER_CHEST.getName());
     }
 
-    public static void openShulkerBox(ServerPlayerEntity player, ItemStack stack) {
+    public static void openShulkerBox(ServerPlayerEntity player, Slot slot) {
+        ItemStack stack = slot.getStack();
         if (!isShulkerBox(stack)) {
             return;
         }
@@ -55,7 +56,7 @@ public class Util {
             ContainerComponent container = ContainerComponent.fromStacks(((SimpleInventory) si).getHeldStacks());
             stack.set(DataComponentTypes.CONTAINER, container);
         });
-        ScreenHandlerFactory factory = (id, pi, p) -> new ShulkerBoxScreenHandler(id, pi, inventory);
+        ScreenHandlerFactory factory = (id, pi, p) -> new ShulkerBoxScreenHandler(id, pi, inventory, slot);
         openHandledScreen(player, factory, stack.getName());
     }
 
