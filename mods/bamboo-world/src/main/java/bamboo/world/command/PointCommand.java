@@ -38,7 +38,8 @@ public class PointCommand implements SimpleCommand {
 
         ctx.getSource().sendMessage(Text.of(String.format("§a%d§f point", points.size())));
         points.forEach(point -> {
-            String tpCommand = String.format("/bb-world tp point %s", point.name());
+            String tpCommand = String.format("/bb-world tp %d %d in %s", point.x(), point.z(),
+                    point.worldKey().getValue());
             String rmCommand = String.format("/bb-world point rm %s", point.name());
 
             Text tp = Text.literal(String.format("§a%s§f", point.name())).styled(style -> style
