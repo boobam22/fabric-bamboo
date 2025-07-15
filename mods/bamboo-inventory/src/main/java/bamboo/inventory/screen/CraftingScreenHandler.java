@@ -1,4 +1,4 @@
-package bamboo.inventory.command;
+package bamboo.inventory.screen;
 
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.entity.player.PlayerEntity;

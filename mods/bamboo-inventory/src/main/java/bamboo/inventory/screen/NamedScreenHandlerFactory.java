@@ -1,4 +1,4 @@
-package bamboo.inventory.command;
+package bamboo.inventory.screen;
 
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerFactory;
