@@ -3,7 +3,8 @@
     "package": "bamboo.start.mixin",
     "compatibilityLevel": "JAVA_21",
     "client": [
-        "WorldCreatorMixin"
+        "WorldCreatorMixin",
+        "ElytraFeatureRendererMixin"
     ],
     "injectors": {
         "defaultRequire": 1
