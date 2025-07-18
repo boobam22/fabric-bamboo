@@ -13,7 +13,6 @@ import net.minecraft.state.property.Properties;
 import net.minecraft.state.property.Property;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
 
 @Mixin(BlockItem.class)
 public abstract class BlockItemMixin {
@@ -43,11 +42,10 @@ public abstract class BlockItemMixin {
             return;
         }
 
-        Vec3d pos3d = context.getHitPos().multiply(100);
-        Vec3i pos3i = context.getBlockPos().multiply(100);
-        int x = (int) Math.floor(pos3d.getX()) - pos3i.getX();
-        int y = (int) Math.floor(pos3d.getY()) - pos3i.getY();
-        int z = (int) Math.floor(pos3d.getZ()) - pos3i.getZ();
+        Vec3d pos = context.getHitPos().subtract(new Vec3d(context.getBlockPos())).multiply(100);
+        int x = (int) Math.floor(pos.getX());
+        int y = (int) Math.floor(pos.getY());
+        int z = (int) Math.floor(pos.getZ());
 
         Direction direction = null;
         if (check(x, y, z)) {
