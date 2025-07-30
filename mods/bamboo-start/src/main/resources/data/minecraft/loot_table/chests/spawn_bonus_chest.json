@@ -228,7 +228,7 @@
             "entries": [
                 {
                     "type": "item",
-                    "name": "oak_planks",
+                    "name": "oak_log",
                     "functions": [
                         {
                             "function": "set_count",
@@ -243,7 +243,7 @@
             "entries": [
                 {
                     "type": "item",
-                    "name": "iron_ingot",
+                    "name": "iron_block",
                     "functions": [
                         {
                             "function": "set_count",
