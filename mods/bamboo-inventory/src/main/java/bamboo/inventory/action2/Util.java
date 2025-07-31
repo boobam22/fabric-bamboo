@@ -1,4 +1,4 @@
-package bamboo.inventory.action;
+package bamboo.inventory.action2;
 
 import java.util.List;
 

@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import net.minecraft.client.gui.screen.ingame.MerchantScreen;
 import net.minecraft.client.gui.widget.ButtonWidget.PressAction;
 
-import bamboo.inventory.action.MoveAction;
+import bamboo.inventory.action2.MoveAction;
 
 @Mixin(MerchantScreen.class)
 public abstract class MerchantScreenMixin {
