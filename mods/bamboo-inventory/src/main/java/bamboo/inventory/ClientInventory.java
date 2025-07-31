@@ -18,17 +18,17 @@ public class ClientInventory implements ClientModInitializer {
         registerKey("alt+right", MoveAction::moveStacksLeaveOne);
 
         registerKey("ctrl+left", MoveAction::moveAll);
-        registerKey("ctrl+right", MoveAction::dropStacks);
+        registerKey("ctrl+right", MoveAction::dropStacks, false);
 
-        registerKey("alt+scroll", MoveAction::craftOrBuyOne, false);
+        registerKey("alt+scroll", MoveAction::craftOne, false);
+        registerKey("alt+scroll", MoveAction::buyOne, false);
 
         registerKey("r", MergeAction::merge, false);
     }
 
-    private static InventoryHandler cancel = (handler, slots, focusedSlot) -> {
-    };
-
     private static void registerKey(String key, InventoryHandler handler, boolean cancelOnRelease) {
+        InventoryHandler cancel = (slots, focusedSlot) -> true;
+
         Client.registerKey(key, handler);
         if (cancelOnRelease) {
             Client.registerKey(key, cancel, true);

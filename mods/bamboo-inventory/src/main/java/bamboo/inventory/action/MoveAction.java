@@ -3,175 +3,40 @@ package bamboo.inventory.action;
 import java.util.List;
 import java.util.ArrayList;
 
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.PlayerScreenHandler;
-import net.minecraft.screen.Generic3x3ContainerScreenHandler;
-import net.minecraft.screen.HopperScreenHandler;
-import net.minecraft.screen.CrafterScreenHandler;
-import net.minecraft.screen.MerchantScreenHandler;
 import net.minecraft.screen.slot.Slot;
-import net.minecraft.screen.slot.CraftingResultSlot;
-import net.minecraft.screen.slot.TradeOutputSlot;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 
 public class MoveAction {
-    public static void moveOneStack(ScreenHandler handler, List<Slot> slots, Slot focusedSlot) {
-        if (focusedSlot.inventory instanceof PlayerInventory || focusedSlot instanceof CraftingResultSlot) {
-            Util.quickMove(focusedSlot);
-            return;
+    private static List<Slot> findInventory(List<Slot> slots, Slot focusedSlot, boolean self) {
+        if (!Util.isContainerScreen()) {
+            return List.of();
         }
 
-        List<Slot> availableSlots = findAvailableSlots(handler, slots, focusedSlot, 0);
-        if (handleCursorStack(handler, slots, availableSlots)) {
-            Util.leftClick(focusedSlot);
-            availableSlots.forEach(slot -> {
-                Util.leftClick(slot);
-            });
-        }
-    }
-
-    public static void moveOneStackLeaveOne(ScreenHandler handler, List<Slot> slots, Slot focusedSlot) {
-        if (!isContainerScreen(handler)) {
-            return;
-        }
-
-        List<Slot> availableSlots = findAvailableSlots(handler, slots, focusedSlot, -1);
-        if (handleCursorStack(handler, slots, availableSlots)) {
-            Util.leftClick(focusedSlot);
-            Util.rightClick(focusedSlot);
-            availableSlots.forEach(slot -> {
-                Util.leftClick(slot);
-            });
-        }
-    }
-
-    public static void moveStacks(ScreenHandler handler, List<Slot> slots, Slot focusedSlot) {
-        if (!isContainerScreen(handler)) {
-            return;
-        }
-
-        ItemStack focusedStack = focusedSlot.getStack().copy();
-        for (Slot slot : findSelfInventory(handler, slots, focusedSlot)) {
-            if (ItemStack.areItemsAndComponentsEqual(focusedStack, slot.getStack())) {
-                moveOneStack(handler, slots, slot);
-            }
-        }
-    }
-
-    public static void moveStacksLeaveOne(ScreenHandler handler, List<Slot> slots, Slot focusedSlot) {
-        if (!isContainerScreen(handler)) {
-            return;
-        }
-
-        ItemStack focusedStack = focusedSlot.getStack().copy();
-        for (Slot slot : findSelfInventory(handler, slots, focusedSlot)) {
-            if (ItemStack.areItemsAndComponentsEqual(focusedStack, slot.getStack())) {
-                moveOneStackLeaveOne(handler, slots, slot);
-            }
-        }
-    }
-
-    public static void moveAll(ScreenHandler handler, List<Slot> slots, Slot focusedSlot) {
-        if (!isContainerScreen(handler)) {
-            return;
-        }
-
-        for (Slot slot : findSelfInventory(handler, slots, focusedSlot)) {
-            if (slot.hasStack()) {
-                moveOneStack(handler, slots, slot);
-            }
-        }
-    }
-
-    public static void dropStacks(ScreenHandler handler, List<Slot> slots, Slot focusedSlot) {
-        Slot cursor = null;
-        ItemStack stack = handler.getCursorStack();
-        if (!stack.isEmpty()) {
-            for (Slot slot : slots) {
-                if (!slot.hasStack() && slot.canInsert(stack)) {
-                    Util.leftClick(slot);
-                    cursor = slot;
-                    break;
-                }
-            }
-        }
-
-        ItemStack focusedStack = focusedSlot.getStack().copy();
-        for (Slot slot : findSelfInventory(handler, slots, focusedSlot)) {
-            if (slot == cursor) {
-                continue;
-            }
-            if (ItemStack.areItemsAndComponentsEqual(focusedStack, slot.getStack())) {
-                Util.dropOneStack(slot);
-            }
-        }
-
-        if (cursor != null) {
-            Util.leftClick(cursor);
-        }
-    }
-
-    public static void craftOrBuyOne(ScreenHandler handler, List<Slot> slots, Slot focusedSlot) {
-        if (focusedSlot instanceof CraftingResultSlot || focusedSlot instanceof TradeOutputSlot) {
-            List<Slot> availableSlots = findAvailableSlots(handler, slots, focusedSlot, 0);
-            if (handleCursorStack(handler, slots, availableSlots)) {
-                Util.leftClick(focusedSlot);
-                availableSlots.forEach(slot -> {
-                    Util.leftClick(slot);
-                });
-            }
-        }
-    }
-
-    public static void buyAll(MerchantScreenHandler handler, Runnable select) {
-        Slot output = handler.getSlot(2);
-
-        while (true) {
-            select.run();
-            if (!output.hasStack()) {
-                break;
-            }
-
-            while (output.hasStack()) {
-                MoveAction.craftOrBuyOne(handler, handler.slots, output);
-            }
-        }
-    }
-
-    private static boolean isContainerScreen(ScreenHandler handler) {
-        return Util.isChestScreen(handler)
-                || handler instanceof Generic3x3ContainerScreenHandler
-                || handler instanceof HopperScreenHandler;
-    }
-
-    private static List<Slot> findInventory(ScreenHandler handler, List<Slot> slots, Slot focusedSlot, boolean self) {
-        if (focusedSlot.inventory instanceof PlayerInventory ^ self) {
-            if (handler instanceof PlayerScreenHandler) {
-                if (focusedSlot.id >= 9 && focusedSlot.id < 36) {
-                    return slots.subList(36, 45);
-                } else {
-                    return slots.subList(9, 36);
-                }
-            } else if (isContainerScreen(handler)) {
-                return slots.subList(0, slots.size() - 36);
-            } else if (handler instanceof CrafterScreenHandler) {
-                return slots.subList(0, 9);
-            }
+        int offset = slots.size() - 36;
+        if (focusedSlot.id < offset ^ self) {
+            return slots.subList(offset, offset + 27).reversed();
         } else {
-            return Util.findPlayerInventory(slots);
+            return slots.subList(0, offset);
         }
-
-        return List.of();
     }
 
-    private static List<Slot> findSelfInventory(ScreenHandler handler, List<Slot> slots, Slot focusedSlot) {
-        return findInventory(handler, slots, focusedSlot, true);
+    private static List<Slot> findSelfInventory(List<Slot> slots, Slot focusedSlot) {
+        return findInventory(slots, focusedSlot, true);
     }
 
-    private static List<Slot> findTargetInventory(ScreenHandler handler, List<Slot> slots, Slot focusedSlot) {
-        return findInventory(handler, slots, focusedSlot, false);
+    private static List<Slot> findTargetInventory(List<Slot> slots, Slot focusedSlot) {
+        return findInventory(slots, focusedSlot, false);
+    }
+
+    private static List<Slot> findPlayerInventory(List<Slot> slots) {
+        if (Util.isInventoryScreen()) {
+            return slots.subList(9, 36);
+        } else if (Util.isContainerScreen() || Util.isCraftingScreen() || Util.isMerchantScreen()) {
+            return slots.subList(slots.size() - 36, slots.size() - 9);
+        } else {
+            return List.of();
+        }
     }
 
     private static List<Slot> findAvailableSlots(List<Slot> inventory, Slot focusedSlot, int n) {
@@ -228,17 +93,12 @@ public class MoveAction {
         return availableSlots;
     }
 
-    private static List<Slot> findAvailableSlots(ScreenHandler handler, List<Slot> slots, Slot focusedSlot, int n) {
-        List<Slot> inventory = findTargetInventory(handler, slots, focusedSlot);
-        return findAvailableSlots(inventory, focusedSlot, n);
-    }
-
-    private static boolean handleCursorStack(ScreenHandler handler, List<Slot> inventory, List<Slot> slots) {
-        if (slots.size() == 0 || slots.getLast() instanceof CraftingResultSlot) {
+    private static boolean handleCursorStack(List<Slot> inventory, List<Slot> slots) {
+        if (slots.size() == 0 || Util.isCraftingResultSlot(slots.getLast())) {
             return false;
         }
 
-        ItemStack stack = handler.getCursorStack();
+        ItemStack stack = Util.getCursorStack();
         if (stack.isEmpty()) {
             return true;
         }
@@ -253,5 +113,114 @@ public class MoveAction {
             return true;
         }
         return false;
+    }
+
+    private static void clickSlots(List<Slot> inventory, Slot focusedSlot, boolean leaveOne) {
+        List<Slot> availableSlots = findAvailableSlots(inventory, focusedSlot, leaveOne ? -1 : 0);
+        if (handleCursorStack(inventory, availableSlots)) {
+            Util.leftClick(focusedSlot);
+            if (leaveOne) {
+                Util.rightClick(focusedSlot);
+            }
+
+            availableSlots.forEach(slot -> {
+                Util.leftClick(slot);
+            });
+        }
+    }
+
+    private static void clickSlots(List<Slot> inventory, Slot focusedSlot) {
+        clickSlots(inventory, focusedSlot, false);
+    }
+
+    public static boolean moveOneStack(List<Slot> slots, Slot focusedSlot) {
+        if (Util.isCraftingResultSlot(focusedSlot) || Util.isInventoryScreen()) {
+            Util.quickMove(focusedSlot);
+        } else if (Util.isContainerScreen()) {
+            List<Slot> inventory = findTargetInventory(slots, focusedSlot);
+            clickSlots(inventory, focusedSlot);
+        } else {
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean moveOneStackLeaveOne(List<Slot> slots, Slot focusedSlot) {
+        if (Util.isContainerScreen()) {
+            List<Slot> inventory = findTargetInventory(slots, focusedSlot);
+            clickSlots(inventory, focusedSlot, true);
+        } else {
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean moveStacks(List<Slot> slots, Slot focusedSlot) {
+        ItemStack focusedStack = focusedSlot.getStack().copy();
+        for (Slot slot : findSelfInventory(slots, focusedSlot)) {
+            if (ItemStack.areItemsAndComponentsEqual(focusedStack, slot.getStack())) {
+                moveOneStack(slots, slot);
+            }
+        }
+        return true;
+    }
+
+    public static boolean moveStacksLeaveOne(List<Slot> slots, Slot focusedSlot) {
+        ItemStack focusedStack = focusedSlot.getStack().copy();
+        for (Slot slot : findSelfInventory(slots, focusedSlot)) {
+            if (ItemStack.areItemsAndComponentsEqual(focusedStack, slot.getStack())) {
+                moveOneStackLeaveOne(slots, slot);
+            }
+        }
+        return true;
+    }
+
+    public static boolean moveAll(List<Slot> slots, Slot focusedSlot) {
+        for (Slot slot : findSelfInventory(slots, focusedSlot)) {
+            moveOneStack(slots, slot);
+        }
+        return true;
+    }
+
+    public static boolean dropStacks(List<Slot> slots, Slot focusedSlot) {
+        if (!Util.getCursorStack().isEmpty()) {
+            return false;
+        }
+
+        ItemStack focusedStack = focusedSlot.getStack().copy();
+        List<Slot> inventory = List.of();
+
+        if (Util.isInventoryScreen()) {
+            inventory = findPlayerInventory(slots);
+        } else if (Util.isContainerScreen()) {
+            inventory = findSelfInventory(slots, focusedSlot);
+        }
+
+        for (Slot slot : inventory) {
+            if (ItemStack.areItemsAndComponentsEqual(focusedStack, slot.getStack())) {
+                Util.dropOneStack(slot);
+            }
+        }
+        return true;
+    }
+
+    public static boolean craftOne(List<Slot> slots, Slot focusedSlot) {
+        if (!Util.isCraftingResultSlot(focusedSlot)) {
+            return false;
+        }
+
+        List<Slot> inventory = findPlayerInventory(slots);
+        clickSlots(inventory, focusedSlot);
+        return true;
+    }
+
+    public static boolean buyOne(List<Slot> slots, Slot focusedSlot) {
+        if (!Util.isTradeOutputSlot(focusedSlot)) {
+            return false;
+        }
+
+        List<Slot> inventory = findPlayerInventory(slots);
+        clickSlots(inventory, focusedSlot);
+        return true;
     }
 }

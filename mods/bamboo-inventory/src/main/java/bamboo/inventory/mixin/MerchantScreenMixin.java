@@ -1,5 +1,7 @@
 package bamboo.inventory.mixin;
 
+import java.util.List;
+
 import org.lwjgl.glfw.GLFW;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -8,6 +10,7 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.client.gui.screen.ingame.MerchantScreen;
 import net.minecraft.client.gui.widget.ButtonWidget.PressAction;
+import net.minecraft.screen.slot.Slot;
 
 import bamboo.inventory.action.MoveAction;
 
@@ -30,7 +33,19 @@ public abstract class MerchantScreenMixin {
         public boolean mouseClicked(double mouseX, double mouseY, int button) {
             if (button == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
                 Runnable select = () -> super.mouseClicked(mouseX, mouseY, GLFW.GLFW_MOUSE_BUTTON_LEFT);
-                MoveAction.buyAll(this.screen.getScreenHandler(), select);
+
+                List<Slot> slots = this.screen.getScreenHandler().slots;
+                Slot output = slots.get(2);
+                while (true) {
+                    select.run();
+                    if (!output.hasStack()) {
+                        break;
+                    }
+
+                    while (output.hasStack()) {
+                        MoveAction.buyOne(slots, output);
+                    }
+                }
                 return true;
             } else {
                 return super.mouseClicked(mouseX, mouseY, button);

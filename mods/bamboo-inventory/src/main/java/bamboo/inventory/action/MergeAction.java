@@ -5,24 +5,26 @@ import java.util.ArrayList;
 import java.util.TreeMap;
 import java.util.Comparator;
 
-import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.tag.ItemTags;
 
 public class MergeAction {
-    public static void merge(ScreenHandler handler, List<Slot> slots, Slot focusedSlot) {
-        List<Slot> inventory = Util.findPlayerInventory(slots);
-        if (inventory.size() > 0) {
-            mergeInventory(handler, slots, inventory);
+    public static boolean merge(List<Slot> slots, Slot focusedSlot) {
+        if (Util.isInventoryScreen()) {
+            mergeInventory(slots, slots.subList(9, 36));
+        } else if (Util.isContainerScreen()) {
+            mergeInventory(slots, slots.subList(slots.size() - 36, slots.size() - 9));
         }
 
-        if (Util.isChestScreen(handler)) {
-            mergeInventory(handler, slots, slots.subList(0, slots.size() - 36));
+        if (Util.isChestScreen()) {
+            mergeInventory(slots, slots.subList(0, slots.size() - 36));
         }
+
+        return true;
     }
 
-    private static void mergeInventory(ScreenHandler handler, List<Slot> slots, List<Slot> inventory) {
+    private static void mergeInventory(List<Slot> slots, List<Slot> inventory) {
         List<List<Slot>> groupedSlot = new ArrayList<>();
         TreeMap<Integer, ItemStack> input = new TreeMap<>();
         TreeMap<Integer, ItemStack> output = new TreeMap<>();
@@ -110,9 +112,9 @@ public class MergeAction {
             }
         }
 
-        if (!handler.getCursorStack().isEmpty()) {
+        if (!Util.getCursorStack().isEmpty()) {
             Slot cursor = null;
-            ItemStack stack = handler.getCursorStack();
+            ItemStack stack = Util.getCursorStack();
 
             for (Slot slot : slots) {
                 if (!slot.hasStack() && slot.canInsert(stack) && !path.contains(slot.id)) {
@@ -132,7 +134,7 @@ public class MergeAction {
         for (int id : path) {
             Slot slot = slots.get(id);
             ItemStack stack = slot.getStack();
-            ItemStack cursorStack = handler.getCursorStack();
+            ItemStack cursorStack = Util.getCursorStack();
 
             if (stack.isIn(ItemTags.BUNDLES) && !cursorStack.isEmpty()
                     || cursorStack.isIn(ItemTags.BUNDLES) && !stack.isEmpty()) {
