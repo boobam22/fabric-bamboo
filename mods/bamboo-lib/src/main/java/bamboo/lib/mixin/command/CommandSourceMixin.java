@@ -11,7 +11,7 @@ import net.minecraft.command.CommandSource;
 public interface CommandSourceMixin {
     @Inject(method = "shouldSuggest", at = @At("HEAD"), cancellable = true)
     private static void shouldSuggest(String remaining, String candidate, CallbackInfoReturnable<Boolean> cir) {
-        if (candidate.contains(":internal/")) {
+        if (candidate.contains("internal/")) {
             cir.setReturnValue(false);
             return;
         }
