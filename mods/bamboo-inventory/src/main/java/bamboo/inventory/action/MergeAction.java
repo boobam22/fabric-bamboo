@@ -13,11 +13,7 @@ public class MergeAction {
     public static boolean merge(List<Slot> slots, Slot focusedSlot) {
         if (Util.isInventoryScreen()) {
             mergeInventory(slots, slots.subList(9, 36));
-        } else if (Util.isContainerScreen()) {
-            mergeInventory(slots, slots.subList(slots.size() - 36, slots.size() - 9));
-        }
-
-        if (Util.isChestScreen()) {
+        } else if (Util.isChestScreen()) {
             mergeInventory(slots, slots.subList(0, slots.size() - 36));
         }
 
