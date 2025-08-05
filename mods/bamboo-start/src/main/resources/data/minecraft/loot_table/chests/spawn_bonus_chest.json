@@ -52,6 +52,52 @@
             "entries": [
                 {
                     "type": "item",
+                    "name": "netherite_pickaxe",
+                    "functions": [
+                        {
+                            "function": "set_components",
+                            "components": {
+                                "tool": {
+                                    "rules": [
+                                        {
+                                            "blocks": "#mineable/pickaxe",
+                                            "speed": 9,
+                                            "correct_for_drops": true
+                                        },
+                                        {
+                                            "blocks": "#mineable/axe",
+                                            "speed": 9,
+                                            "correct_for_drops": true
+                                        },
+                                        {
+                                            "blocks": "#mineable/shovel",
+                                            "speed": 9,
+                                            "correct_for_drops": true
+                                        },
+                                        {
+                                            "blocks": "#mineable/hoe",
+                                            "speed": 9,
+                                            "correct_for_drops": true
+                                        }
+                                    ]
+                                },
+                                "enchantments": {
+                                    "fortune": 3,
+                                    "efficiency": 5,
+                                    "unbreaking": 3,
+                                    "mending": 1
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "item",
                     "name": "netherite_sword",
                     "functions": [
                         {
@@ -214,6 +260,51 @@
                 {
                     "type": "item",
                     "name": "shulker_shell",
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": 64
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "item",
+                    "name": "ender_chest",
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": 64
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "item",
+                    "name": "chest",
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": 64
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "item",
+                    "name": "crafting_table",
                     "functions": [
                         {
                             "function": "set_count",
