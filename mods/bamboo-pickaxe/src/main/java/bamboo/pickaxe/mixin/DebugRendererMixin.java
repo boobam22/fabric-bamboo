@@ -26,7 +26,7 @@ public abstract class DebugRendererMixin {
             double x, double y, double z, CallbackInfo ci) {
         Box box = ClientPickaxe.areaMine.getArea();
         if (box != null) {
-            matrices.translate(-x, -y, -z);
+            matrices.translate(box.minX - x, box.minY - y, box.minZ - z);
             VertexConsumer vertexConsumer = vertexConsumers.getBuffer(RenderLayer.getLines());
 
             RenderSystem.assertOnRenderThread();
@@ -34,7 +34,7 @@ public abstract class DebugRendererMixin {
 
             matrices.push();
             VertexRendering.drawBox(matrices, vertexConsumer,
-                    box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ,
+                    0, 0, 0, box.maxX - box.minX, box.maxY - box.minY, box.maxZ - box.minZ,
                     0.9F, 0.9F, 0.9F, 1.0F, 0.5F, 0.5F, 0.5F);
             matrices.pop();
 
