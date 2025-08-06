@@ -40,6 +40,11 @@ public class WorldCommand implements SimpleCommand {
     }
 
     private static AfterSave backup = (ctx, server, src, dst) -> {
+        if (Files.exists(dst)) {
+            Path old = dst.getParent().resolve(dst.getFileName().toString() + "_old");
+            Util.rmTree(old);
+            Files.move(dst, old);
+        }
         Util.cpTreeFilterRegion(server, src, dst);
     };
 
