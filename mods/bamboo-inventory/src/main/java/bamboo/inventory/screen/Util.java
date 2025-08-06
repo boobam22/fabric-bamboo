@@ -56,15 +56,17 @@ public class Util {
 
         ScreenHandlerFactory factory = (id, pi, p) -> {
             ShulkerBoxScreenHandler handler = new ShulkerBoxScreenHandler(id, pi, inventory);
-            for (Slot slot : handler.slots) {
-                if (slot.inventory instanceof PlayerInventory && openedSlot.getIndex() == slot.getIndex()) {
-                    handler.slots.set(slot.id, new Slot(slot.inventory, slot.getIndex(), 0, 0) {
-                        @Override
-                        public boolean canTakeItems(PlayerEntity playerEntity) {
-                            return false;
-                        }
-                    });
-                    break;
+            if (openedSlot.inventory instanceof PlayerInventory) {
+                for (Slot slot : handler.slots) {
+                    if (slot.inventory instanceof PlayerInventory && openedSlot.getIndex() == slot.getIndex()) {
+                        handler.slots.set(slot.id, new Slot(slot.inventory, slot.getIndex(), 0, 0) {
+                            @Override
+                            public boolean canTakeItems(PlayerEntity playerEntity) {
+                                return false;
+                            }
+                        });
+                        break;
+                    }
                 }
             }
             return handler;
