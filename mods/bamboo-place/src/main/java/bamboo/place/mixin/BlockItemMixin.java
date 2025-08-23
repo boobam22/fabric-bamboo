@@ -46,9 +46,9 @@ public abstract class BlockItemMixin {
         }
 
         Vec3d pos = context.getHitPos().subtract(new Vec3d(context.getBlockPos())).multiply(100);
-        int x = (int) Math.floor(pos.getX());
-        int y = (int) Math.floor(pos.getY());
-        int z = (int) Math.floor(pos.getZ());
+        int x = Math.max(Math.min((int) Math.floor(pos.getX()), 100), 0);
+        int y = Math.max(Math.min((int) Math.floor(pos.getY()), 100), 0);
+        int z = Math.max(Math.min((int) Math.floor(pos.getZ()), 100), 0);
 
         Direction direction = null;
         if (check(x, y, z)) {
