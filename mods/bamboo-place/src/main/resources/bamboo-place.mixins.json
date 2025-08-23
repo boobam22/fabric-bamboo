@@ -3,7 +3,8 @@
     "package": "bamboo.place.mixin",
     "compatibilityLevel": "JAVA_21",
     "mixins": [
-        "BlockItemMixin"
+        "BlockItemMixin",
+        "MinecraftClientMixin"
     ],
     "client": [],
     "injectors": {
