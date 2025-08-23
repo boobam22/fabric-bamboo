@@ -79,7 +79,11 @@ public abstract class BlockItemMixin {
             }
         }
 
-        cir.setReturnValue(direction == null ? null : blockState.with(property, direction));
+        if (direction == null) {
+            return;
+        }
+
+        cir.setReturnValue(blockState.with(property, direction));
     }
 
     private static boolean inCenter(int x, int y, int z) {
