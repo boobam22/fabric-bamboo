@@ -26,6 +26,9 @@ public abstract class BlockItemMixin {
         if (blockState == null) {
             return;
         }
+        if (blockState.get(Properties.CHEST_TYPE, ChestType.SINGLE) != ChestType.SINGLE) {
+            return;
+        }
 
         boolean hasHorizontalFacing = false;
         boolean hasHopperFacing = false;
@@ -74,10 +77,6 @@ public abstract class BlockItemMixin {
             } else if (hasHopperFacing) {
                 direction = Direction.DOWN;
             }
-        }
-
-        if (blockState.contains(Properties.CHEST_TYPE)) {
-            blockState = blockState.with(Properties.CHEST_TYPE, ChestType.SINGLE);
         }
 
         cir.setReturnValue(direction == null ? null : blockState.with(property, direction));
