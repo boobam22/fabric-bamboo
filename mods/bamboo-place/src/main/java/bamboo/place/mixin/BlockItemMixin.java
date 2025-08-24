@@ -13,8 +13,12 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.enums.ChestType;
 import net.minecraft.state.property.Properties;
 import net.minecraft.state.property.Property;
+import net.minecraft.registry.tag.ItemTags;
+import net.minecraft.registry.tag.BlockTags;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.hit.BlockHitResult;
 
 import static net.minecraft.util.math.Direction.UP;
 import static net.minecraft.util.math.Direction.DOWN;
@@ -89,5 +93,38 @@ public abstract class BlockItemMixin {
         }
 
         cir.setReturnValue(blockState.with(property, direction));
+    }
+
+    @Inject(method = "getPlacementContext", at = @At("RETURN"), cancellable = true)
+    private void getPlacementContext(CallbackInfoReturnable<ItemPlacementContext> cir) {
+
+        ItemPlacementContext context = cir.getReturnValue();
+        if (context.getPlayer().isSneaking()) {
+            return;
+        }
+
+        if (context.getPlayer().getOffHandStack().isIn(ItemTags.PICKAXES)) {
+            BlockPos blockPos = context.getBlockPos();
+            if (!context.canReplaceExisting()) {
+                blockPos = blockPos.offset(context.getSide().getOpposite());
+            }
+            Vec3d offset = context.getHitPos().subtract(new Vec3d(blockPos));
+
+            Direction direction = context.getPlayerLookDirection();
+            for (int i = 0; i < 16; i++) {
+                BlockState blockState = context.getWorld().getBlockState(blockPos);
+                if (blockState.canReplace(context) && !blockState.isIn(BlockTags.SLABS)) {
+                    Vec3d pos = new Vec3d(blockPos.offset(context.getSide().getOpposite())).add(offset);
+                    cir.setReturnValue(new ItemPlacementContext(
+                            context.getPlayer(),
+                            context.getHand(),
+                            context.getStack(),
+                            new BlockHitResult(pos, context.getSide(), blockPos, context.hitsInsideBlock())));
+                    return;
+                }
+                blockPos = blockPos.offset(direction);
+            }
+            cir.setReturnValue(null);
+        }
     }
 }
