@@ -11,6 +11,7 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.enums.ChestType;
+import net.minecraft.block.enums.StairShape;
 import net.minecraft.state.property.Properties;
 import net.minecraft.state.property.Property;
 import net.minecraft.registry.tag.ItemTags;
@@ -90,6 +91,10 @@ public abstract class BlockItemMixin {
         if (hasHopperFacing && direction == UP
                 || hasHorizontalFacing && (direction == UP || direction == DOWN)) {
             return;
+        }
+
+        if (blockState.get(Properties.STAIR_SHAPE, StairShape.STRAIGHT) != StairShape.STRAIGHT) {
+            blockState = blockState.with(Properties.STAIR_SHAPE, StairShape.STRAIGHT);
         }
 
         cir.setReturnValue(blockState.with(property, direction));
