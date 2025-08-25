@@ -4,6 +4,11 @@
     "version": "${version}",
     "name": "Bamboo Place",
     "description": "",
+    "entrypoints": {
+        "client": [
+            "bamboo.place.ClientPlace"
+        ]
+    },
     "mixins": [
         "bamboo-place.mixins.json"
     ],

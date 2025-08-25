@@ -1,5 +1,7 @@
 package bamboo.place.mixin;
 
+import java.util.List;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.At;
@@ -9,10 +11,22 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.enums.ChestType;
+import net.minecraft.block.enums.StairShape;
 import net.minecraft.state.property.Properties;
 import net.minecraft.state.property.Property;
+import net.minecraft.registry.tag.ItemTags;
+import net.minecraft.registry.tag.BlockTags;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.hit.BlockHitResult;
+
+import static net.minecraft.util.math.Direction.UP;
+import static net.minecraft.util.math.Direction.DOWN;
+import static net.minecraft.util.math.Direction.EAST;
+import static net.minecraft.util.math.Direction.WEST;
+import static net.minecraft.util.math.Direction.NORTH;
+import static net.minecraft.util.math.Direction.SOUTH;
 
 @Mixin(BlockItem.class)
 public abstract class BlockItemMixin {
@@ -24,6 +38,9 @@ public abstract class BlockItemMixin {
 
         BlockState blockState = cir.getReturnValue();
         if (blockState == null) {
+            return;
+        }
+        if (blockState.get(Properties.CHEST_TYPE, ChestType.SINGLE) != ChestType.SINGLE) {
             return;
         }
 
@@ -42,56 +59,77 @@ public abstract class BlockItemMixin {
             return;
         }
 
-        Vec3d pos = context.getHitPos().subtract(new Vec3d(context.getBlockPos())).multiply(100);
-        int x = (int) Math.floor(pos.getX());
-        int y = (int) Math.floor(pos.getY());
-        int z = (int) Math.floor(pos.getZ());
+        Vec3d pos = context.getHitPos().subtract(new Vec3d(context.getBlockPos()));
+        Direction direction = context.getSide();
 
-        Direction direction = null;
-        if (check(x, y, z)) {
-            direction = Direction.EAST;
-        } else if (check(100 - x, y, z)) {
-            direction = Direction.WEST;
-        } else if (!hasHopperFacing && !hasHorizontalFacing && check(y, x, z)) {
-            direction = Direction.UP;
-        } else if (!hasHorizontalFacing && check(100 - y, x, z)) {
-            direction = Direction.DOWN;
-        } else if (check(z, x, y)) {
-            direction = Direction.SOUTH;
-        } else if (check(100 - z, x, y)) {
-            direction = Direction.NORTH;
+        double a, b;
+        List<Direction> directions;
+        switch (direction) {
+            case UP, DOWN:
+                a = pos.getX();
+                b = pos.getZ();
+                directions = List.of(WEST, NORTH, SOUTH, EAST);
+                break;
+            case EAST, WEST:
+                a = pos.getZ();
+                b = pos.getY();
+                directions = List.of(NORTH, DOWN, UP, SOUTH);
+                break;
+            case NORTH, SOUTH:
+                a = pos.getX();
+                b = pos.getY();
+                directions = List.of(WEST, DOWN, UP, EAST);
+                break;
+            default:
+                throw new IllegalStateException();
         }
 
-        if (direction == null) {
-            if (x == 0) {
-                direction = Direction.EAST;
-            } else if (x == 100) {
-                direction = Direction.WEST;
-            } else if (z == 0) {
-                direction = Direction.SOUTH;
-            } else if (z == 100) {
-                direction = Direction.NORTH;
-            } else if (hasHopperFacing) {
-                direction = Direction.DOWN;
+        if (Math.abs(a - 0.5) > 0.15 || Math.abs(b - 0.5) > 0.15) {
+            direction = directions.get((a + b > 1 ? 0b10 : 0b00) + (a > b ? 0b01 : 0b00));
+        }
+
+        if (hasHopperFacing && direction == UP
+                || hasHorizontalFacing && (direction == UP || direction == DOWN)) {
+            return;
+        }
+
+        if (blockState.get(Properties.STAIR_SHAPE, StairShape.STRAIGHT) != StairShape.STRAIGHT) {
+            blockState = blockState.with(Properties.STAIR_SHAPE, StairShape.STRAIGHT);
+        }
+
+        cir.setReturnValue(blockState.with(property, direction));
+    }
+
+    @Inject(method = "getPlacementContext", at = @At("RETURN"), cancellable = true)
+    private void getPlacementContext(CallbackInfoReturnable<ItemPlacementContext> cir) {
+
+        ItemPlacementContext context = cir.getReturnValue();
+        if (context.getPlayer().isSneaking()) {
+            return;
+        }
+
+        if (context.getPlayer().getOffHandStack().isIn(ItemTags.PICKAXES)) {
+            BlockPos blockPos = context.getBlockPos();
+            if (!context.canReplaceExisting()) {
+                blockPos = blockPos.offset(context.getSide().getOpposite());
             }
+            Vec3d offset = context.getHitPos().subtract(new Vec3d(blockPos));
+
+            Direction direction = context.getPlayerLookDirection();
+            for (int i = 0; i < 16; i++) {
+                BlockState blockState = context.getWorld().getBlockState(blockPos);
+                if (blockState.canReplace(context) && !blockState.isIn(BlockTags.SLABS)) {
+                    Vec3d pos = new Vec3d(blockPos.offset(context.getSide().getOpposite())).add(offset);
+                    cir.setReturnValue(new ItemPlacementContext(
+                            context.getPlayer(),
+                            context.getHand(),
+                            context.getStack(),
+                            new BlockHitResult(pos, context.getSide(), blockPos, context.hitsInsideBlock())));
+                    return;
+                }
+                blockPos = blockPos.offset(direction);
+            }
+            cir.setReturnValue(null);
         }
-
-        if (blockState.contains(Properties.CHEST_TYPE)) {
-            blockState = blockState.with(Properties.CHEST_TYPE, ChestType.SINGLE);
-        }
-
-        cir.setReturnValue(direction == null ? null : blockState.with(property, direction));
-    }
-
-    private static boolean inCenter(int x, int y, int z) {
-        return x == 0 && y > 33 && y < 67 && z > 33 && z < 67;
-    }
-
-    private static boolean inEdge(int x, int y, int z) {
-        return x != 0 && x <= 33 && Math.max(Math.min(y, 100 - y), Math.min(z, 100 - z)) >= x;
-    }
-
-    private static boolean check(int x, int y, int z) {
-        return inCenter(x, y, z) || inEdge(100 - x, y, z);
     }
 }
