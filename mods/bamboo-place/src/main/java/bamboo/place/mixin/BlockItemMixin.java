@@ -32,7 +32,7 @@ import static net.minecraft.util.math.Direction.SOUTH;
 public abstract class BlockItemMixin {
     @Inject(method = "getPlacementState", at = @At("RETURN"), cancellable = true)
     private void getPlacementState(ItemPlacementContext context, CallbackInfoReturnable<BlockState> cir) {
-        if (context.getPlayer().isSneaking()) {
+        if (context.getPlayer() == null || context.getPlayer().isSneaking()) {
             return;
         }
 
@@ -102,9 +102,8 @@ public abstract class BlockItemMixin {
 
     @Inject(method = "getPlacementContext", at = @At("RETURN"), cancellable = true)
     private void getPlacementContext(CallbackInfoReturnable<ItemPlacementContext> cir) {
-
         ItemPlacementContext context = cir.getReturnValue();
-        if (context.getPlayer().isSneaking()) {
+        if (context.getPlayer() == null || context.getPlayer().isSneaking()) {
             return;
         }
 
