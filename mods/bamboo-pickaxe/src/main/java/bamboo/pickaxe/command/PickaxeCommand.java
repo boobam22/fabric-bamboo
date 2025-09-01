@@ -13,7 +13,7 @@ import net.minecraft.world.GameRules;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.BlockState;
-import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.command.argument.BlockPosArgumentType;
 import net.minecraft.util.math.BlockPos;
@@ -89,7 +89,7 @@ public class PickaxeCommand implements SimpleCommand {
 
         Identifier ore = Identifier.of("bamboo-pickaxe", "ores");
         Identifier whitelist = Identifier.of("bamboo-pickaxe", "whitelist");
-        ORE_TAG = TagKey.of(Registries.BLOCK.getKey(), ore);
-        WHITELIST_TAG = TagKey.of(Registries.BLOCK.getKey(), whitelist);
+        ORE_TAG = TagKey.of(RegistryKeys.BLOCK, ore);
+        WHITELIST_TAG = TagKey.of(RegistryKeys.BLOCK, whitelist);
     }
 }
