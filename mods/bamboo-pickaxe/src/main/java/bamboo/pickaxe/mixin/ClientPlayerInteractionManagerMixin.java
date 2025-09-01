@@ -68,7 +68,7 @@ public abstract class ClientPlayerInteractionManagerMixin {
 
             player.networkHandler.sendChatCommand(String.format("bb-pickaxe clean %d %d %d %d %d %d",
                     min.getX(), min.getY(), min.getZ(), max.getX(), max.getY(), max.getZ()));
-            cir.setReturnValue(((ClientPlayerInteractionManager) (Object) this).breakBlock(pos));
+            cir.setReturnValue(false);
         }
     }
 }
