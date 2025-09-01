@@ -22,7 +22,10 @@ public class PointCommand implements SimpleCommand {
     public void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(literal("bb-world")
                 .then(literal("point")
-                        .executes(listPoint)
+                        .then(literal("ls")
+                                .executes(listAllPoint)
+                                .then(argument("match", StringArgumentType.string())
+                                        .executes(listPoint)))
                         .then(literal("add")
                                 .then(argument("name", StringArgumentType.string())
                                         .then(argument("columnPos", ColumnPosArgumentType.columnPos())
@@ -38,10 +41,8 @@ public class PointCommand implements SimpleCommand {
                                                 .executes(mvPoint))))));
     }
 
-    private static Decorator.WithWorld listPoint = (ctx, world) -> {
-        List<Point> points = PointManager.get(world).getAll();
-
-        ctx.getSource().sendMessage(Text.of(String.format("§a%d§f point", points.size())));
+    private static void show(ServerCommandSource source, List<Point> points) {
+        source.sendMessage(Text.of(String.format("§a%d§f point", points.size())));
         points.forEach(point -> {
             String tpCommand = String.format("/bb-world tp %d %d in %s", point.x(), point.z(),
                     point.worldKey().getValue());
@@ -54,8 +55,22 @@ public class PointCommand implements SimpleCommand {
                     .withHoverEvent(new HoverEvent.ShowText(Text.of(rmCommand)))
                     .withClickEvent(new ClickEvent.SuggestCommand(rmCommand)));
 
-            ctx.getSource().sendMessage(rm.copy().append(tp));
+            source.sendMessage(rm.copy().append(tp));
         });
+    }
+
+    private static Decorator.WithWorld listAllPoint = (ctx, world) -> {
+        List<Point> points = PointManager.get(world).getAll();
+        show(ctx.getSource(), points);
+        return points.size();
+    };
+
+    private static Decorator.WithWorld listPoint = (ctx, world) -> {
+        String match = StringArgumentType.getString(ctx, "match");
+        List<Point> points = PointManager.get(world).getAll().stream()
+                .filter(p -> p.name().contains(match))
+                .toList();
+        show(ctx.getSource(), points);
         return points.size();
     };
 
