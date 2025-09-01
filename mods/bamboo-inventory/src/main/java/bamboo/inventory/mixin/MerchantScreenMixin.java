@@ -35,6 +35,7 @@ public abstract class MerchantScreenMixin {
                 Runnable select = () -> super.mouseClicked(mouseX, mouseY, GLFW.GLFW_MOUSE_BUTTON_LEFT);
 
                 List<Slot> slots = this.screen.getScreenHandler().slots;
+                Slot input = slots.get(0);
                 Slot output = slots.get(2);
                 while (true) {
                     select.run();
@@ -43,7 +44,11 @@ public abstract class MerchantScreenMixin {
                     }
 
                     while (output.hasStack()) {
+                        int n = input.getStack().getCount();
                         MoveAction.buyOne(slots, output);
+                        if (n == input.getStack().getCount()) {
+                            return true;
+                        }
                     }
                 }
                 return true;
