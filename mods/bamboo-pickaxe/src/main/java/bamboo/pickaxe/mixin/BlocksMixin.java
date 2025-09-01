@@ -14,7 +14,7 @@ public abstract class BlocksMixin {
     @Inject(method = "register(Ljava/lang/String;Lnet/minecraft/block/AbstractBlock$Settings;)Lnet/minecraft/block/Block;", at = @At("HEAD"))
     private static void register(String id, Settings settings, CallbackInfoReturnable<Block> cir) {
         if (id.equals("bedrock")) {
-            settings.requiresTool().hardness(100);
+            settings.requiresTool().hardness(50);
         }
     }
 }
