@@ -13,7 +13,7 @@ import net.minecraft.world.GameRules;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.BlockState;
-import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.command.argument.BlockPosArgumentType;
 import net.minecraft.util.math.BlockPos;
@@ -25,6 +25,7 @@ import bamboo.lib.command.Decorator;
 public class PickaxeCommand implements SimpleCommand {
     private static BlockState AIR;
     private static TagKey<Block> ORE_TAG;
+    private static TagKey<Block> WHITELIST_TAG;
 
     @Override
     public void register(CommandDispatcher<ServerCommandSource> dispatcher) {
@@ -49,7 +50,7 @@ public class PickaxeCommand implements SimpleCommand {
 
             if (player.getGameMode() == GameMode.SURVIVAL) {
                 BlockState blockState = world.getBlockState(pos);
-                if (blockState.getHardness(world, pos) < 0) {
+                if (blockState.isIn(WHITELIST_TAG) || blockState.getHardness(world, pos) < 0) {
                     continue;
                 }
                 if (blockState.isIn(ORE_TAG) && player.canHarvest(blockState)) {
@@ -85,7 +86,10 @@ public class PickaxeCommand implements SimpleCommand {
 
     static {
         AIR = Blocks.AIR.getDefaultState();
-        Identifier id = Identifier.of("bamboo-pickaxe", "ores");
-        ORE_TAG = TagKey.of(Registries.BLOCK.getKey(), id);
+
+        Identifier ore = Identifier.of("bamboo-pickaxe", "ores");
+        Identifier whitelist = Identifier.of("bamboo-pickaxe", "whitelist");
+        ORE_TAG = TagKey.of(RegistryKeys.BLOCK, ore);
+        WHITELIST_TAG = TagKey.of(RegistryKeys.BLOCK, whitelist);
     }
 }
