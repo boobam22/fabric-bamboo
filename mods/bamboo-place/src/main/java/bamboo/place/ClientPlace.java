@@ -19,7 +19,7 @@ public class ClientPlace implements ClientModInitializer {
 
     private static IngameHandler toggleFastUse = client -> {
         fastUse.set(!fastUse.getValue());
-        Text text = Text.of(String.format("Fast Use [§a%s§f]", fastUse.getValue()));
+        Text text = Text.of(String.format("Fast Use [§s%s§f]", fastUse.getValue() ? "§a" : "§c", fastUse.getValue()));
         client.inGameHud.setOverlayMessage(text, false);
         return true;
     };
