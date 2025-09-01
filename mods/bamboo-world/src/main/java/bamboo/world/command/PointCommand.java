@@ -30,7 +30,12 @@ public class PointCommand implements SimpleCommand {
                         .then(literal("rm")
                                 .then(argument("name", StringArgumentType.string())
                                         .suggests(addedPoint)
-                                        .executes(rmPoint)))));
+                                        .executes(rmPoint)))
+                        .then(literal("mv")
+                                .then(argument("oldName", StringArgumentType.string())
+                                        .suggests(addedPoint)
+                                        .then(argument("newName", StringArgumentType.string())
+                                                .executes(mvPoint))))));
     }
 
     private static Decorator.WithWorld listPoint = (ctx, world) -> {
@@ -63,6 +68,20 @@ public class PointCommand implements SimpleCommand {
     private static Decorator.WithWorld rmPoint = (ctx, world) -> {
         String name = StringArgumentType.getString(ctx, "name");
         return PointManager.get(world).remove(name) ? 1 : 0;
+    };
+
+    private static Decorator.WithWorld mvPoint = (ctx, world) -> {
+        String oldName = StringArgumentType.getString(ctx, "oldName");
+        String newName = StringArgumentType.getString(ctx, "newName");
+
+        PointManager pm = PointManager.get(world);
+        Point point = pm.get(oldName);
+
+        if (point != null) {
+            pm.remove(oldName);
+            pm.add(newName, point.x(), point.z(), point.worldKey());
+        }
+        return 0;
     };
 
     private static Decorator.WorldSuggestion addedPoint = world -> {
