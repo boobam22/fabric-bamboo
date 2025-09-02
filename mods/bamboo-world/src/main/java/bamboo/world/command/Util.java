@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Set;
 import java.nio.file.Path;
 import java.nio.file.Files;
 import java.nio.file.SimpleFileVisitor;
@@ -13,8 +14,9 @@ import java.io.IOException;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.util.math.ChunkPos;
 
-import bamboo.world.data.RegionManager;
+import bamboo.world.data.PointManager;
 
 public class Util {
     public static void rmTree(Path path) throws IOException {
@@ -87,12 +89,12 @@ public class Util {
     }
 
     private static class FileVisitor extends SimpleFileVisitor<Path> {
-        private List<RegionManager> stack = new ArrayList<>();
-        private Map<Path, RegionManager> dimensions = new HashMap<>();
+        private List<Set<Long>> stack = new ArrayList<>();
+        private Map<Path, Set<Long>> regions = new HashMap<>();
 
         public FileVisitor(MinecraftServer server, Path root) {
-            server.getWorlds().forEach(world -> {
-                dimensions.put(DimensionType.getSaveDirectory(world.getRegistryKey(), root), RegionManager.get(world));
+            PointManager.get(server.getOverworld()).getRegions().forEach((worldKey, set) -> {
+                regions.put(DimensionType.getSaveDirectory(worldKey, root), set);
             });
         }
 
@@ -104,7 +106,7 @@ public class Util {
                 String[] parts = filename.split("\\.");
                 int x = Integer.parseInt(parts[1]);
                 int z = Integer.parseInt(parts[2]);
-                return stack.getLast().contains(x, z);
+                return stack.getLast().contains(ChunkPos.toLong(x, z));
             }
 
             return true;
@@ -112,15 +114,15 @@ public class Util {
 
         @Override
         public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-            if (dimensions.containsKey(dir)) {
-                stack.addLast(dimensions.get(dir));
+            if (regions.containsKey(dir)) {
+                stack.addLast(regions.get(dir));
             }
             return FileVisitResult.CONTINUE;
         }
 
         @Override
         public FileVisitResult postVisitDirectory(Path dir, IOException e) throws IOException {
-            if (dimensions.containsKey(dir)) {
+            if (regions.containsKey(dir)) {
                 stack.removeLast();
             }
             return FileVisitResult.CONTINUE;

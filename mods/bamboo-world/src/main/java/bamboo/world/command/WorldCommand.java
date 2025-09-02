@@ -26,7 +26,6 @@ public class WorldCommand implements SimpleCommand {
 
     @Override
     public void register(CommandDispatcher<ServerCommandSource> dispatcher) {
-        new RegionCommand().register(dispatcher);
         new PointCommand().register(dispatcher);
         new TpCommand().register(dispatcher);
 

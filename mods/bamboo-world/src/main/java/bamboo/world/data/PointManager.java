@@ -1,7 +1,11 @@
 package bamboo.world.data;
 
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.TreeMap;
+import java.util.Set;
+import java.util.HashSet;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -11,6 +15,7 @@ import net.minecraft.world.PersistentStateType;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.World;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.util.math.ChunkPos;
 
 public class PointManager extends PersistentState {
     private static final String id = "bamboo-world-points";
@@ -19,7 +24,8 @@ public class PointManager extends PersistentState {
     private final TreeMap<String, Point> points = new TreeMap<>();
 
     private PointManager() {
-        add("home", 0, 0, World.OVERWORLD);
+        add("spawn", 0, 0, World.OVERWORLD);
+        add("end", 0, 0, World.END);
     }
 
     private PointManager(List<Point> points) {
@@ -44,6 +50,19 @@ public class PointManager extends PersistentState {
     public boolean remove(String name) {
         this.markDirty();
         return points.remove(name) != null;
+    }
+
+    public Map<RegistryKey<World>, Set<Long>> getRegions() {
+        Map<RegistryKey<World>, Set<Long>> regions = new HashMap<>();
+        points.values().forEach(point -> {
+            regions.putIfAbsent(point.worldKey(), new HashSet<>());
+            Set<Long> set = regions.get(point.worldKey());
+            set.add(ChunkPos.toLong(point.x() - 256 >> 9, point.z() - 256 >> 9));
+            set.add(ChunkPos.toLong(point.x() - 256 >> 9, point.z() + 256 >> 9));
+            set.add(ChunkPos.toLong(point.x() + 256 >> 9, point.z() - 256 >> 9));
+            set.add(ChunkPos.toLong(point.x() + 256 >> 9, point.z() + 256 >> 9));
+        });
+        return regions;
     }
 
     public static PointManager get(ServerWorld world) {

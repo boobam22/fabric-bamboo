@@ -22,7 +22,10 @@ public class PointCommand implements SimpleCommand {
     public void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(literal("bb-world")
                 .then(literal("point")
-                        .executes(listPoint)
+                        .then(literal("ls")
+                                .executes(listAllPoint)
+                                .then(argument("match", StringArgumentType.string())
+                                        .executes(listPoint)))
                         .then(literal("add")
                                 .then(argument("name", StringArgumentType.string())
                                         .then(argument("columnPos", ColumnPosArgumentType.columnPos())
@@ -30,13 +33,16 @@ public class PointCommand implements SimpleCommand {
                         .then(literal("rm")
                                 .then(argument("name", StringArgumentType.string())
                                         .suggests(addedPoint)
-                                        .executes(rmPoint)))));
+                                        .executes(rmPoint)))
+                        .then(literal("mv")
+                                .then(argument("oldName", StringArgumentType.string())
+                                        .suggests(addedPoint)
+                                        .then(argument("newName", StringArgumentType.string())
+                                                .executes(mvPoint))))));
     }
 
-    private static Decorator.WithWorld listPoint = (ctx, world) -> {
-        List<Point> points = PointManager.get(world).getAll();
-
-        ctx.getSource().sendMessage(Text.of(String.format("§a%d§f point", points.size())));
+    private static void show(ServerCommandSource source, List<Point> points) {
+        source.sendMessage(Text.of(String.format("§a%d§f point", points.size())));
         points.forEach(point -> {
             String tpCommand = String.format("/bb-world tp %d %d in %s", point.x(), point.z(),
                     point.worldKey().getValue());
@@ -49,8 +55,22 @@ public class PointCommand implements SimpleCommand {
                     .withHoverEvent(new HoverEvent.ShowText(Text.of(rmCommand)))
                     .withClickEvent(new ClickEvent.SuggestCommand(rmCommand)));
 
-            ctx.getSource().sendMessage(rm.copy().append(tp));
+            source.sendMessage(rm.copy().append(tp));
         });
+    }
+
+    private static Decorator.WithWorld listAllPoint = (ctx, world) -> {
+        List<Point> points = PointManager.get(world).getAll();
+        show(ctx.getSource(), points);
+        return points.size();
+    };
+
+    private static Decorator.WithWorld listPoint = (ctx, world) -> {
+        String match = StringArgumentType.getString(ctx, "match");
+        List<Point> points = PointManager.get(world).getAll().stream()
+                .filter(p -> p.name().contains(match))
+                .toList();
+        show(ctx.getSource(), points);
         return points.size();
     };
 
@@ -63,6 +83,20 @@ public class PointCommand implements SimpleCommand {
     private static Decorator.WithWorld rmPoint = (ctx, world) -> {
         String name = StringArgumentType.getString(ctx, "name");
         return PointManager.get(world).remove(name) ? 1 : 0;
+    };
+
+    private static Decorator.WithWorld mvPoint = (ctx, world) -> {
+        String oldName = StringArgumentType.getString(ctx, "oldName");
+        String newName = StringArgumentType.getString(ctx, "newName");
+
+        PointManager pm = PointManager.get(world);
+        Point point = pm.get(oldName);
+
+        if (point != null) {
+            pm.remove(oldName);
+            pm.add(newName, point.x(), point.z(), point.worldKey());
+        }
+        return 0;
     };
 
     private static Decorator.WorldSuggestion addedPoint = world -> {

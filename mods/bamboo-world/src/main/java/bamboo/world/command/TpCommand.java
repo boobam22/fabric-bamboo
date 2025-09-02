@@ -3,8 +3,6 @@ package bamboo.world.command;
 import java.util.Set;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.world.ServerWorld;
@@ -17,7 +15,6 @@ import net.minecraft.util.math.ColumnPos;
 
 import bamboo.lib.command.SimpleCommand;
 import bamboo.lib.command.Decorator;
-import bamboo.world.data.Point;
 
 public class TpCommand implements SimpleCommand {
     @Override
@@ -33,42 +30,29 @@ public class TpCommand implements SimpleCommand {
                                                 .executes(toPosition))))));
     }
 
-    private static Tp toRandom = (ctx, world) -> {
+    private static void tp(Entity entity, ServerWorld world, int x, int z) {
+        int y = world.getChunk(ChunkSectionPos.getSectionCoord(x), ChunkSectionPos.getSectionCoord(z))
+                .sampleHeightmap(Heightmap.Type.MOTION_BLOCKING, x, z);
+        entity.teleport(world, x + 0.5, y + 1, z + 0.5, Set.of(), entity.getYaw(), entity.getPitch(), false);
+    }
+
+    private static Decorator.WithWorld toRandom = (ctx, world) -> {
         int x = (int) (Math.random() * ServerWorld.HORIZONTAL_LIMIT * 2) - ServerWorld.HORIZONTAL_LIMIT;
         int z = (int) (Math.random() * ServerWorld.HORIZONTAL_LIMIT * 2) - ServerWorld.HORIZONTAL_LIMIT;
-        return new Point("tmp", x, z, world.getRegistryKey());
+        tp(ctx.getSource().getEntity(), world, x, z);
+        return 1;
     };
 
-    private static Tp toPositionOfCurrentDimension = (ctx, world) -> {
+    private static Decorator.WithWorld toPositionOfCurrentDimension = (ctx, world) -> {
         ColumnPos pos = ColumnPosArgumentType.getColumnPos(ctx, "columnPos");
-        return new Point("tmp", pos.x(), pos.z(), world.getRegistryKey());
+        tp(ctx.getSource().getEntity(), world, pos.x(), pos.z());
+        return 1;
     };
 
-    private static Tp toPosition = (ctx, world) -> {
+    private static Decorator.Base toPosition = ctx -> {
         ColumnPos pos = ColumnPosArgumentType.getColumnPos(ctx, "columnPos");
-        world = DimensionArgumentType.getDimensionArgument(ctx, "dimension");
-        return new Point("tmp", pos.x(), pos.z(), world.getRegistryKey());
+        ServerWorld world = DimensionArgumentType.getDimensionArgument(ctx, "dimension");
+        tp(ctx.getSource().getEntity(), world, pos.x(), pos.z());
+        return 1;
     };
-
-    private static interface Tp extends Decorator.WithWorld {
-        @Override
-        default int run(CommandContext<ServerCommandSource> ctx, ServerWorld world) throws CommandSyntaxException {
-            Point point = getColumnPos(ctx, world);
-            if (point == null) {
-                return 0;
-            }
-
-            world = ctx.getSource().getServer().getWorld(point.worldKey());
-            int x = point.x();
-            int z = point.z();
-            int y = world.getChunk(ChunkSectionPos.getSectionCoord(x), ChunkSectionPos.getSectionCoord(z))
-                    .sampleHeightmap(Heightmap.Type.MOTION_BLOCKING, x, z);
-
-            Entity entity = ctx.getSource().getEntity();
-            entity.teleport(world, x + 0.5, y + 1, z + 0.5, Set.of(), entity.getYaw(), entity.getPitch(), false);
-            return 1;
-        }
-
-        Point getColumnPos(CommandContext<ServerCommandSource> ctx, ServerWorld world) throws CommandSyntaxException;
-    }
 }
