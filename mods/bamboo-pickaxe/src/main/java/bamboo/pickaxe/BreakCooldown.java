@@ -18,8 +18,12 @@ public class BreakCooldown {
         return entry.getValue() == State.ALWAYS;
     }
 
-    public void switchNext() {
-        entry.set(entry.getValue().next());
+    public void toggle() {
+        if (entry.getValue() == State.NEVER) {
+            entry.set(State.ALWAYS);
+        } else {
+            entry.set(State.NEVER);
+        }
     }
 
     @Override
@@ -29,11 +33,5 @@ public class BreakCooldown {
 
     private static enum State {
         DEFAULT, NEVER, ALWAYS;
-
-        public State next() {
-            State[] values = State.values();
-            int i = (this.ordinal() + 1) % values.length;
-            return values[i];
-        }
     }
 }

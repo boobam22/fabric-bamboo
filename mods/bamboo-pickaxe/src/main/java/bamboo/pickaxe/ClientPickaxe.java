@@ -24,7 +24,7 @@ public class ClientPickaxe extends Pickaxe implements ClientModInitializer {
     }
 
     private static IngameHandler switchNextBreakCooldown = client -> {
-        breakCooldown.switchNext();
+        breakCooldown.toggle();
         Text text = Text.of(String.format("Break Cooldown [§a%s§f]", breakCooldown));
         client.inGameHud.setOverlayMessage(text, false);
         return true;
