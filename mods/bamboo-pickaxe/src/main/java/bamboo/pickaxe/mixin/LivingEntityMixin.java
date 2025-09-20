@@ -17,7 +17,7 @@ public abstract class LivingEntityMixin {
     @Inject(method = "dropLoot", at = @At("HEAD"), cancellable = true)
     private void dropLoot(ServerWorld world, DamageSource damageSource, boolean causedByPlayer, CallbackInfo ci) {
         LivingEntity self = (LivingEntity) (Object) this;
-        if (causedByPlayer && !(self instanceof EnderDragonEntity)) {
+        if (causedByPlayer && !(self instanceof EnderDragonEntity) && !(self instanceof PlayerEntity)) {
             PlayerEntity player = self.getAttackingPlayer();
             if (player != null && player.getMainHandStack().isIn(ItemTags.PICKAXES)) {
                 self.dropStack(world, self.getPickBlockStack());
