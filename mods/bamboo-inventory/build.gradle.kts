@@ -20,5 +20,5 @@ tasks.shadowJar {
 
 tasks.remapJar {
     dependsOn(tasks.shadowJar)
-    input.set(tasks.shadowJar.get().archiveFile)
+    inputFile.set(tasks.shadowJar.flatMap { it.archiveFile })
 }
