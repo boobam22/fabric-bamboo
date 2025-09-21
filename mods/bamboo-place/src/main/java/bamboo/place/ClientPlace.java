@@ -4,13 +4,12 @@ import net.fabricmc.api.ClientModInitializer;
 
 import net.minecraft.text.Text;
 
-import bamboo.lib.api.Server;
 import bamboo.lib.api.Client;
 import bamboo.lib.config.ConfigEntry;
 import bamboo.lib.keybinding.IngameHandler;
 
 public class ClientPlace implements ClientModInitializer {
-    public static ConfigEntry<Boolean> fastUse = Server.registerConfig("place.fastUse", false);
+    public static ConfigEntry<Boolean> fastUse = Client.registerConfig("place.fastUse", false);
 
     @Override
     public void onInitializeClient() {

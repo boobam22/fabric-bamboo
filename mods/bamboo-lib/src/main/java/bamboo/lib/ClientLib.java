@@ -2,12 +2,17 @@ package bamboo.lib;
 
 import net.fabricmc.api.ClientModInitializer;
 
+import bamboo.lib.config.ConfigRegistry;
+
 public class ClientLib extends Lib implements ClientModInitializer {
+    public static final ConfigRegistry configRegistry = new ConfigRegistry();
     public static final Registry<Runnable> joinWorldHandlers = new Registry<>();
     public static final Registry<Runnable> exitWorldHandlers = new Registry<>();
     public static final Registry<Runnable> exitGameHandlers = new Registry<>();
 
     @Override
     public void onInitializeClient() {
+        joinWorldHandlers.register(configRegistry::loadConfig);
+        exitWorldHandlers.register(configRegistry::saveConfig);
     }
 }
