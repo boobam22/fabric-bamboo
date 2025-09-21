@@ -5,6 +5,9 @@
     "name": "Bamboo Place",
     "description": "",
     "entrypoints": {
+        "main": [
+            "bamboo.place.Place"
+        ],
         "client": [
             "bamboo.place.ClientPlace"
         ]

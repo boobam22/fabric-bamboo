@@ -28,6 +28,8 @@ import static net.minecraft.util.math.Direction.WEST;
 import static net.minecraft.util.math.Direction.NORTH;
 import static net.minecraft.util.math.Direction.SOUTH;
 
+import bamboo.place.Place;
+
 @Mixin(BlockItem.class)
 public abstract class BlockItemMixin {
     @Inject(method = "getPlacementState", at = @At("RETURN"), cancellable = true)
@@ -115,7 +117,8 @@ public abstract class BlockItemMixin {
             Vec3d offset = context.getHitPos().subtract(new Vec3d(blockPos));
 
             Direction direction = context.getPlayerLookDirection();
-            for (int i = 0; i < 16; i++) {
+            int n = Place.fastUseDistance.getValue() + 1;
+            for (int i = 0; i < n; i++) {
                 BlockState blockState = context.getWorld().getBlockState(blockPos);
                 if (blockState.canReplace(context) && !blockState.isIn(BlockTags.SLABS)) {
                     Vec3d pos = new Vec3d(blockPos.offset(context.getSide().getOpposite())).add(offset);

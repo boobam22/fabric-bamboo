@@ -6,7 +6,7 @@ import bamboo.lib.api.Client;
 import bamboo.lib.config.ConfigEntry;
 import bamboo.lib.keybinding.IngameHandler;
 
-public class ClientPlace implements ClientModInitializer {
+public class ClientPlace extends Place implements ClientModInitializer {
     public static ConfigEntry<Boolean> fastUse = Client.registerConfig("place.fastUse", false);
 
     @Override
