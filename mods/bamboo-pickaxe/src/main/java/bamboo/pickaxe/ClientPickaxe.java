@@ -28,8 +28,8 @@ public class ClientPickaxe extends Pickaxe implements ClientModInitializer {
     };
 
     private static IngameHandler toggleAreaMine = client -> {
-        boolean enabled = areaMine.toggle();
-        Client.message("Area Mine [%s]", enabled);
+        areaMine.toggle();
+        Client.message("Area Mine [%s]", areaMine.isEnabled());
         return true;
     };
 }

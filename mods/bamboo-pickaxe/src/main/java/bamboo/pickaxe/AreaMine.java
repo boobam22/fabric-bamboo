@@ -7,10 +7,9 @@ public class AreaMine {
     private boolean enabled;
     private Box area;
 
-    public boolean toggle() {
+    public void toggle() {
         enabled ^= true;
         area = null;
-        return enabled;
     }
 
     public boolean isEnabled() {
