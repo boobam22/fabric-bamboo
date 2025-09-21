@@ -13,9 +13,13 @@ import java.io.IOException;
 import net.fabricmc.loader.api.FabricLoader;
 
 public class ConfigRegistry {
-    private static final String fileName = "bamboo.properties";
+    private final String id;
     private final Properties properties = new Properties();
     private final Map<String, ConfigEntry<?>> registry = new TreeMap<>();
+
+    public ConfigRegistry(String id) {
+        this.id = id;
+    }
 
     public <T> ConfigEntry<T> register(String key, T value, Function<String, T> constructor) {
         ConfigEntry<T> entry = new ConfigEntry<>(key, value, constructor);
@@ -32,8 +36,8 @@ public class ConfigRegistry {
         }
     }
 
-    private static Path getFilePath() {
-        return FabricLoader.getInstance().getConfigDir().resolve(fileName);
+    private Path getFilePath() {
+        return FabricLoader.getInstance().getConfigDir().resolve(id);
     }
 
     public void loadConfig() {
@@ -54,7 +58,7 @@ public class ConfigRegistry {
         });
 
         try (OutputStream out = Files.newOutputStream(getFilePath())) {
-            properties.store(out, fileName);
+            properties.store(out, id);
         } catch (IOException e) {
         }
     }
