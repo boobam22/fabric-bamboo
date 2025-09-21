@@ -1,10 +1,10 @@
 package bamboo.pickaxe;
 
-import bamboo.lib.api.Server;
+import bamboo.lib.api.Client;
 import bamboo.lib.config.ConfigEntry;
 
 public class BreakCooldown {
-    private static ConfigEntry<State> entry = Server.registerConfig("pickaxe.breakCooldown", State.DEFAULT);
+    private static ConfigEntry<State> entry = Client.registerConfig("pickaxe.breakCooldown", State.DEFAULT);
 
     public boolean isDefault() {
         return entry.getValue() == State.DEFAULT;
