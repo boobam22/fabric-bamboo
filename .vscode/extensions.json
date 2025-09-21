@@ -1,0 +1,16 @@
+{
+    "recommendations": [
+        "visualstudioexptteam.vscodeintellicode",
+        "visualstudioexptteam.intellicode-api-usage-examples",
+        "redhat.java",
+        "vscjava.vscode-gradle",
+        "vscjava.vscode-maven",
+        "vscjava.vscode-java-pack",
+        "vscjava.vscode-java-debug",
+        "vscjava.vscode-java-test",
+        "vscjava.vscode-java-dependency",
+        "spgoding.datapack-language-server",
+        "minecraftcommands.syntax-mcfunction",
+        "misodee.vscode-nbt"
+    ]
+}
