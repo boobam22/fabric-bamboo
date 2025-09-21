@@ -2,8 +2,6 @@ package bamboo.place;
 
 import net.fabricmc.api.ClientModInitializer;
 
-import net.minecraft.text.Text;
-
 import bamboo.lib.api.Client;
 import bamboo.lib.config.ConfigEntry;
 import bamboo.lib.keybinding.IngameHandler;
@@ -18,8 +16,7 @@ public class ClientPlace implements ClientModInitializer {
 
     private static IngameHandler toggleFastUse = client -> {
         fastUse.set(!fastUse.getValue());
-        Text text = Text.of(String.format("Fast Use [%s%s§f]", fastUse.getValue() ? "§a" : "§c", fastUse.getValue()));
-        client.inGameHud.setOverlayMessage(text, false);
+        Client.message("Fast Use [%s]", fastUse.getValue());
         return true;
     };
 }

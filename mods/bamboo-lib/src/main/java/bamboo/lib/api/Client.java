@@ -2,6 +2,9 @@ package bamboo.lib.api;
 
 import java.util.function.Function;
 
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.text.Text;
+
 import bamboo.lib.ClientLib;
 import bamboo.lib.config.ConfigEntry;
 import bamboo.lib.keybinding.Key;
@@ -54,5 +57,15 @@ public class Client {
 
     public static void onExitGame(Runnable callback) {
         ClientLib.exitGameHandlers.register(callback);
+    }
+
+    public static void message(String fmt, Object... args) {
+        for (int i = 0; i < args.length; i++) {
+            if (args[i] instanceof Boolean arg) {
+                args[i] = (arg ? "§a" : "§c") + arg.toString() + "§f";
+            }
+        }
+        Text text = Text.of(String.format(fmt, args));
+        MinecraftClient.getInstance().inGameHud.setOverlayMessage(text, false);
     }
 }
