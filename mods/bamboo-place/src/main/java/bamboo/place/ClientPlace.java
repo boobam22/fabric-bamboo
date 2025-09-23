@@ -15,7 +15,7 @@ public class ClientPlace extends Place implements ClientModInitializer {
     }
 
     private static IngameHandler toggleFastUse = client -> {
-        useCooldown.set(!useCooldown.getValue());
+        useCooldown.toggle();
         Client.message("Use Cooldown [%s]", useCooldown.getValue());
         return true;
     };

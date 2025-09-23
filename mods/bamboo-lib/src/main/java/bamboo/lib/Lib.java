@@ -4,6 +4,7 @@ import net.fabricmc.api.ModInitializer;
 
 import bamboo.lib.config.ConfigRegistry;
 import bamboo.lib.command.Command;
+import bamboo.lib.command.ConfigCommand;
 
 public class Lib implements ModInitializer {
     public static final ConfigRegistry configRegistry = new ConfigRegistry("bamboo-server.properties");
@@ -15,5 +16,6 @@ public class Lib implements ModInitializer {
     public void onInitialize() {
         startHandlers.register(configRegistry::loadConfig);
         shutdownHandlers.register(configRegistry::saveConfig);
+        commandRegistry.register(new ConfigCommand());
     }
 }

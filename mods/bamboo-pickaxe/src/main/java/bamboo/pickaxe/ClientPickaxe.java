@@ -23,7 +23,7 @@ public class ClientPickaxe extends Pickaxe implements ClientModInitializer {
     }
 
     private static IngameHandler switchNextBreakCooldown = client -> {
-        breakCooldown.set(!breakCooldown.getValue());
+        breakCooldown.toggle();
         Client.message("Break Cooldown [%s]", breakCooldown.getValue());
         return true;
     };

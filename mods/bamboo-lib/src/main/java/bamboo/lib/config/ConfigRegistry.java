@@ -21,12 +21,25 @@ public class ConfigRegistry {
         this.id = id;
     }
 
-    public <T> ConfigEntry<T> register(String key, T value, Function<String, T> constructor) {
-        ConfigEntry<T> entry = new ConfigEntry<>(key, value, constructor);
+    public Map<String, ConfigEntry<?>> getAll() {
+        return registry;
+    }
+
+    public ConfigEntry<?> get(String key) {
+        return registry.get(key);
+    }
+
+    public <T> ConfigEntry<T> register(String key, T value, Function<String, T> constructor,
+            Function<T, Boolean> valid) {
+        ConfigEntry<T> entry = new ConfigEntry<>(key, value, constructor, valid);
         registry.putIfAbsent(key, entry);
 
         loadEntry(entry);
         return entry;
+    }
+
+    public <T> ConfigEntry<T> register(String key, T value, Function<String, T> constructor) {
+        return register(key, value, constructor, val -> true);
     }
 
     private <T> void loadEntry(ConfigEntry<T> entry) {

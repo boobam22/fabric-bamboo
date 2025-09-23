@@ -15,12 +15,12 @@ public class Server {
         return Lib.configRegistry.register(key, value, Boolean::parseBoolean);
     }
 
-    public static ConfigEntry<Integer> registerConfig(String key, int value) {
-        return Lib.configRegistry.register(key, value, Integer::parseInt);
+    public static ConfigEntry<Integer> registerConfig(String key, int value, int min, int max) {
+        return Lib.configRegistry.register(key, value, Integer::parseInt, val -> val >= min && val <= max);
     }
 
-    public static ConfigEntry<Double> registerConfig(String key, double value) {
-        return Lib.configRegistry.register(key, value, Double::parseDouble);
+    public static ConfigEntry<Double> registerConfig(String key, double value, double min, double max) {
+        return Lib.configRegistry.register(key, value, Double::parseDouble, val -> val >= min && val <= max);
     }
 
     public static <T extends Enum<T>> ConfigEntry<T> registerConfig(String key, T value) {
