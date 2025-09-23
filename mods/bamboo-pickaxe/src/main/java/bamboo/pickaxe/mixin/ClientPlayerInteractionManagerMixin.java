@@ -32,14 +32,14 @@ public abstract class ClientPlayerInteractionManagerMixin {
 
     @Inject(method = "breakBlock", at = @At("RETURN"))
     private void breakBlock(CallbackInfoReturnable<Boolean> cir) {
-        if (this.gameMode == GameMode.SURVIVAL && ClientPickaxe.breakCooldown.isAlways() && cir.getReturnValue()) {
+        if (this.gameMode == GameMode.SURVIVAL && ClientPickaxe.breakCooldown.getValue() && cir.getReturnValue()) {
             this.blockBreakingCooldown = 5;
         }
     }
 
     @ModifyConstant(method = "updateBlockBreakingProgress", constant = @Constant(intValue = 5))
     private int updateBlockBreakingProgress(int cooldown) {
-        if (this.gameMode == GameMode.SURVIVAL && ClientPickaxe.breakCooldown.isNever()) {
+        if (this.gameMode == GameMode.SURVIVAL && !ClientPickaxe.breakCooldown.getValue()) {
             return 0;
         }
         return cooldown;
@@ -68,7 +68,7 @@ public abstract class ClientPlayerInteractionManagerMixin {
 
             player.networkHandler.sendChatCommand(String.format("bb-pickaxe clean %d %d %d %d %d %d",
                     min.getX(), min.getY(), min.getZ(), max.getX(), max.getY(), max.getZ()));
-            if (ClientPickaxe.breakCooldown.isAlways()) {
+            if (ClientPickaxe.breakCooldown.getValue()) {
                 this.blockBreakingCooldown = 5;
             }
             cir.setReturnValue(false);

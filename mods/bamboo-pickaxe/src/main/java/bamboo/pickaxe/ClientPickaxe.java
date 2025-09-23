@@ -3,10 +3,11 @@ package bamboo.pickaxe;
 import net.fabricmc.api.ClientModInitializer;
 
 import bamboo.lib.api.Client;
+import bamboo.lib.config.ConfigEntry;
 import bamboo.lib.keybinding.IngameHandler;
 
 public class ClientPickaxe extends Pickaxe implements ClientModInitializer {
-    public static BreakCooldown breakCooldown = new BreakCooldown();
+    public static ConfigEntry<Boolean> breakCooldown = Client.registerConfig("pickaxe.breakCooldown", false);
     public static AreaMine areaMine = new AreaMine();
 
     @Override
@@ -22,8 +23,8 @@ public class ClientPickaxe extends Pickaxe implements ClientModInitializer {
     }
 
     private static IngameHandler switchNextBreakCooldown = client -> {
-        breakCooldown.toggle();
-        Client.message("Break Cooldown [§a%s§f]", breakCooldown);
+        breakCooldown.set(!breakCooldown.getValue());
+        Client.message("Break Cooldown [%s]", breakCooldown.getValue());
         return true;
     };
 
