@@ -8,14 +8,16 @@ public class ConfigEntry<T> {
     private final String key;
     private final T defaultValue;
     private final Function<String, T> constructor;
+    private final Function<T, Boolean> valid;
     private T value;
     private List<T> presets;
 
     @SuppressWarnings("unchecked")
-    public ConfigEntry(String key, T value, Function<String, T> constructor) {
+    public ConfigEntry(String key, T value, Function<String, T> constructor, Function<T, Boolean> valid) {
         this.key = key;
         this.defaultValue = value;
         this.constructor = constructor;
+        this.valid = valid;
         this.value = value;
         this.presets = new ArrayList<>();
 
@@ -51,7 +53,9 @@ public class ConfigEntry<T> {
     }
 
     public void set(T value) {
-        this.value = value;
+        if (valid.apply(value)) {
+            this.value = value;
+        }
     }
 
     public void reset() {
