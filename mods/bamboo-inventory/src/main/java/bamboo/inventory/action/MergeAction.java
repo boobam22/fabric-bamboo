@@ -2,8 +2,8 @@ package bamboo.inventory.action;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.TreeMap;
-import java.util.Comparator;
 
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.item.ItemStack;
@@ -24,19 +24,18 @@ public class MergeAction {
         List<List<Slot>> groupedSlot = new ArrayList<>();
         TreeMap<Integer, ItemStack> input = new TreeMap<>();
         TreeMap<Integer, ItemStack> output = new TreeMap<>();
-        TreeMap<ItemStack, List<Slot>> stackMap = new TreeMap<>(Comparator
-                .comparing((ItemStack stack) -> stack.getItem().hashCode())
-                .thenComparing((ItemStack stack) -> stack.getComponents().hashCode()));
+        HashMap<ItemStackWrapper, List<Slot>> stackMap = new HashMap<>();
 
         for (Slot slot : inventory) {
             ItemStack stack = slot.getStack();
+            ItemStackWrapper key = new ItemStackWrapper(stack);
             if (slot.hasStack()) {
-                if (!stackMap.containsKey(stack)) {
+                if (!stackMap.containsKey(key)) {
                     List<Slot> group = new ArrayList<>();
                     groupedSlot.add(group);
-                    stackMap.put(stack, group);
+                    stackMap.put(key, group);
                 }
-                stackMap.get(stack).add(slot);
+                stackMap.get(key).add(slot);
                 input.put(slot.id, stack.copy());
             }
         }
@@ -60,7 +59,7 @@ public class MergeAction {
         }
 
         List<Integer> points = new ArrayList<>(input.keySet());
-        TreeMap<ItemStack, TreeMap<Integer, Integer>> state = new TreeMap<>(stackMap.comparator());
+        HashMap<ItemStackWrapper, TreeMap<Integer, Integer>> state = new HashMap<>();
         for (int id : output.keySet()) {
             ItemStack stack = output.get(id);
             int count = stack.getCount();
@@ -71,8 +70,9 @@ public class MergeAction {
                 count -= input.get(id).getCount();
             }
             if (count > 0) {
-                state.putIfAbsent(stack, new TreeMap<>());
-                state.get(stack).put(id, count);
+                ItemStackWrapper key = new ItemStackWrapper(stack);
+                state.putIfAbsent(key, new TreeMap<>());
+                state.get(key).put(id, count);
             }
         }
 
@@ -83,7 +83,7 @@ public class MergeAction {
             path.add(id);
 
             while (true) {
-                TreeMap<Integer, Integer> offsetMap = state.get(cursorStack);
+                TreeMap<Integer, Integer> offsetMap = state.get(new ItemStackWrapper(cursorStack));
                 id = offsetMap.firstKey();
                 path.add(id);
 
@@ -138,6 +138,27 @@ public class MergeAction {
             } else {
                 Util.leftClick(slot);
             }
+        }
+    }
+
+    private static class ItemStackWrapper {
+        private ItemStack obj;
+
+        public ItemStackWrapper(ItemStack obj) {
+            this.obj = obj.copyWithCount(1);
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            if (other instanceof ItemStackWrapper wrapper) {
+                return ItemStack.areItemsAndComponentsEqual(obj, wrapper.obj);
+            }
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return ItemStack.hashCode(obj);
         }
     }
 }
