@@ -21,6 +21,14 @@ public class ConfigRegistry {
         this.id = id;
     }
 
+    public Map<String, ConfigEntry<?>> getAll() {
+        return registry;
+    }
+
+    public ConfigEntry<?> get(String key) {
+        return registry.get(key);
+    }
+
     public <T> ConfigEntry<T> register(String key, T value, Function<String, T> constructor,
             Function<T, Boolean> valid) {
         ConfigEntry<T> entry = new ConfigEntry<>(key, value, constructor, valid);
