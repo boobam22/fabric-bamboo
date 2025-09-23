@@ -18,6 +18,6 @@ public abstract class MinecraftClientMixin {
 
     @Redirect(method = "doItemUse", at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;itemUseCooldown:I", opcode = Opcodes.PUTFIELD))
     private void doItemUse(MinecraftClient client, int origin) {
-        this.itemUseCooldown = ClientPlace.fastUse.getValue() ? 1 : origin;
+        this.itemUseCooldown = ClientPlace.useCooldown.getValue() ? origin : 1;
     }
 }

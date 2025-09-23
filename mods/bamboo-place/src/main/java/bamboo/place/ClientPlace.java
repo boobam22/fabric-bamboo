@@ -7,7 +7,7 @@ import bamboo.lib.config.ConfigEntry;
 import bamboo.lib.keybinding.IngameHandler;
 
 public class ClientPlace extends Place implements ClientModInitializer {
-    public static ConfigEntry<Boolean> fastUse = Client.registerConfig("place.fastUse", false);
+    public static ConfigEntry<Boolean> useCooldown = Client.registerConfig("place.useCooldown", true);
 
     @Override
     public void onInitializeClient() {
@@ -15,8 +15,8 @@ public class ClientPlace extends Place implements ClientModInitializer {
     }
 
     private static IngameHandler toggleFastUse = client -> {
-        fastUse.set(!fastUse.getValue());
-        Client.message("Fast Use [%s]", fastUse.getValue());
+        useCooldown.set(!useCooldown.getValue());
+        Client.message("Use Cooldown [%s]", useCooldown.getValue());
         return true;
     };
 }
