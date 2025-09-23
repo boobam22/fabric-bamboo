@@ -9,6 +9,8 @@
 - bamboo-place v1.1.0
   - rename config `fastUse` to `useCooldown`.
   - rename config `fastUseDistance` to `scaffoldingDistance`.
+- bamboo-lib v1.1.0
+  - improve `ConfigEntry` and support to modify config by command.
 
 ## [v1.0.0] - 2025-09-22
 
