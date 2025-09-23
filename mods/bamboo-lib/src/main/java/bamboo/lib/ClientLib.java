@@ -4,7 +4,7 @@ import net.fabricmc.api.ClientModInitializer;
 
 import bamboo.lib.config.ConfigRegistry;
 
-public class ClientLib extends Lib implements ClientModInitializer {
+public class ClientLib implements ClientModInitializer {
     public static final ConfigRegistry configRegistry = new ConfigRegistry("bamboo.properties");
     public static final Registry<Runnable> joinWorldHandlers = new Registry<>();
     public static final Registry<Runnable> exitWorldHandlers = new Registry<>();

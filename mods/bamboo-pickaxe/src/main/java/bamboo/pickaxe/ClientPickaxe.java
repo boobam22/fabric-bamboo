@@ -6,7 +6,7 @@ import bamboo.lib.api.Client;
 import bamboo.lib.config.ConfigEntry;
 import bamboo.lib.keybinding.IngameHandler;
 
-public class ClientPickaxe extends Pickaxe implements ClientModInitializer {
+public class ClientPickaxe implements ClientModInitializer {
     public static ConfigEntry<Boolean> breakCooldown = Client.registerConfig("pickaxe.breakCooldown", false);
     public static AreaMine areaMine = new AreaMine();
 
