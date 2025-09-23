@@ -117,7 +117,7 @@ public abstract class BlockItemMixin {
             Vec3d offset = context.getHitPos().subtract(new Vec3d(blockPos));
 
             Direction direction = context.getPlayerLookDirection();
-            int n = Place.fastUseDistance.getValue() + 1;
+            int n = Place.scaffoldingDistance.getValue() + 1;
             for (int i = 0; i < n; i++) {
                 BlockState blockState = context.getWorld().getBlockState(blockPos);
                 if (blockState.canReplace(context) && !blockState.isIn(BlockTags.SLABS)) {
