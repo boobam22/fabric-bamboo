@@ -7,7 +7,9 @@
         "NetherPortalMixin"
     ],
     "client": [
-        "MinecraftClientMixin"
+        "MinecraftClientMixin",
+        "KeyBindingAccessor",
+        "KeyBindingMixin"
     ],
     "injectors": {
         "defaultRequire": 1
