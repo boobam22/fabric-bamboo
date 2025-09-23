@@ -11,10 +11,10 @@ public class ClientPlace implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        Client.registerKey("b+p", toggleFastUse);
+        Client.registerKey("b+p", toggleUseCooldown);
     }
 
-    private static IngameHandler toggleFastUse = client -> {
+    private static IngameHandler toggleUseCooldown = client -> {
         useCooldown.toggle();
         Client.message("Use Cooldown [%s]", useCooldown.getValue());
         return true;
