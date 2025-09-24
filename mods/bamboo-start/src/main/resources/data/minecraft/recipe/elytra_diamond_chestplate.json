@@ -1,0 +1,12 @@
+{
+    "type": "crafting_transmute",
+    "category": "equipment",
+    "input": "diamond_chestplate",
+    "material": "elytra",
+    "result": {
+        "id": "diamond_chestplate",
+        "components": {
+            "glider": {}
+        }
+    }
+}

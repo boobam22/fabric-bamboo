@@ -1,0 +1,12 @@
+{
+    "type": "crafting_transmute",
+    "category": "equipment",
+    "input": "netherite_chestplate",
+    "material": "elytra",
+    "result": {
+        "id": "netherite_chestplate",
+        "components": {
+            "glider": {}
+        }
+    }
+}
