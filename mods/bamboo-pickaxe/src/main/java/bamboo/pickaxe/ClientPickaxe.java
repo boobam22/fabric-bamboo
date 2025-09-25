@@ -8,6 +8,9 @@ import bamboo.lib.keybinding.IngameHandler;
 
 public class ClientPickaxe implements ClientModInitializer {
     public static ConfigEntry<Boolean> breakCooldown = Client.registerConfig("pickaxe.breakCooldown", false);
+    public static ConfigEntry<Boolean> disableCorpseRender;
+    public static ConfigEntry<Boolean> disableItemRender;
+    public static ConfigEntry<Boolean> disableMonsterRender;
     public static AreaMine areaMine = new AreaMine();
 
     @Override
@@ -33,4 +36,10 @@ public class ClientPickaxe implements ClientModInitializer {
         Client.message("Area Mine [%s]", areaMine.isEnabled());
         return true;
     };
+
+    static {
+        disableCorpseRender = Client.registerConfig("pickaxe.disableCorpseRender", false);
+        disableItemRender = Client.registerConfig("pickaxe.disableItemRender", false);
+        disableMonsterRender = Client.registerConfig("pickaxe.disableMonsterRender", false);
+    }
 }
