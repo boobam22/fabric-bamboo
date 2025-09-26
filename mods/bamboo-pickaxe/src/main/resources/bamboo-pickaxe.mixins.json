@@ -10,8 +10,6 @@
     ],
     "client": [
         "ClientPlayerInteractionManagerMixin",
-        "EntityRenderDispatcherMixin",
-        "ParticleManagerMixin",
         "DebugRendererMixin"
     ],
     "injectors": {

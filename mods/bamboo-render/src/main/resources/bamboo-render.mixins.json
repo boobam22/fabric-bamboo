@@ -1,0 +1,13 @@
+{
+    "required": true,
+    "package": "bamboo.render.mixin",
+    "compatibilityLevel": "JAVA_21",
+    "mixins": [],
+    "client": [
+        "EntityRenderDispatcherMixin",
+        "ParticleManagerMixin"
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    }
+}
