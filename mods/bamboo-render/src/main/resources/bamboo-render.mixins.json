@@ -6,7 +6,8 @@
     "client": [
         "EntityMixin",
         "EntityRenderDispatcherMixin",
-        "ParticleManagerMixin"
+        "ParticleManagerMixin",
+        "LightmapTextureManagerMixin"
     ],
     "injectors": {
         "defaultRequire": 1
