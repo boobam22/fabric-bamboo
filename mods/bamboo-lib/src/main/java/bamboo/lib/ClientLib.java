@@ -2,7 +2,9 @@ package bamboo.lib;
 
 import net.fabricmc.api.ClientModInitializer;
 
+import bamboo.lib.api.Client;
 import bamboo.lib.config.ConfigRegistry;
+import bamboo.lib.keybinding.IngameHandler;
 
 public class ClientLib implements ClientModInitializer {
     public static final ConfigRegistry configRegistry = new ConfigRegistry("bamboo.properties");
@@ -14,5 +16,13 @@ public class ClientLib implements ClientModInitializer {
     public void onInitializeClient() {
         joinWorldHandlers.register(configRegistry::loadConfig);
         exitWorldHandlers.register(configRegistry::saveConfig);
+
+        Client.registerKey("b+c", reloadConfig);
     }
+
+    private IngameHandler reloadConfig = client -> {
+        configRegistry.loadConfig();
+        Client.message("Config reloaded");
+        return true;
+    };
 }
