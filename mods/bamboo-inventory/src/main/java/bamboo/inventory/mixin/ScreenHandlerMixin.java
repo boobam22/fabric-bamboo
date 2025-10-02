@@ -55,7 +55,7 @@ public abstract class ScreenHandlerMixin {
 
     private OnlyServer openCraftingTable = Util::openCraftingTable;
     private OnlyServer openEnderChest = Util::openEnderChest;
-    private OnlyServer refreshTrade = Util::refreshTrade;
+    private OnlyServer refreshTrade = bamboo.inventory.villager.Util::refreshTrade;
 
     private static interface OnlyServer {
         default void apply(PlayerEntity player) {

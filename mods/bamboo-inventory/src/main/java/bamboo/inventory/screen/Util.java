@@ -11,13 +11,9 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ContainerComponent;
-import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.village.VillagerProfession;
 import net.minecraft.text.Text;
-
-import bamboo.inventory.mixin.MerchantScreenHandlerAccessor;
 
 public class Util {
     private static void openHandledScreen(ServerPlayerEntity player, ScreenHandlerFactory factory, Text title) {
@@ -72,17 +68,5 @@ public class Util {
             return handler;
         };
         openHandledScreen(player, factory, stack.getName());
-    }
-
-    public static void refreshTrade(ServerPlayerEntity player) {
-        VillagerEntity villager = (VillagerEntity) ((MerchantScreenHandlerAccessor) player.currentScreenHandler)
-                .bamboo_getMerchant();
-        if (villager.getExperience() == 0
-                && !villager.getVillagerData().profession().matchesKey(VillagerProfession.NONE)) {
-            villager.setOffers(null);
-            player.sendTradeOffers(player.currentScreenHandler.syncId, villager.getOffers(),
-                    villager.getVillagerData().level(), villager.getExperience(),
-                    villager.isLeveledMerchant(), villager.canRefreshTrades());
-        }
     }
 }

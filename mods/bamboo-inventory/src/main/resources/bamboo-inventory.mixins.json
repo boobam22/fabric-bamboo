@@ -3,9 +3,11 @@
     "package": "bamboo.inventory.mixin",
     "compatibilityLevel": "JAVA_21",
     "mixins": [
-        "MerchantScreenHandlerAccessor",
-        "ScreenHandlerMixin",
-        "EnchantBookFactoryMixin"
+        "villager.TradeOfferMixin",
+        "villager.MerchantEntityAccessor",
+        "villager.MerchantScreenHandlerAccessor",
+        "villager.EnchantBookFactoryMixin",
+        "ScreenHandlerMixin"
     ],
     "client": [
         "HandledScreenAccessor",
