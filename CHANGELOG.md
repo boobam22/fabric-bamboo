@@ -13,6 +13,8 @@
   - rename config `fastUseDistance` to `scaffoldingDistance`.
 - bamboo-lib v1.1.0
   - improve `ConfigEntry` and support to modify config by command.
+  - add new config `commandKeybinds`: dynamic keybind to command.
+  - allow `/reload` in integrated server.
 
 ## [v1.0.0] - 2025-09-22
 
