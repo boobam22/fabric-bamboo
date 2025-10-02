@@ -10,6 +10,8 @@ import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.MinecraftClient;
 
+import bamboo.lib.ClientLib;
+
 public class KeyEvent {
     private static Map<Key, List<Handler>> handlers = new HashMap<>();
     private static Key currentKey = new Key(0, new HashSet<>());
@@ -50,7 +52,7 @@ public class KeyEvent {
 
     private static boolean handleCurentKey(MinecraftClient client) {
         if (!handlers.containsKey(currentKey)) {
-            return false;
+            return handleDynamicKey(client);
         }
 
         boolean cancel = false;
@@ -58,5 +60,14 @@ public class KeyEvent {
             cancel |= handler.apply(client);
         }
         return cancel;
+    }
+
+    private static boolean handleDynamicKey(MinecraftClient client) {
+        Map<Key, String> map = ClientLib.commandKeybinds.getValue();
+        if (map.containsKey(currentKey) && !client.isPaused()) {
+            client.getNetworkHandler().sendChatCommand(map.get(currentKey));
+            return true;
+        }
+        return false;
     }
 }
