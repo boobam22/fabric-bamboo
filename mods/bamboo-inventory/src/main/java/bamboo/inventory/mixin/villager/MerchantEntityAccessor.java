@@ -1,4 +1,4 @@
-package bamboo.inventory.mixin;
+package bamboo.inventory.mixin.villager;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
