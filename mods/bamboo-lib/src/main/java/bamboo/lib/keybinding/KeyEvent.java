@@ -9,6 +9,7 @@ import java.util.HashSet;
 import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.ChatScreen;
 
 import bamboo.lib.ClientLib;
 
@@ -64,7 +65,7 @@ public class KeyEvent {
 
     private static boolean handleDynamicKey(MinecraftClient client) {
         Map<Key, String> map = ClientLib.commandKeybinds.getValue();
-        if (map.containsKey(currentKey) && !client.isPaused()) {
+        if (map.containsKey(currentKey) && !client.isPaused() && !(client.currentScreen instanceof ChatScreen)) {
             client.getNetworkHandler().sendChatCommand(map.get(currentKey));
             return true;
         }
