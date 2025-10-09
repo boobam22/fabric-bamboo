@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 import net.minecraft.client.render.entity.feature.ElytraFeatureRenderer;
 import net.minecraft.item.equipment.EquipmentAssetKeys;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.component.DataComponentTypes;
 
 @Mixin(ElytraFeatureRenderer.class)
@@ -17,6 +18,7 @@ public abstract class ElytraFeatureRendererMixin {
         ItemStack stack = args.get(3);
         if (stack.get(DataComponentTypes.GLIDER) != null) {
             args.set(1, EquipmentAssetKeys.ELYTRA);
+            args.set(3, new ItemStack(Items.ELYTRA));
         }
     }
 }
